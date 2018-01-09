@@ -20,8 +20,8 @@
     "bower": "^1.8.2",
     "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git#3.0.0",
     "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#2.3.0",
-    "spinal-env-drive-core": "file:/home/laurent/share_to_send/modules/spinal-env-drive-core",
-    "spinal-env-drive-plugin-base": "file:/home/laurent/share_to_send/modules/spinal-env-drive-plugin-base"
+    "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
+    "spinal-env-drive-plugin-base": "git+https://github.com/spinalcom/spinal-env-drive-core.git"
   },
   "scripts": {
     "bowerinstall": "bower install --allow-root"
