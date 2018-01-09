@@ -1,0 +1,32 @@
+{
+  "name": "spinal-browser-drive",
+  "version": "1.0.0",
+  "homepage": "https://github.com/spinalcom/spinal-browser-drive",
+  "authors": [
+    "laurent <htd.laurent@gmail.com>"
+  ],
+  "description": "Utility to manage the SpinalCom FileSystem and more ...",
+  "main": "index.html",
+  "license": "SpinalCore",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bower": "^1.8.2",
+    "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git#3.0.0",
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#2.3.0",
+    "spinal-env-drive-core": "file:/home/laurent/share_to_send/modules/spinal-env-drive-core",
+    "spinal-env-drive-plugin-base": "file:/home/laurent/share_to_send/modules/spinal-env-drive-plugin-base"
+  },
+  "scripts": {
+    "bowerinstall": "bower install --allow-root"
+  },
+  "devDependencies": {
+    "csso": "^3.4.0"
+  }
+}
