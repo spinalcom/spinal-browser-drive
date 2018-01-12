@@ -18,7 +18,6 @@
   ],
   "dependencies": {
     "bower": "^1.8.2",
-    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-browser-admin.git",
     "spinal-env-drive-core": "git+https://github.com/spinalcom/spinal-env-drive-core.git",
     "spinal-env-drive-plugin-base": "git+https://github.com/spinalcom/spinal-env-drive-plugin-base.git"
   },
