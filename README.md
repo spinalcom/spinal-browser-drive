@@ -23,7 +23,7 @@ $ npm init
 ### Install the package locally
 
 This will install the package
- - [spinal-browser-admin](https://github.com/spinalcom/spinal-browser-admin)
+ - [spinal-browser-drive](https://github.com/spinalcom/spinal-browser-drive)
    - [spinal-browser-admin](https://github.com/spinalcom/spinal-browser-admin)
      - [spinal-core-hub#3.0.0](https://github.com/spinalcom/spinal-core-hub)
      - [spinal-core-connectorjs#2.3.0](https://github.com/spinalcom/spinal-core-connectorjs)
@@ -64,7 +64,7 @@ $ pm2 start launch.config.js
 
 ## Basic usage
 
-The admin-dashboard is a browser application. To use it you need to access it via a browser (you may change the host/port corresponding to your `.config.json` file):
+The drive is a browser application. To use it you need to access it via a browser (you may change the host/port corresponding to your `.config.json` file):
 
 [`http://127.0.0.1:7777/html/drive/index.html`](http://127.0.0.1:7777/html/drive/index.html)
 
