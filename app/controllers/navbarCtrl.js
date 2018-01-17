@@ -65,9 +65,9 @@ angular.module('app.controllers')
 
       ];
 
-
-
-
+      for (var i = 0; i < $scope.layouts.length; i++) {
+        goldenLayoutService.registerPannel($scope.layouts[i])
+      }
 
     }
   ]);

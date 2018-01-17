@@ -81,9 +81,36 @@ angular.module('app.services')
 
       factory.createDragSource = (element, config) => {
         myLayout.createDragSource(element, config);
-
       };
 
+
+      factory.pannels = [];
+      factory.pannels_watchers = [];
+      factory.registerPannel = (pannel) => {
+        factory.pannels.push(pannel);
+        for (var i = 0; i < factory.pannels_watchers.length; i++) {
+          factory.pannels_watchers[i](factory.pannels);
+        }
+      };
+      factory.getPannels = () => {
+        return factory.pannels;
+      };
+      factory.watch_pannel = (fn) => {
+        if (factory.pannels_watchers.length === 0) {
+          factory.pannels_watchers.push(fn);
+          fn(factory.pannels);
+          return;
+        }
+        let found = false;
+        for (var i = 0; i < factory.pannels_watchers.length; i++) {
+          if (factory.pannels_watchers[i] === fn) {
+            found = true;
+            break;
+          }
+        }
+        if (found === false)
+          factory.pannels_watchers.push(fn);
+      };
 
       return factory;
     }

@@ -24,11 +24,18 @@ angular.module('app.directives')
                 goldenLayoutService.createChild(layout.cfg);
               };
             };
-            for (var i = 0; i < scope.layoutInfo.length; i++) {
-              let layout = scope.layoutInfo[i];
-              goldenLayoutService.createDragSource($("#" + layout.id)[0], layout.cfg);
-              $("#" + layout.id).click(create_callback(goldenLayoutService, layout));
-            }
+            goldenLayoutService.watch_pannel((pannels) => {
+              for (var i = 0; i < scope.layoutInfo.length; i++) {
+                let layout = scope.layoutInfo[i];
+                if (!layout.shown) {
+                  layout.shown = true;
+                  goldenLayoutService.createDragSource($("#" + layout.id)[0], layout.cfg);
+                  $("#" + layout.id).click(create_callback(goldenLayoutService, layout));
+                }
+              }
+              scope.layoutInfo = pannels;
+              scope.$apply();
+            });
           });
         }
       };
