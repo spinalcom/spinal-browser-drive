@@ -1,6 +1,6 @@
 angular.module('app.controllers')
-  .controller('navbarCtrl', ["$scope", "authService", "$location",
-    function ($scope, authService, $location) {
+  .controller('navbarCtrl', ["$scope", "authService", "$location", "goldenLayoutService",
+    function ($scope, authService, $location, goldenLayoutService) {
       $scope.username = "";
       $scope.connected = false;
 
