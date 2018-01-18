@@ -34,7 +34,6 @@ angular.module('app.directives')
                 }
               }
               scope.layoutInfo = pannels;
-              scope.$apply();
             });
           });
         }
