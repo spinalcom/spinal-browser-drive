@@ -27,14 +27,16 @@ angular.module('app.directives')
             goldenLayoutService.watch_pannel((pannels) => {
               console.log("in watch_pannel :");
               console.log(pannels);
-              for (var i = 0; i < pannels.length; i++) {
-                let layout = pannels[i];
-                if (!layout.shown) {
-                  layout.shown = true;
-                  goldenLayoutService.createDragSource($("#" + layout.id)[0], layout.cfg);
-                  $("#" + layout.id).click(create_callback(goldenLayoutService, layout));
+              $timeout(() => {
+                for (var i = 0; i < pannels.length; i++) {
+                  let layout = pannels[i];
+                  if (!layout.shown) {
+                    layout.shown = true;
+                    goldenLayoutService.createDragSource($("#" + layout.id)[0], layout.cfg);
+                    $("#" + layout.id).click(create_callback(goldenLayoutService, layout));
+                  }
                 }
-              }
+              }, 200);
               scope.layoutInfo = pannels;
             });
           });
