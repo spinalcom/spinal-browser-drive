@@ -25,16 +25,16 @@ angular.module('app.services')
                 controller: 'FileExplorerCtrl'
               }
             },
-            {
-              isClosable: false,
-              title: "Inspector",
-              type: 'component',
-              componentName: 'SpinalHome',
-              componentState: {
-                template: 'inspector.html',
-                controller: 'InspectorCtrl'
-              }
-            }
+            // {
+            //   isClosable: false,
+            //   title: "Inspector",
+            //   type: 'component',
+            //   componentName: 'SpinalHome',
+            //   componentState: {
+            //     template: 'inspector.html',
+            //     controller: 'InspectorCtrl'
+            //   }
+            // }
 
           ]
         }]
