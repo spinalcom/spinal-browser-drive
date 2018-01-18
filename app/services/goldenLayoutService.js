@@ -88,6 +88,8 @@ angular.module('app.services')
       factory.pannels_watchers = [];
       factory.registerPannel = (pannel) => {
         factory.pannels.push(pannel);
+        console.log("registerPannel");
+        console.log(factory.pannels);
         for (var i = 0; i < factory.pannels_watchers.length; i++) {
           factory.pannels_watchers[i](factory.pannels);
         }
@@ -98,7 +100,9 @@ angular.module('app.services')
       factory.watch_pannel = (fn) => {
         if (factory.pannels_watchers.length === 0) {
           factory.pannels_watchers.push(fn);
-          fn(factory.pannels);
+          if (factory.pannels.length != 0) {
+            fn(factory.pannels);
+          }
           return;
         }
         let found = false;

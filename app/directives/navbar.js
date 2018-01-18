@@ -25,8 +25,10 @@ angular.module('app.directives')
               };
             };
             goldenLayoutService.watch_pannel((pannels) => {
-              for (var i = 0; i < scope.layoutInfo.length; i++) {
-                let layout = scope.layoutInfo[i];
+              console.log("in watch_pannel :");
+              console.log(pannels);
+              for (var i = 0; i < pannels.length; i++) {
+                let layout = pannels[i];
                 if (!layout.shown) {
                   layout.shown = true;
                   goldenLayoutService.createDragSource($("#" + layout.id)[0], layout.cfg);
