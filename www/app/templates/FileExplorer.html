@@ -43,7 +43,7 @@
           ng-class="{fsfileselected:file.selected,over:file.over,selectdrop:file.selectdrop}" drag-events="dragCfg" ng-click="selectFile($event,file)"
           ng-dblclick="ondblclick(file)" ng-right-click="onrightclick($index)" drag-drop>
           <td md-cell class="fs-file-cell" style="position: relative;">
-            <ng-md-icon icon="{{getIcon(file.model_type)}}" style="fill: white;height: 24px;" class="md-avatar-icon"></ng-md-icon>
+            <ng-md-icon icon="{{getIcon(file.model_type)}}" style="{{getStyle(file)}}" class="md-avatar-icon"></ng-md-icon>
             <div style="float: left;margin-left: 20px;width: -webkit-fill-available;overflow: hidden;text-overflow: ellipsis;;">
               <span style="white-space: nowrap;">
                 <md-tooltip md-delay="500">{{file.name}}</md-tooltip>{{file.name}}</span>

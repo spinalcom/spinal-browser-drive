@@ -317,10 +317,11 @@ angular.module('app.spinalcom')
                         break;
                       case 6:
                         break;
-                      case 7:
+                      case 8:
                         item.upload_pecent = 100;
                         item.error = true;
                         break;
+                      default:
 
                     }
 

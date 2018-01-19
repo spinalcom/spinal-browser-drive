@@ -84,6 +84,10 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         }
       };
 
+      $scope.getStyle = (file) => {
+        return `fill: ${file.error ? '#ff5722' : 'white'}; height: 24px;`;
+      }
+
       $scope.change_curr_dir = (dir, path) => {
         $scope.curr_dir = dir;
         $scope.fs_path = path;
@@ -123,6 +127,8 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
                   $scope.directory[y].upload_pecent = res[i].upload_pecent;
                 if (res[i].error)
                   $scope.directory[y].error = res[i].error;
+                else if ($scope.directory[y].error)
+                  $scope.directory[y].error = false;
                 found = true;
                 break;
               }
