@@ -40,7 +40,9 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         // $scope.change_curr_dir(FileSystem._objects[dir._server_id], $scope.fs_path);
       };
       $scope.getIcon = (type) => {
-        return spinalDrive_Env.context_file_exp_app_icon[type] ? spinalDrive_Env.context_file_exp_app_icon[type] : spinalDrive_Env.context_file_exp_app_icon.default;
+        return spinalDrive_Env.context_file_exp_app_icon[type] ?
+          spinalDrive_Env.context_file_exp_app_icon[type] :
+          spinalDrive_Env.context_file_exp_app_icon.default;
         // }
 
         // if (type == "Directory") {
@@ -119,6 +121,8 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
                   $scope.directory[y].upload_pecent = res[i].upload_pecent;
                 else
                   $scope.directory[y].upload_pecent = res[i].upload_pecent;
+                if (res[i].error)
+                  $scope.directory[y].error = res[i].error;
                 found = true;
                 break;
               }

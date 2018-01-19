@@ -19,12 +19,6 @@ angular.module('app.spinalcom')
         }
         return user;
       };
-
-      factory.save_user = (username, password) => {
-        user.username = username;
-        user.password = password;
-        window.localStorage.setItem("spinalhome_cfg", btoa(JSON.stringify(user)));
-      };
       factory.logout = (username, password) => {
         if (user.username != "") {
           factory.save_user("", "");
