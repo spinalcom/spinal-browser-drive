@@ -36,8 +36,8 @@ program
 
 if (program.module) {
   package_path = path.resolve('./package.json');
-  node_modules_path = path.resolve('..');
   rootPath = path.resolve('../..');
+  node_modules_path = path.resolve('..');
 } else {
   node_modules_path = path.resolve('./node_modules');
   rootPath = path.resolve('.');
@@ -60,12 +60,10 @@ function main() {
 
   var config = getConfig();
   if (program.module) {
-    // if cwd == node_modules/***/
     var dependencies = getOwnPlugins();
     config = mergePlugins(config, dependencies);
     save_config(config);
   }
-  // end if
   compile_lib(config);
 }
 
@@ -125,6 +123,7 @@ function save_config(config) {
 
 function compile_lib(config) {
   var browserify = require('browserify');
+  var exorcist = require('exorcist');
   var b = browserify({
     debug: true
   });
@@ -141,7 +140,9 @@ function compile_lib(config) {
   });
   b.transform("windowify");
   b.transform("uglifyify");
-  b.bundle().pipe(output);
+  b.bundle()
+    .pipe(exorcist(libPath + '.map'))
+    .pipe(output);
 }
 
 main();
