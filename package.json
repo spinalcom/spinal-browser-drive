@@ -5,6 +5,9 @@
   "authors": [
     "laurent <htd.laurent@gmail.com>"
   ],
+  "bin": {
+    "create_drive_env": "create_drive_env.js"
+  }
   "description": "Utility to manage the SpinalCom FileSystem and more ...",
   "main": "index.html",
   "license": "SpinalCore",
