@@ -134,12 +134,14 @@ function compile_lib(config) {
       b.add(path.resolve(node_modules_path + '/' + key + '/' + pack.main));
     }
   }
+  var output = fs.createWriteStream(libPath);
+
   b.transform("babelify", {
     presets: ["es2015"]
   });
   b.transform("windowify");
   b.transform("uglifyify");
-  b.bundle().pipe(libPath);
+  b.bundle().pipe(output);
 }
 
 main();
