@@ -38,7 +38,9 @@
     "spinal-lib-drive-env": "git+https://github.com/spinalcom/spinal-lib-drive-env.git"
   },
   "scripts": {
-    "bowerinstall": "bower install --allow-root"
+    "bowerinstall": "bower install --allow-root",
+    "postinstall": "npm run spinal-register",
+    "spinal-register": "spinal-register"
   },
   "devDependencies": {
     "csso": "^3.4.0"
