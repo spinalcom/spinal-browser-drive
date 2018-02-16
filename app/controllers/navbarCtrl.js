@@ -1,4 +1,56 @@
 angular.module('app.controllers')
+  .controller('RightMenuCtrl', ["$scope", "$timeout", "$mdSidenav", "$location", "authService", "$mdDialog", "$templateCache",
+    function ($scope, $timeout, $mdSidenav, $location, authService, $mdDialog, $templateCache) {
+      authService.wait_connect().then(() => {
+        $scope.username = authService.get_user().username;
+      });
+
+      $scope.close = function () {
+        $mdSidenav('right').close();
+      };
+
+      $scope.logOut = () => {
+        $mdSidenav('right').close().then(function () {
+          $mdDialog.show($mdDialog.confirm()
+            .ariaLabel('confirm menu')
+            .ok('Confim')
+            .cancel('Cancel')
+            .title("Do you want to log out ?")
+            .targetEvent(event)).then(function () {
+            $location.path('/login');
+          }, function () {});
+        });
+      };
+      $scope.modifyPassword = function (event) {
+        $mdSidenav('right').close().then(function () {
+          let my_prompt = $mdDialog.confirm()
+            .ariaLabel('confirm menu')
+            .ok('Confim')
+            .cancel('Cancel')
+            .title("Do you want to modify your password ?")
+            .targetEvent(event);
+          $mdDialog.show(my_prompt).then(function (result) {
+            console.log("OK");
+            $mdDialog.show({
+              ariaLabel: 'changePasswordModal',
+              template: $templateCache.get("changePasswordModal.html"),
+              parent: angular.element(document.body),
+              clickOutsideToClose: true,
+              fullscreen: true,
+              controller: ["$scope", "authService", "$mdToast", "$q", changePasswordModelCtrl],
+            });
+          }, function () {});
+        });
+      };
+      $scope.menuList = [{
+        name: "Modify Password",
+        action: $scope.modifyPassword
+      }, {
+        name: "Log out",
+        action: $scope.logOut
+      }];
+    }
+  ])
   .controller('navbarCtrl', ["$scope", "authService", "$location", "goldenLayoutService",
     function ($scope, authService, $location, goldenLayoutService) {
       $scope.username = "";
@@ -71,3 +123,58 @@ angular.module('app.controllers')
 
     }
   ]);
+var changePasswordModelCtrl = function ($scope, authService, $mdToast, $q) {
+  $scope.passwordInputType = 'password';
+  $scope.showPassword = function () {
+    $scope.passwordInputType = 'text';
+  };
+  $scope.hidePassword = function () {
+    $scope.passwordInputType = 'password';
+  };
+  $scope.change_password = {
+    currentPassword: "",
+    password: "",
+    confirm_password: ""
+  };
+  $scope.onError = function (err) {
+    $mdToast.showSimple("Error : " + err);
+  };
+  let options = location.host + '/';
+
+  $scope.change_password = (user_id, password, new_password) => {
+    let deferred = $q.defer();
+    SpinalUserManager.change_password(options, user_id, password, new_password, function () {
+      deferred.resolve();
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  $scope.get_user_id = (user_name, password) => {
+    let deferred = $q.defer();
+    SpinalUserManager.get_user_id(options, user_name, password, function (response) {
+      let id = parseInt(response);
+      deferred.resolve(id);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  $scope.changePasswordSubmit = (newpasswordForm, change_password) => {
+    if (newpasswordForm.$valid) {
+      let user = authService.get_user();
+      $scope.get_user_id(user.username, change_password.currentPassword)
+        .then(function (user_id) {
+          $scope.change_password(user.username, change_password.currentPassword, change_password.password)
+            .then(function () {
+              authService.save_user(user.username, change_password.password);
+              $mdToast.showSimple("Password has been successfully modified.");
+            }, $scope.onError);
+        }, $scope.onError);
+      return;
+    }
+  };
+
+}
