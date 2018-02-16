@@ -37,7 +37,7 @@ angular.module('app.controllers')
               parent: angular.element(document.body),
               clickOutsideToClose: true,
               fullscreen: true,
-              controller: ["$scope", "authService", "$mdToast", "$q", changePasswordModelCtrl],
+              controller: ["$scope", "authService", "$mdToast", "$q", "$mdDialog", changePasswordModelCtrl],
             });
           }, function () {});
         });
@@ -51,8 +51,8 @@ angular.module('app.controllers')
       }];
     }
   ])
-  .controller('navbarCtrl', ["$scope", "authService", "$location", "goldenLayoutService",
-    function ($scope, authService, $location, goldenLayoutService) {
+  .controller('navbarCtrl', ["$scope", "authService", "$location", "goldenLayoutService", "$mdSidenav",
+    function ($scope, authService, $location, goldenLayoutService, $mdSidenav) {
       $scope.username = "";
       $scope.connected = false;
 
@@ -65,6 +65,10 @@ angular.module('app.controllers')
       $scope.logout = () => {
         $location.path('/login');
       };
+      $scope.clickUser = () => {
+        $mdSidenav('right').open();
+      };
+
 
       // get in SpinalDrive_Env
       $scope.layouts = [{
@@ -118,18 +122,22 @@ angular.module('app.controllers')
       ];
 
       for (var i = 0; i < $scope.layouts.length; i++) {
-        goldenLayoutService.registerPannel($scope.layouts[i])
+        goldenLayoutService.registerPannel($scope.layouts[i]);
       }
 
     }
   ]);
-var changePasswordModelCtrl = function ($scope, authService, $mdToast, $q) {
+var changePasswordModelCtrl = function ($scope, authService, $mdToast, $q, $mdDialog) {
   $scope.passwordInputType = 'password';
   $scope.showPassword = function () {
     $scope.passwordInputType = 'text';
   };
   $scope.hidePassword = function () {
     $scope.passwordInputType = 'password';
+  };
+
+  $scope.cancel = function () {
+    $mdDialog.cancel();
   };
   $scope.change_password = {
     currentPassword: "",
@@ -171,10 +179,11 @@ var changePasswordModelCtrl = function ($scope, authService, $mdToast, $q) {
             .then(function () {
               authService.save_user(user.username, change_password.password);
               $mdToast.showSimple("Password has been successfully modified.");
+              $mdDialog.hide();
             }, $scope.onError);
         }, $scope.onError);
       return;
     }
   };
 
-}
+};
