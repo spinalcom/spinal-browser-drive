@@ -30,7 +30,6 @@ angular.module('app.controllers')
             .title("Do you want to modify your password ?")
             .targetEvent(event);
           $mdDialog.show(my_prompt).then(function (result) {
-            console.log("OK");
             $mdDialog.show({
               ariaLabel: 'changePasswordModal',
               template: $templateCache.get("changePasswordModal.html"),

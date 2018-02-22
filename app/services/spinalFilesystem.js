@@ -58,10 +58,17 @@ angular.module('app.spinalcom')
       this.load_dir = (f) => {
         let deferred = $q.defer();
         f.load((m) => {
-          m.bind(() => {
-            this.emit_subcriber("SPINAL_FS_ONCHANGE");
-          }, false);
-          deferred.resolve(m);
+          if (m) {
+            m.bind(() => {
+              this.emit_subcriber("SPINAL_FS_ONCHANGE");
+            }, false);
+            deferred.resolve(m);
+          } else {
+            console.error("ERROR load_dir");
+            console.log(f);
+            console.log(m);
+            deferred.reject(m);
+          }
         }, () => {
           deferred.reject();
         });
@@ -100,9 +107,6 @@ angular.module('app.spinalcom')
           return this.deferGetFolderJson_rec(prom_arr, all_dir, dir, arr, name, parent, opened);
         }
 
-
-
-
         for (var key in all_dir) {
           let n = all_dir[key];
           if (n.model == dir._server_id && n.text == name && n.parent == parent) {
@@ -128,15 +132,6 @@ angular.module('app.spinalcom')
             current.state.opened = true;
           }
         }
-
-
-
-
-
-
-
-
-
         arr.push(current);
         all_dir[current.id] = current;
         this.folderExplorer_dir[current.id] = current;
@@ -246,7 +241,6 @@ angular.module('app.spinalcom')
       };
 
       this.deleteFolder = (all_dir, node) => {
-        console.log("delete folder " + node.original.text);
         let f = FileSystem._objects[node.original.model];
         if (f) {
           let parent = all_dir[node.original.parent];

@@ -66,8 +66,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         file.selected = !file.selected;
       };
       $scope.ondblclick = (file) => {
-        console.log("dbl click");
-        console.log(file);
         if (file.model_type == "Directory") {
           let f = FileSystem._objects[file._server_id];
           if (f) {
@@ -86,7 +84,7 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
 
       $scope.getStyle = (file) => {
         return `fill: ${file.error ? '#ff5722' : 'white'}; height: 24px;`;
-      }
+      };
 
       $scope.change_curr_dir = (dir, path) => {
         $scope.curr_dir = dir;
@@ -144,7 +142,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
 
       $scope.enterTarget = 0;
       $scope.getNbSelectedIcon = (type) => {
-        console.log(type);
         let nb_selected = 0;
         for (var i = 0; i < $scope.directory.length; i++) {
           if ($scope.directory[i].selected)
@@ -161,8 +158,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
 
       $scope.dragCfg = {
         "dragstart": (event, obj) => {
-          console.log("dragstart");
-          console.log(event);
           if (obj.selected == false && event.ctrlKey != true) {
             for (let i = 0; i < $scope.directory.length; i++) {
               $scope.directory[i].selected = false;
@@ -193,8 +188,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
           return false;
         },
         "dragend": (event, obj) => {
-          console.log("dragend");
-          console.log(obj);
           for (let i = 0; i < $scope.directory.length; i++) {
             $scope.directory[i].selectdrop = false;
             $scope.directory[i].over = false;
@@ -221,16 +214,12 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         },
         "dragenter": (event) => {
           event.preventDefault();
-          // console.log($scope.curr_dir);
-
         },
         "dragover": (event, obj) => {
           event.preventDefault();
           event.stopPropagation(); // Stops some browsers from redirecting.
-          console.log("over");
           if (obj._server_id == $scope.enterTarget._server_id)
             return false;
-          // console.log("ENTER DRAG");
           if (obj.selected == true || obj.model_type != "Directory") {
             $scope.enterTarget = 0;
           } else {
@@ -264,7 +253,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         "drop": (event, obj) => {
           event.stopPropagation(); // Stops some browsers from redirecting.
           event.preventDefault();
-          console.log("drop");
           let curr_dir = spinalFileSystem.FE_init_dir_drag;
           let target = 0;
           let i = 0;
@@ -281,8 +269,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
             files = (event.dataTransfer ? event.dataTransfer.files : event.originalEvent.dataTransfer.files);
           if (files.length > 0) {
             // dnd files
-            console.log("folderDropCfg drop Files");
-            console.log(files);
             let m_tar = FileSystem._objects[target._server_id];
             if (m_tar) {
               $scope.upload_files(files, m_tar);
@@ -309,7 +295,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
                   if (path._server_id == curr_dir._server_id) {
                     let found = false;
                     if ($scope.fs_path.length >= 2) {
-                      console.log($scope.fs_path);
                       for (var y = 0; y < selected.length; y++) {
                         if (selected[y]._server_id == FileSystem._objects[$scope.fs_path[1]._server_id]._server_id) {
                           found = true;
@@ -379,16 +364,12 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         "drop": (event) => {
           event.stopPropagation(); // Stops some browsers from redirecting.
           event.preventDefault();
-          console.log("folderDropCfg drop");
           var files = event.target.files;
           if (!files || files.length === 0)
             files = (event.dataTransfer ? event.dataTransfer.files : event.originalEvent.dataTransfer.files);
           if (files.length > 0) {
             // dnd files
-            console.log("folderDropCfg drop Files");
-            console.log(files);
             let m_tar = $scope.curr_dir;
-            console.log($scope.directory);
             $scope.upload_files(files, m_tar);
             $scope.dropOnFolder = false;
             $scope.$apply();
@@ -449,7 +430,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         },
         "dragover": (event) => {
           event.preventDefault();
-          console.log("folderDropCfg over");
           for (var i = 0; i < $scope.directory.length; i++) {
             if ($scope.directory[i].over == true) {
               $scope.directory[i].over = false;
@@ -487,7 +467,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
       $scope.context_menu_file = [];
       $scope.onrightclick = (index) => {
         setTimeout(() => {
-          // console.log('#fe-menu-' + $scope.uid + '-' + index);
           $('#fe-menu-' + $scope.uid + '-' + index).click();
         });
       };
@@ -497,15 +476,9 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
           file: file,
           scope: $scope,
         });
-        console.log($scope.context_menu_file);
-        console.log(file);
         $mdMenu.open(ev);
       };
       $scope.context_menu_file_action = ($event, item, file) => {
-        console.log("ACTION");
-        console.log($event);
-        console.log(item);
-        console.log(file);
         item.launch_action({
           evt: $event,
           item: item,
@@ -521,7 +494,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
           scope: $scope,
           model: $scope.curr_dir
         });
-        console.log($scope.context_menu_curr_dir);
         $mdMenu.open(ev);
       };
       $scope.context_menu_curr_dir_action = ($event, item) => {
