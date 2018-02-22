@@ -514,7 +514,7 @@ angular.module('app.FileExplorer')
               }
               if (found == false) {
                 let res = {};
-                pushToJson(m[i], res, n, n.depth + 1, n.depth + 1);
+                pushToJson(model_child, res, n, n.depth + 1, n.depth + 1);
                 res.data.used = true;
                 children.push(res);
               }
