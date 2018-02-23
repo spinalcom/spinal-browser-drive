@@ -37,21 +37,11 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
             $scope.change_curr_dir(f, $scope.fs_path);
           }
         }
-        // $scope.change_curr_dir(FileSystem._objects[dir._server_id], $scope.fs_path);
       };
       $scope.getIcon = (type) => {
         return spinalDrive_Env.context_file_exp_app_icon[type] ?
           spinalDrive_Env.context_file_exp_app_icon[type] :
           spinalDrive_Env.context_file_exp_app_icon.default;
-        // }
-
-        // if (type == "Directory") {
-        //   return "folder";
-        // }
-        // if (type == "Session") {
-        //   return "desktop_windows";
-        // }
-        // return "insert_drive_file";
       };
 
       $scope.selectFile = (event, file) => {
@@ -69,6 +59,7 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
         if (file.model_type == "Directory") {
           let f = FileSystem._objects[file._server_id];
           if (f) {
+            $scope.directory = [];
             f.load((m) => {
               if (m) {
                 $scope.fs_path.push({
@@ -85,6 +76,9 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
       $scope.getStyle = (file) => {
         return `fill: ${file.error ? '#ff5722' : 'white'}; height: 24px;`;
       };
+      $scope.getTime = (model) => {
+        return new Date(model.get()).toLocaleString();
+      };
 
       $scope.change_curr_dir = (dir, path) => {
         $scope.curr_dir = dir;
@@ -93,8 +87,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
       };
 
       function handleDirectoryFiles() {
-        // let olddirectory = $scope.directory;
-        // $scope.directory = []
         return spinalFileSystem.getFolderFiles($scope).then((res) => {
           let i = 0;
           let find_idx_in_dir = (res, i) => {
@@ -209,7 +201,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
 
           }
           spinalFileSystem.FE_visited_scope = [];
-          // $scope.$apply();
           return false;
         },
         "dragenter": (event) => {
@@ -317,7 +308,6 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
             if (s)
               curr_dir.remove_ref(s);
           }
-          // let m_tar = FileSystem._objects[target._server_id];
           if (m_tar) {
             m_tar.load((m) => {
               for (var i = 0; i < selected.length; i++) {
