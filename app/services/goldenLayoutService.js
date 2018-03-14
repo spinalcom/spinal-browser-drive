@@ -97,7 +97,7 @@ angular.module('app.services')
       };
       factory.watch_panel = (fn) => {
         if (factory.panels_watchers.length === 0) {
-          factory.pannls_watchers.push(fn);
+          factory.panels_watchers.push(fn);
           if (factory.panels.length != 0) {
             fn(factory.panels);
           }
