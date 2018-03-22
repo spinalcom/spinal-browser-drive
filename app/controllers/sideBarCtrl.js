@@ -74,23 +74,34 @@ angular.module('app.sidebar', ['jsTree.directive', 'app.services', 'app.spinalco
 
       $scope.contextMenu = (node) => {
         let apps = spinalDrive_Env.get_applications('FolderExplorer', node);
-        let create_action_callback = (node, app) => {
+        let create_action_callback = (node, file_id, app) => {
           return function (obj) {
             let share_obj = {
               node: node,
-              model_server_id: node.original.model,
+              model_server_id: file_id,
               scope: $scope
             };
             app.action(share_obj);
           };
         };
+
+        let n_par = spinalFileSystem.folderExplorer_dir[node.original.parent];
+        let n_parent = FileSystem._objects[n_par.model];
+        let m_node;
+        for (var i = 0; i < n_parent.length; i++) {
+          if (n_parent[i]._ptr.data.value == node.original.model) {
+            m_node = n_parent[i];
+            break;
+          }
+        }
+
         let res = {};
-        for (var i = 0; i < apps.length; i++) {
+        for (i = 0; i < apps.length; i++) {
           let app = apps[i];
           res[app.name] = {
             label: app.label,
             icon: app.icon,
-            action: create_action_callback(node, app)
+            action: create_action_callback(node, m_node._server_id, app)
           };
         }
         return res;
