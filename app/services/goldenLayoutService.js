@@ -73,8 +73,6 @@ angular.module('app.services')
         });
       };
 
-
-
       factory.createChild = (config) => {
         myLayout.root.contentItems[0].addChild(config);
       };

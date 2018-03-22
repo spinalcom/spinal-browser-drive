@@ -126,7 +126,7 @@ angular.module('app.spinalcom')
         var prom_arr = [];
         // search if not existing
 
-        if (dir._server_id || FileSystem._tmp_objects[dir._server_id]) {
+        if (!dir._server_id || FileSystem._tmp_objects[dir._server_id]) {
           return this.deferGetFolderJson_rec(prom_arr, all_dir, dir, arr, name, parent, opened);
         }
 
