@@ -58,7 +58,6 @@ angular.module('app.controllers')
       authService.wait_connect().then(() => {
         $scope.username = authService.get_user().username;
         $scope.connected = true;
-
       });
 
       $scope.logout = () => {
