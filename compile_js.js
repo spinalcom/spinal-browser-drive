@@ -2,13 +2,11 @@ var fs = require('fs');
 var path = require('path');
 var browserify = require('browserify');
 var exorcist = require('exorcist');
-var b = browserify({
-  debug: true
-});
+var watchify = require('watchify');
 
 var program = require('commander');
 var input = null;
-var output = process.stdout; // default
+var output;
 var outputPath = "";
 
 program
@@ -20,6 +18,7 @@ program
       input = input.concat(srcs);
     }
   })
+  .option('-w, --watcher', 'Add watcher')
   .option('-o, --output <filename>', 'set the output file.')
   .parse(process.argv);
 
@@ -28,28 +27,68 @@ if (!input) {
 }
 if (program.output) {
   outputPath = path.resolve(program.output);
-  output = fs.createWriteStream(outputPath);
 }
-input.forEach(element => {
-  b.add(element);
-});
-b.transform("babelify", {
-    global: true,
-    presets: ["es2015"],
-  })
-  .transform("windowify", {
-    global: true,
-  })
-  .transform("uglifyify", {
-    global: true,
-    mangle: {
-      keep_fnames: true
-    }
-  });
-if (outputPath != "") {
-  let bundle = b.bundle()
+
+var b;
+
+function compile() {
+
+  if (program.watcher) {
+    b = browserify({
+      entries: input,
+      cache: {},
+      packageCache: {},
+      debug: true,
+      plugin: [watchify]
+    });
+    b.on('update', bundle);
+    bundle();
+
+  } else {
+    b = browserify({
+      entries: input,
+      debug: true,
+    });
+    bundle();
+  }
+
+}
+
+function bundle() {
+  console.log("bundle");
+  if (program.output) {
+    outputPath = path.resolve(program.output);
+    console.log(outputPath);
+    output = fs.createWriteStream(outputPath);
+  }
+  b.transform("babelify", {
+      global: true,
+      presets: ["es2015"],
+    })
+    .transform("windowify", {
+      global: true,
+    })
+    .transform("uglifyify", {
+      global: true,
+      mangle: {
+        keep_fnames: true
+      }
+    }).bundle()
     .pipe(exorcist(outputPath + '.map'))
     .pipe(output);
-} else {
-  b.bundle().pipe(output);
+  // } else {
+  // b.bundle().pipe(output);
+  // }
+
 }
+
+// if (program.watcher) {
+//   input.forEach(element => {
+//     fs.watchFile(element, () => {
+//       console.log("watach");
+//       compile();
+//     });
+//   });
+// } else {
+compile();
+// }

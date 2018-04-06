@@ -321,6 +321,41 @@ angular.module('app.spinalcom')
           }
         }
       };
+      let wait_tmp_serverid_loop = (scope, deferred, model) => {
+        if (!model._server_id || FileSystem._tmp_objects[model._server_id]) {
+          setTimeout(() => {
+            wait_tmp_serverid_loop(scope, deferred, model);
+          }, 100);
+        } else {
+          let item = {
+            name: model.name.get(),
+            model_type: model._info.model_type.get(),
+            _server_id: model._server_id,
+            owner: scope.user.username
+          };
+          SpinalDrive_App._getOrCreate_log(model).then((logs) => {
+            if (logs.length === 0) {
+              let tab = {
+                date: Date.now(),
+                name: scope.user.username,
+                action: "1st visit"
+              };
+              SpinalDrive_App._pushLog(logs, tab);
+            }
+
+            item.created_at = logs[0].date;
+            item.log = logs;
+
+            this.handle_FE_progressBar(model, item);
+            deferred.resolve(item);
+          });
+        }
+      };
+      let create_file_explorer_obj = (scope, model) => {
+        let deferred = $q.defer();
+        wait_tmp_serverid_loop(scope, deferred, model);
+        return deferred.promise;
+      };
 
       this.getFolderFiles = (scope) => {
         return this.init().then(() => {
@@ -331,46 +366,11 @@ angular.module('app.spinalcom')
               _server_id: this.model._server_id
             });
           }
-          let create_file_explorer_obj = (model) => {
-            let deferred = $q.defer();
 
-            let wait_tmp_serverid_loop = (deferred, model) => {
-              if (FileSystem._tmp_objects[model._server_id]) {
-                setTimeout(() => {
-                  wait_tmp_serverid_loop(deferred, model);
-                }, 100);
-              } else {
-                let item = {
-                  name: model.name.get(),
-                  model_type: model._info.model_type.get(),
-                  _server_id: model._server_id,
-                  owner: scope.user.username
-                };
-                SpinalDrive_App._getOrCreate_log(model).then((logs) => {
-                  if (logs.length === 0) {
-                    let tab = {
-                      date: Date.now(),
-                      name: scope.user.username,
-                      action: "1st visit"
-                    };
-                    SpinalDrive_App._pushLog(logs, tab);
-                  }
-
-                  item.created_at = logs[0].date;
-                  item.log = logs;
-
-                  this.handle_FE_progressBar(model, item);
-                  deferred.resolve(item);
-                });
-              }
-            };
-            wait_tmp_serverid_loop(deferred, model);
-            return deferred.promise;
-          };
           let q = [];
           for (var i = 0; i < scope.curr_dir.length; i++) {
             let f = scope.curr_dir[i];
-            q.push(create_file_explorer_obj(f));
+            q.push(create_file_explorer_obj(scope, f));
           }
           return $q.all(q);
         });

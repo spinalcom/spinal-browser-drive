@@ -164,6 +164,7 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
           $compile(clone[0])($rootScope);
           clone.appendTo("body");
           event.dataTransfer.setDragImage(clone[0], 0, 0);
+          event.dataTransfer.setData('text', obj._server_id);
           spinalFileSystem.FE_selected_drag = [];
           for (let i = 0; i < $scope.directory.length; i++) {
             if ($scope.directory[i].selected == true) {
@@ -180,6 +181,7 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
           return false;
         },
         "dragend": (event, obj) => {
+          $('#drag-extra').remove();
           for (let i = 0; i < $scope.directory.length; i++) {
             $scope.directory[i].selectdrop = false;
             $scope.directory[i].over = false;

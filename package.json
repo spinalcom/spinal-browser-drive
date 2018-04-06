@@ -1,6 +1,6 @@
 {
   "name": "spinal-browser-drive",
-  "version": "v1.0.7",
+  "version": "v1.0.8",
   "homepage": "https://github.com/spinalcom/spinal-browser-drive",
   "authors": [
     "laurent <htd.laurent@gmail.com>"
@@ -43,6 +43,7 @@
     "compile": "node compile_js.js"
   },
   "devDependencies": {
-    "csso": "^3.4.0"
+    "csso": "^3.4.0",
+    "watchify": "^3.11.0"
   }
 }

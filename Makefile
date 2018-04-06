@@ -71,6 +71,9 @@ link: create_outdir
 compile: create_outdir
 	@npm run compile -- $(SRC) -o $(OUT)
 
+watch :
+	@npm run compile -- $(SRC) -o $(OUT) -w
+
 lib: create_outdir
 	cat $(LIBSRC) > $(LIBOUT) 
 
