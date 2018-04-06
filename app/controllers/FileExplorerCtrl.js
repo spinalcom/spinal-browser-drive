@@ -271,54 +271,45 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
 
             return false;
           }
-
           if (!target || target.model_type != "Directory")
             return false;
           let selected = spinalFileSystem.FE_selected_drag;
           let m_tar = FileSystem._objects[target._server_id];
           if (m_tar) {
-            for (i = 0; i < $scope.fs_path.length; i++) {
-              let path = FileSystem._objects[$scope.fs_path[i]._server_id];
-              if (path) {
-                if (path instanceof File) {
-                  if (path._ptr.data.value == curr_dir._server_id) {
-                    return false;
-                  }
-                } else if (path instanceof Directory) {
-                  if (path._server_id == curr_dir._server_id) {
-                    let found = false;
-                    if ($scope.fs_path.length >= 2) {
-                      for (var y = 0; y < selected.length; y++) {
-                        if (selected[y]._server_id == FileSystem._objects[$scope.fs_path[1]._server_id]._server_id) {
-                          found = true;
-                          break;
-                        }
+            let src_full_path = spinalFileSystem.FE_fspath_drag.concat(selected);
+            let target_full_path = $scope.fs_path.concat(target);
 
-                      }
-                    }
-                    if (found == false)
-                      continue;
-                    return false;
-                  }
+            for (var idx = 0; idx < src_full_path.length; idx++) {
+              let src_dir = src_full_path[idx];
+              let dir_found = false;
+              for (var y = 0; y < target_full_path.length; y++) {
+                let tar_dir = target_full_path[y];
+                if (tar_dir._server_id == src_dir._server_id) {
+                  dir_found = true;
+                  break;
                 }
               }
-
-            }
-          }
-          for (i = 0; i < selected.length; i++) {
-            let s = FileSystem._objects[selected[i]._server_id];
-            if (s)
-              curr_dir.remove_ref(s);
-          }
-          if (m_tar) {
-            m_tar.load((m) => {
-              for (var i = 0; i < selected.length; i++) {
-                let s = FileSystem._objects[selected[i]._server_id];
-                if (s)
-                  m.push(s);
+              if (!dir_found) {
+                break;
               }
-
-            });
+            }
+            if (src_full_path.length <= idx) {
+              return false;
+            }
+            for (i = 0; i < selected.length; i++) {
+              let s = FileSystem._objects[selected[i]._server_id];
+              if (s)
+                curr_dir.remove_ref(s);
+            }
+            if (m_tar) {
+              m_tar.load((m) => {
+                for (var i = 0; i < selected.length; i++) {
+                  let s = FileSystem._objects[selected[i]._server_id];
+                  if (s)
+                    m.push(s);
+                }
+              });
+            }
           }
           return false;
         }
@@ -374,43 +365,32 @@ angular.module('app.FileExplorer', ['jsTree.directive', 'app.services', 'app.spi
 
           let m_tar = $scope.curr_dir;
           if (m_tar) {
-            let i;
-            for (i = 0; i < $scope.fs_path.length; i++) {
-              let path = FileSystem._objects[$scope.fs_path[i]._server_id];
 
-              if (path) {
-                if (path instanceof File) {
-                  if (path._ptr.data.value == curr_dir._server_id) {
-                    return false;
-                  }
-                } else if (path instanceof Directory) {
-                  if (path._server_id == curr_dir._server_id) {
-                    let found = false;
-                    if ($scope.fs_path.length >= 1) {
-                      for (var y = 0; y < selected.length; y++) {
-                        if (selected[y]._server_id == FileSystem._objects[$scope.fs_path[1]._server_id]._server_id) {
-                          found = true;
-                          break;
-                        }
+            let src_full_path = spinalFileSystem.FE_fspath_drag.concat(selected);
+            let target_full_path = $scope.fs_path;
 
-                      }
-                    }
-                    if (found == false)
-                      continue;
-                    return false;
-                  }
+            for (var idx = 0; idx < src_full_path.length; idx++) {
+              let src_dir = src_full_path[idx];
+              let dir_found = false;
+              for (var y = 0; y < target_full_path.length; y++) {
+                let tar_dir = target_full_path[y];
+                if (tar_dir._server_id == src_dir._server_id) {
+                  dir_found = true;
+                  break;
                 }
               }
-
+              if (!dir_found) {
+                break;
+              }
             }
-          }
-
-          for (let i = 0; i < selected.length; i++) {
-            let s = FileSystem._objects[selected[i]._server_id];
-            if (s)
-              curr_dir.remove_ref(s);
-          }
-          if (m_tar) {
+            if (src_full_path.length <= idx) {
+              return false;
+            }
+            for (let i = 0; i < selected.length; i++) {
+              let s = FileSystem._objects[selected[i]._server_id];
+              if (s)
+                curr_dir.remove_ref(s);
+            }
             for (var i = 0; i < selected.length; i++) {
               let s = FileSystem._objects[selected[i]._server_id];
               if (s)

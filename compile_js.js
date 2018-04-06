@@ -58,7 +58,6 @@ function bundle() {
   console.log("bundle");
   if (program.output) {
     outputPath = path.resolve(program.output);
-    console.log(outputPath);
     output = fs.createWriteStream(outputPath);
   }
   b.transform("babelify", {
@@ -79,7 +78,12 @@ function bundle() {
   // } else {
   // b.bundle().pipe(output);
   // }
+  if (program.watcher) {
+    output.on('finish', function () {
+      console.log("compile DONE in " + outputPath);
+    });
 
+  }
 }
 
 // if (program.watcher) {
