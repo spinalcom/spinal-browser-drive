@@ -75,6 +75,15 @@ window.angular.module("app.spinalcom").factory("ngSpinalCore", [
         target_username
       );
     };
+    service.load_root = function() {
+      var deferred = $q.defer();
+
+      service.conn.load_or_make_dir("/", (model, err) => {
+        if (err) deferred.reject();
+        else deferred.resolve(model);
+      });
+      return deferred.promise;
+    };
     return service;
   }
 ]);
