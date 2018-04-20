@@ -1,4 +1,4 @@
-angular.module("app.route").config([
+window.angular.module("app.route").config([
   "$routeProvider",
   function($routeProvider) {
     $routeProvider
