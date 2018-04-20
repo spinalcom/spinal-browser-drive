@@ -1,10 +1,8 @@
 {
   "name": "spinal-browser-drive",
-  "version": "v1.0.9",
+  "version": "v1.0.10",
   "homepage": "https://github.com/spinalcom/spinal-browser-drive",
-  "authors": [
-    "laurent <htd.laurent@gmail.com>"
-  ],
+  "authors": ["laurent <htd.laurent@gmail.com>"],
   "bin": {
     "create_drive_env": "create_drive_env.js"
   },
@@ -12,13 +10,7 @@
   "main": "index.html",
   "license": "SpinalCore",
   "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"],
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -31,10 +23,14 @@
     "bower": "^1.8.2",
     "commander": "^2.13.0",
     "exorcist": "^1.0.0",
-    "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git#3.0.0",
-    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git#2.3.0",
-    "spinal-browser-admin": "git+https://github.com/spinalcom/spinal-browser-admin.git",
-    "spinal-lib-drive-env": "git+https://github.com/spinalcom/spinal-lib-drive-env.git"
+    "spinal-core-hub":
+      "git+https://github.com/spinalcom/spinal-core-hub.git#3.0.0",
+    "spinal-core-connectorjs":
+      "git+https://github.com/spinalcom/spinal-core-connectorjs.git#2.3.0",
+    "spinal-browser-admin":
+      "git+https://github.com/spinalcom/spinal-browser-admin.git",
+    "spinal-lib-drive-env":
+      "git+https://github.com/spinalcom/spinal-lib-drive-env.git"
   },
   "scripts": {
     "bowerinstall": "bower install --allow-root",
