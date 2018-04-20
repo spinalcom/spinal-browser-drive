@@ -44,6 +44,8 @@
   },
   "devDependencies": {
     "csso": "^3.4.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "node-notifier": "^5.2.1",
     "watchify": "^3.11.0"
   }
 }

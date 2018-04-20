@@ -99,4 +99,4 @@ run:
 clean:
 	rm -rf www bower_components
 
-.PHONY: all init run compile lib link css create_outdir doc 
+.PHONY: all init run compile lib link css create_outdir doc watch
