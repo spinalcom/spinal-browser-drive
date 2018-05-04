@@ -20,7 +20,7 @@ angular
       };
 
       //tooltip ~~
-      facto.tooltip = window.d3
+      facto.tooltip = d3
         .select("body")
         .append("div")
         .attr("class", "inspect-tooltip")
