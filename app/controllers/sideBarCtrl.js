@@ -1,4 +1,7 @@
-window.angular
+var angular = require("angular");
+var $ = require("jquery");
+
+angular
   .module("app.sidebar", ["jsTree.directive", "app.services", "app.spinalcom"])
   .controller("sideBarCtrl", [
     "$scope",
@@ -135,7 +138,7 @@ window.angular
         spinalFileSystem.onChangeNodeTree($scope.all_dir, data);
       };
       $scope.onbdlclick = event => {
-        var node = window.$(event.target).closest("li");
+        var node = $(event.target).closest("li");
         spinalFileSystem.onbdlclick($scope.all_dir, node[0].id);
       };
 
