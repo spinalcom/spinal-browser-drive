@@ -49,6 +49,29 @@ angular
               );
           });
       };
+      $scope.GoToAdmin = function(event) {
+        $mdSidenav("right")
+          .close()
+          .then(function() {
+            $mdDialog
+              .show(
+                $mdDialog
+                  .confirm()
+                  .ariaLabel("confirm menu")
+                  .ok("Confim")
+                  .cancel("Cancel")
+                  .title("Do you want to go to admin ?")
+                  .targetEvent(event)
+              )
+              .then(
+                function() {
+                  window.location = "/html/admin/";
+                },
+                function() {}
+              );
+          });
+      };
+
       $scope.modifyPassword = function(event) {
         $mdSidenav("right")
           .close()
@@ -83,6 +106,10 @@ angular
           });
       };
       $scope.menuList = [
+        {
+          name: "Go to Admin",
+          action: $scope.GoToAdmin
+        },
         {
           name: "Change Password",
           action: $scope.modifyPassword
