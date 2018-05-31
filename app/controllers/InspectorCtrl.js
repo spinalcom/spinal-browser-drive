@@ -411,6 +411,12 @@ angular.module("app.FileExplorer").controller("InspectorCtrl", [
 
       let m = window.FileSystem._objects[d.data._server_id];
       if (m) {
+        let apps = window.spinalDrive_Env.get_applications("Inspector", d);
+        for (var i = 0; i < apps.length; i++) {
+          let app = apps[i];
+          if (app.action_mouseover && app.action_mouseover instanceof Function)
+            app.action_mouseover(d, m, add_table_row, table);
+        }
         if (m instanceof window.Lst) {
           add_table_row(table, "Length", m.length);
         } else if (m instanceof window.Str) {
@@ -431,10 +437,10 @@ angular.module("app.FileExplorer").controller("InspectorCtrl", [
           add_table_row(table, "Value", m.get());
         } else if (m instanceof window.Ptr) {
           add_table_row(table, "Target Ptr", m.data.value);
-          m.load(ptr => {
-            if (ptr)
-              add_table_row(table, "Target Contructor", ptr.constructor.name);
-          });
+          // m.load(ptr => {
+          //   if (ptr)
+          //     add_table_row(table, "Target Contructor", ptr.constructor.name);
+          // });
         } else if (m instanceof window.TypedArray) {
           add_table_row(table, "Data", m.get());
         }
