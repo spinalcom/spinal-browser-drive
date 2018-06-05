@@ -69,7 +69,12 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
     };
 
     this.ptrRdy_defer = (ptr, promise, isnew = false) => {
-      if (!ptr.data.value || window.FileSystem._tmp_objects[ptr.data.value]) {
+      if (!ptr.data) console.log("ERROR HERE in ptrRdy_defer");
+      if (
+        // !ptr.data ||
+        !ptr.data.value ||
+        window.FileSystem._tmp_objects[ptr.data.value]
+      ) {
         setTimeout(() => {
           this.ptrRdy_defer(ptr, promise, true);
         }, 200);
@@ -98,17 +103,21 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
 
     this.load_dir = f => {
       let deferred = $q.defer();
-      this.waitPtrRdyAndLoad(f._ptr).then(res => {
-        let m = res.model;
-        let firstTime = res.firstTime;
-        if (m) {
-          if (firstTime)
-            m.bind(() => {
-              this.emit_subcriber("SPINAL_FS_ONCHANGE");
-            }, false);
-          deferred.resolve(m);
-        } else deferred.reject();
-      });
+      this.waitPtrRdyAndLoad(f._ptr)
+        .then(res => {
+          let m = res.model;
+          let firstTime = res.firstTime;
+          if (m) {
+            if (firstTime)
+              m.bind(() => {
+                this.emit_subcriber("SPINAL_FS_ONCHANGE");
+              }, false);
+            deferred.resolve(m);
+          } else deferred.reject();
+        })
+        .catch(err => {
+          console.error(err);
+        });
       return deferred.promise;
     };
 
