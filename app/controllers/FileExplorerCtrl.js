@@ -129,6 +129,7 @@ angular
                 $scope.directory[y].owner = res[i].owner;
                 $scope.directory[y].last_modified = res[i].last_modified;
                 $scope.directory[y].version = res[i].version;
+                $scope.directory[y].version = res[i].version;
                 if (res[i].upload_pecent)
                   $scope.directory[y].upload_pecent = res[i].upload_pecent;
                 else $scope.directory[y].upload_pecent = res[i].upload_pecent;
