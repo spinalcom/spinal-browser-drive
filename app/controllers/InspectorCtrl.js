@@ -198,7 +198,8 @@ angular.module("app.FileExplorer").controller("InspectorCtrl", [
         centerNode(d);
       };
       update = source => {
-        let _tree = tree.size([viewerHeight, viewerWidth]);
+        // let _tree = tree.size([viewerHeight, viewerWidth]);
+        let _tree = tree.nodeSize([18, 300]);
         let treemap = _tree(rootnode);
         let nodes = treemap.descendants();
         let links = treemap.descendants().slice(1);
