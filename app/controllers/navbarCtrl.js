@@ -36,7 +36,7 @@ angular
                 $mdDialog
                   .confirm()
                   .ariaLabel("confirm menu")
-                  .ok("Confim")
+                  .ok("Confirm")
                   .cancel("Cancel")
                   .title("Do you want to log out ?")
                   .targetEvent(event)
@@ -58,7 +58,7 @@ angular
                 $mdDialog
                   .confirm()
                   .ariaLabel("confirm menu")
-                  .ok("Confim")
+                  .ok("Confirm")
                   .cancel("Cancel")
                   .title("Do you want to go to admin ?")
                   .targetEvent(event)
@@ -79,7 +79,7 @@ angular
             let my_prompt = $mdDialog
               .confirm()
               .ariaLabel("confirm menu")
-              .ok("Confim")
+              .ok("Confirm")
               .cancel("Cancel")
               .title("Do you want to modify your password ?")
               .targetEvent(event);
