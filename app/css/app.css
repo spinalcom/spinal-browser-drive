@@ -305,3 +305,7 @@ md-toast.md-error-toast-theme div.md-toast-content {
   color: white !important;
   background-color: red !important;
 }
+
+.breadcrumb .breadcrumb-item .md-avatar-icon > svg{
+  margin-bottom: -5px;
+}

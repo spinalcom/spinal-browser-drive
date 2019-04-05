@@ -12,7 +12,12 @@
         <li class="breadcrumb-item"
             ng-repeat="dir in fs_path"
             ng-class="{active : $index === (fs_path.length - 1)}"
-            ng-click="fsmoveToParent(dir)">{{dir.name}}</li>
+            ng-click="fsmoveToParent(dir)">
+            
+            <ng-md-icon ng-if="isBreadcrumbIconShown(dir)" icon="folder_shared"
+            style="fill: rgb(255, 255, 255);height: 20px; margin: 10px 0 0 0;"
+            class="md-avatar-icon"></ng-md-icon>
+            {{dir.name}}</li>
       </ol>
     </div>
     <div style="float:left;height:20px;padding-right: 0px;"

@@ -35,7 +35,7 @@ watch :
 	@node bin/watch.js
 
 css: create_outdir
-	cat $(CSS) | csso -o $(CSSOUT) --map file
+	cat $(CSS) | node_modules/.bin/csso -o $(CSSOUT) 
 	cp node_modules/jstree/dist/themes/default-dark/32px.png node_modules/jstree/dist/themes/default-dark/40px.png node_modules/jstree/dist/themes/default-dark/throbber.gif $(OUTDIR)/css
 	cp node_modules/font-awesome/fonts/* $(OUTDIR)/fonts -r
 

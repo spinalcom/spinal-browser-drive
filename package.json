@@ -2,7 +2,9 @@
   "name": "spinal-browser-drive",
   "version": "v1.1.8",
   "homepage": "https://github.com/spinalcom/spinal-browser-drive",
-  "authors": ["laurent <htd.laurent@gmail.com>"],
+  "authors": [
+    "laurent <htd.laurent@gmail.com>"
+  ],
   "bin": {
     "create_drive_env": "create_drive_env.js"
   },
@@ -10,7 +12,13 @@
   "main": "index.html",
   "license": "SpinalCore",
   "private": true,
-  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -27,9 +35,10 @@
     "spinal-lib-drive-env": "git+https://github.com/spinalcom/spinal-lib-drive-env.git"
   },
   "scripts": {
-    "postinstall": "npm run spinal-register",
     "spinal-register": "spinal-register --browser 'spinal-browser-'",
-    "compile": "node compile_js.js"
+    "compile": "node compile_js.js",
+    "link-icons": "node linkicon.js",
+    "postinstall": "npm run link-icons"
   },
   "devDependencies": {
     "angular": "^1.6.6",
@@ -56,7 +65,9 @@
     "watchify": "^3.11.0"
   },
   "browserify": {
-    "transform": ["babelify"]
+    "transform": [
+      "babelify"
+    ]
   },
   "resolutions": {
     "jquery": "^3.2.1",

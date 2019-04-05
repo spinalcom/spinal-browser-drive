@@ -108,12 +108,15 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
           let m = res.model;
           let firstTime = res.firstTime;
           if (m) {
-            if (firstTime)
+            if (firstTime) {
               m.bind(() => {
                 this.emit_subcriber("SPINAL_FS_ONCHANGE");
               }, false);
+            }
             deferred.resolve(m);
-          } else deferred.reject();
+          } else {
+            deferred.reject();
+          }
         })
         .catch(err => {
           console.error(err);
@@ -133,7 +136,8 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
       let deferred = $q.defer();
       setTimeout(() => {
         deferred.resolve(
-          this.getFolderJson_rec(all_dir, dir, arr, name, parent, opened)
+          this.getFolderJson_rec(all_dir, dir, arr, name, parent,
+            opened)
         );
       }, 100);
       return deferred.promise;
@@ -178,7 +182,8 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
 
       for (var key in all_dir) {
         let n = all_dir[key];
-        if (n.model == dir._server_id && n.text == name && n.parent == parent) {
+        if (n.model == dir._server_id && n.text == name && n.parent ==
+          parent) {
           current = n;
           break;
         }
@@ -222,9 +227,11 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
       };
       for (var i = 0; i < dir.length; i++) {
         let f = dir[i];
-        if (f._info.model_type.get() == "Directory") {
+        if (f._info.model_type.get() == "Directory" ||
+          f._info.model_type.get() == "Synchronized Directory") {
           prom_arr.push(
-            this.load_dir(f).then(create_callback(all_dir, arr, f, current))
+            this.load_dir(f).then(create_callback(all_dir, arr, f,
+              current))
           );
         }
       }
@@ -293,8 +300,9 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
 
     this.get_node_by_id = id => {
       for (var key in this.folderExplorer_dir) {
-        if (this.folderExplorer_dir[key].id == id)
+        if (this.folderExplorer_dir[key].id == id) {
           return this.folderExplorer_dir[key];
+        }
       }
       return 0;
     };
@@ -392,7 +400,7 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
               item.upload_pecent = 100;
               item.error = true;
               break;
-            // no default
+              // no default
           }
         }
       }
@@ -411,7 +419,8 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
           model_type: model._info.model_type.get(),
           _server_id: model._server_id,
           owner: scope.user.username,
-          visa : model._info.visaValidation ? model._info.visaValidation.isValid.get() : -1
+          visa: model._info.visaValidation ? model._info.visaValidation
+            .isValid.get() : -1
         };
         window.SpinalDrive_App._getOrCreate_log(model).then(
           logs => {
@@ -480,8 +489,9 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
 
     this.fileSelected = model_id => {
       this.lastfileSelected = model_id;
-      if (this.lastinspector)
+      if (this.lastinspector) {
         this.lastinspector.set_model(this.lastfileSelected);
+      }
     };
     this.setlastInspector = scope => {
       this.lastinspector = scope;

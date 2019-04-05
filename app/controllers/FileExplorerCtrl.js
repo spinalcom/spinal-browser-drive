@@ -1,33 +1,19 @@
-var angular = require("angular");
-var $ = require("jquery");
+var angular = require('angular');
+var $ = require('jquery');
 
 angular
-  .module("app.FileExplorer", [
-    "jsTree.directive",
-    "app.services",
-    "app.spinalcom",
-    "ngMaterial",
-    "md.data.table"
-  ])
-  .controller("FileExplorerCtrl", [
-    "$scope",
-    "$rootScope",
-    "spinalFileSystem",
-    "$mdDialog",
-    "authService",
-    "$compile",
-    "$injector",
-    "layout_uid",
+  .module(
+    'app.FileExplorer',
+    [
+      'jsTree.directive', 'app.services', 'app.spinalcom', 'ngMaterial',
+      'md.data.table'
+    ])
+  .controller('FileExplorerCtrl', [
+    '$scope', '$rootScope', 'spinalFileSystem', '$mdDialog', 'authService',
+    '$compile', '$injector', 'layout_uid',
     function(
-      $scope,
-      $rootScope,
-      spinalFileSystem,
-      $mdDialog,
-      authService,
-      $compile,
-      $injector,
-      layout_uid
-    ) {
+      $scope, $rootScope, spinalFileSystem, $mdDialog, authService,
+      $compile, $injector, layout_uid) {
       $scope.injector = $injector;
       $scope.uid = layout_uid.get();
       $scope.curr_dir = 0;
@@ -58,9 +44,18 @@ angular
         }
       };
       $scope.getIcon = type => {
-        return window.spinalDrive_Env.context_file_exp_app_icon[type]
-          ? window.spinalDrive_Env.context_file_exp_app_icon[type]
-          : window.spinalDrive_Env.context_file_exp_app_icon.default;
+        return window.spinalDrive_Env.context_file_exp_app_icon[type] ?
+          window.spinalDrive_Env.context_file_exp_app_icon[type] :
+          window.spinalDrive_Env.context_file_exp_app_icon.default;
+      };
+      $scope.isBreadcrumbIconShown = (dir) => {
+        if (dir.name === 'home') return false;
+        const model = window.FileSystem._objects[dir._server_id];
+        if (model._info && model._info.model_type && model._info.model_type
+          .get() === "Synchronized Directory") {
+          return true;
+        }
+        return false;
       };
 
       $scope.selectFile = (event, file) => {
@@ -75,7 +70,8 @@ angular
         file.selected = !file.selected;
       };
       $scope.ondblclick = file => {
-        if (file.model_type == "Directory") {
+        if (file.model_type == 'Directory' || file.model_type ==
+          'Synchronized Directory') {
           let f = window.FileSystem._objects[file._server_id];
           if (f) {
             $scope.directory = [];
@@ -93,7 +89,7 @@ angular
       };
 
       $scope.getStyle = file => {
-        return `fill: ${file.error ? "#ff5722" : "white"}; height: 24px;`;
+        return `fill: ${file.error ? '#ff5722' : 'white'}; height: 24px;`;
       };
       $scope.getTime = model => {
         return new Date(model.get()).toLocaleString();
@@ -117,7 +113,9 @@ angular
             if (find_idx_in_dir(res, i) == -1) {
               $scope.directory.splice(i, 1);
               i = 0;
-            } else i++;
+            } else {
+              i++;
+            }
           }
           let found = false;
           for (i = 0; i < res.length; i++) {
@@ -129,13 +127,16 @@ angular
                 $scope.directory[y].owner = res[i].owner;
                 $scope.directory[y].last_modified = res[i].last_modified;
                 $scope.directory[y].version = res[i].version;
-                $scope.directory[y].version = res[i].version;
-                if (res[i].upload_pecent)
+                if (res[i].upload_pecent) {
                   $scope.directory[y].upload_pecent = res[i].upload_pecent;
-                else $scope.directory[y].upload_pecent = res[i].upload_pecent;
-                if (res[i].error) $scope.directory[y].error = res[i].error;
-                else if ($scope.directory[y].error)
+                } else {
+                  $scope.directory[y].upload_pecent = res[i].upload_pecent;
+                }
+                if (res[i].error) {
+                  $scope.directory[y].error = res[i].error;
+                } else if ($scope.directory[y].error) {
                   $scope.directory[y].error = false;
+                }
                 found = true;
                 break;
               }
@@ -147,10 +148,8 @@ angular
         });
       }
       let listener_destructor = spinalFileSystem.subcribe(
-        "SPINAL_FS_ONCHANGE",
-        handleDirectoryFiles
-      );
-      $scope.$on("$destroy", listener_destructor);
+        'SPINAL_FS_ONCHANGE', handleDirectoryFiles);
+      $scope.$on('$destroy', listener_destructor);
 
       $scope.enterTarget = 0;
       $scope.getNbSelectedIcon = type => {
@@ -162,9 +161,9 @@ angular
         if (nb_selected == 1) {
           return $scope.getIcon(type);
         } else if (nb_selected <= 9) {
-          return "filter_" + nb_selected;
+          return 'filter_' + nb_selected;
         }
-        return "filter_9_plus";
+        return 'filter_9_plus';
       };
 
       $scope.dragCfg = {
@@ -177,16 +176,14 @@ angular
           obj.selected = true;
           let clone = $(
             '<div id="drag-extra" class="fs-drag-item"><ng-md-icon icon="' +
-              $scope.getNbSelectedIcon(obj.model_type) +
-              '" style="fill: white;height: 24px;" class="md-avatar-icon"></ng-md-icon>' +
-              '<div style="float: left;margin-left: 20px;width: -webkit-fill-available;overflow: hidden;text-overflow: ellipsis;">' +
-              '<span style="white-space: nowrap;">' +
-              obj.name +
-              "</span></div></div>"
-          );
+            $scope.getNbSelectedIcon(obj.model_type) +
+            '" style="fill: white;height: 24px;" class="md-avatar-icon"></ng-md-icon>' +
+            '<div style="float: left;margin-left: 20px;width: -webkit-fill-available;overflow: hidden;text-overflow: ellipsis;">' +
+            '<span style="white-space: nowrap;">' + obj.name +
+            '</span></div></div>');
           $compile(clone[0])($rootScope);
-          clone.appendTo("body");
-          event.originalEvent.dataTransfer.setData("text", obj._server_id);
+          clone.appendTo('body');
+          event.originalEvent.dataTransfer.setData('text', obj._server_id);
           event.originalEvent.dataTransfer.setDragImage(clone[0], 0, 0);
           spinalFileSystem.FE_selected_drag = [];
           for (let i = 0; i < $scope.directory.length; i++) {
@@ -204,7 +201,7 @@ angular
           return true;
         },
         dragend: () => {
-          $("#drag-extra").remove();
+          $('#drag-extra').remove();
           for (let i = 0; i < $scope.directory.length; i++) {
             $scope.directory[i].selectdrop = false;
             $scope.directory[i].over = false;
@@ -233,7 +230,7 @@ angular
           event.preventDefault();
           event.stopPropagation(); // Stops some browsers from redirecting.
           if (obj._server_id == $scope.enterTarget._server_id) return false;
-          if (obj.selected == true || obj.model_type != "Directory") {
+          if (obj.selected == true || obj.model_type != 'Directory') {
             $scope.enterTarget = 0;
           } else {
             $scope.enterTarget = obj;
@@ -242,8 +239,8 @@ angular
             $scope.directory[i].over = false;
           }
           if ($scope.enterTarget) {
-            event.originalEvent.dataTransfer.dropEffect = "move";
-            event.originalEvent.dataTransfer.effectAllowed = "move";
+            event.originalEvent.dataTransfer.dropEffect = 'move';
+            event.originalEvent.dataTransfer.effectAllowed = 'move';
             obj.over = true;
           }
           $scope.dropOnFolder = false;
@@ -275,12 +272,14 @@ angular
               break;
             }
           }
-          if (!target || target.model_type != "Directory") return false;
+          if (!target || target.model_type != 'Directory' || target.model_type !=
+            'Synchronized Directory') return false;
           let files = event.target.files;
-          if (!files || files.length === 0)
-            files = event.dataTransfer
-              ? event.dataTransfer.files
-              : event.originalEvent.dataTransfer.files;
+          if (!files || files.length === 0) {
+            files = event.dataTransfer ?
+              event.dataTransfer.files :
+              event.originalEvent.dataTransfer.files;
+          }
           if (files.length > 0) {
             // dnd files
             let m_tar = window.FileSystem._objects[target._server_id];
@@ -292,13 +291,13 @@ angular
 
             return false;
           }
-          if (!target || target.model_type != "Directory") return false;
+          if (!target || target.model_type != 'Directory' || target.model_type !=
+            'Synchronized Directory') return false;
           let selected = spinalFileSystem.FE_selected_drag;
           let m_tar = window.FileSystem._objects[target._server_id];
           if (m_tar) {
-            let src_full_path = spinalFileSystem.FE_fspath_drag.concat(
-              selected
-            );
+            let src_full_path =
+              spinalFileSystem.FE_fspath_drag.concat(selected);
             let target_full_path = $scope.fs_path.concat(target);
 
             for (var idx = 0; idx < src_full_path.length; idx++) {
@@ -338,7 +337,7 @@ angular
         if (files.length > 0) {
           for (var i = 0; i < files.length; i++) {
             let file = files[i];
-            let filePath = new window.Path(file);
+            let filePath = new window.spinalCore._def["Path"](file);
             $scope.get_unused_name(file.name, directory_target);
             directory_target.add_file(file.name, filePath);
           }
@@ -352,10 +351,12 @@ angular
         if (found == true) {
           if (!idx) {
             idx = 0;
-            name += "(" + idx + ")";
-          } else ++idx;
+            name += '(' + idx + ')';
+          } else {
+            ++idx;
+          }
           let reg = /\(\d+\)$/gm;
-          name = name.replace(reg, "(" + idx + ")");
+          name = name.replace(reg, '(' + idx + ')');
           return $scope.get_unused_name(name, directory_target, idx);
         }
         return name;
@@ -366,10 +367,11 @@ angular
           event.stopPropagation(); // Stops some browsers from redirecting.
           event.preventDefault();
           var files = event.target.files;
-          if (!files || files.length === 0)
-            files = event.dataTransfer
-              ? event.dataTransfer.files
-              : event.originalEvent.dataTransfer.files;
+          if (!files || files.length === 0) {
+            files = event.dataTransfer ?
+              event.dataTransfer.files :
+              event.originalEvent.dataTransfer.files;
+          }
           if (files.length > 0) {
             // dnd files
             let m_tar = $scope.curr_dir;
@@ -384,9 +386,8 @@ angular
 
           let m_tar = $scope.curr_dir;
           if (m_tar) {
-            let src_full_path = spinalFileSystem.FE_fspath_drag.concat(
-              selected
-            );
+            let src_full_path =
+              spinalFileSystem.FE_fspath_drag.concat(selected);
             let target_full_path = $scope.fs_path;
 
             for (var idx = 0; idx < src_full_path.length; idx++) {
@@ -456,18 +457,16 @@ angular
       $scope.context_menu_file = [];
       $scope.onrightclick = index => {
         setTimeout(() => {
-          $("#fe-menu-" + $scope.uid + "-" + index).click();
+          $('#fe-menu-' + $scope.uid + '-' + index).click();
         });
       };
 
       $scope.open_context_menu_file = ($mdMenu, ev, file) => {
         $scope.context_menu_file = window.spinalDrive_Env.get_applications(
-          "FileExplorer",
-          {
+          'FileExplorer', {
             file: file,
             scope: $scope
-          }
-        );
+          });
         $mdMenu.open(ev);
       };
       $scope.context_menu_file_action = ($event, item, file) => {
@@ -482,13 +481,12 @@ angular
       $scope.context_menu_curr_dir = [];
 
       $scope.open_context_menu_curr_dir = ($mdMenu, ev) => {
-        $scope.context_menu_curr_dir = window.spinalDrive_Env.get_applications(
-          "FileExplorerCurrDir",
-          {
-            scope: $scope,
-            model: $scope.curr_dir
-          }
-        );
+        $scope.context_menu_curr_dir =
+          window.spinalDrive_Env.get_applications(
+            'FileExplorerCurrDir', {
+              scope: $scope,
+              model: $scope.curr_dir
+            });
         $mdMenu.open(ev);
       };
       $scope.context_menu_curr_dir_action = ($event, item) => {
