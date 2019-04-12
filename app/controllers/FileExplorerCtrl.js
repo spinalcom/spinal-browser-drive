@@ -49,7 +49,7 @@ angular
           window.spinalDrive_Env.context_file_exp_app_icon.default;
       };
       $scope.isBreadcrumbIconShown = (dir) => {
-        if (dir.name === 'home') return false;
+        if (dir.name === 'home' || !dir._server_id) return false;
         const model = window.FileSystem._objects[dir._server_id];
         if (model._info && model._info.model_type && model._info.model_type
           .get() === "Synchronized Directory") {
