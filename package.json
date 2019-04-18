@@ -1,6 +1,6 @@
 {
   "name": "spinal-browser-drive",
-  "version": "v1.1.10",
+  "version": "v1.1.11",
   "homepage": "https://github.com/spinalcom/spinal-browser-drive",
   "authors": [
     "laurent <htd.laurent@gmail.com>"
@@ -38,7 +38,7 @@
     "spinal-register": "spinal-register --browser 'spinal-browser-'",
     "compile": "node compile_js.js",
     "link-icons": "node linkicon.js",
-    "postinstall": "npm run link-icons"
+    "postinstall": "npm run link-icons && npm run spinal-register"
   },
   "devDependencies": {
     "angular": "^1.6.6",
