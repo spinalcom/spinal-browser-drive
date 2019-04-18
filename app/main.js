@@ -12,6 +12,7 @@ require("jquery-ui");
 require("d3");
 require("spectrum-colorpicker");
 require("svg-morpheus/compile/minified/svg-morpheus.js");
+require('angular-moment');
 
 require("./app.js");
 require("./app.config.js");

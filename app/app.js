@@ -3,7 +3,7 @@ var angular = require("angular");
 angular.module("app.route", ["ngRoute"]);
 angular.module("app.services", []);
 angular.module("app.directives", []);
-angular.module("app.controllers", []);
+angular.module("app.controllers", ['angularMoment']);
 angular.module("app.spinalcom", ["settings", "ngMaterial"]);
 angular.module("app.spinal-panel", []);
 
