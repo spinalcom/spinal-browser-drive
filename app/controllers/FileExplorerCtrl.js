@@ -44,9 +44,13 @@ angular
         }
       };
       $scope.getIcon = type => {
-        return window.spinalDrive_Env.context_file_exp_app_icon[type] ?
-          window.spinalDrive_Env.context_file_exp_app_icon[type] :
-          window.spinalDrive_Env.context_file_exp_app_icon.default;
+        try {
+          return window.spinalDrive_Env.context_file_exp_app_icon[type] ?
+            window.spinalDrive_Env.context_file_exp_app_icon[type] :
+            window.spinalDrive_Env.context_file_exp_app_icon.default;
+        } catch (e) {
+          return 'insert_drive_file';
+        }
       };
       $scope.isBreadcrumbIconShown = (dir) => {
         if (dir.name === 'home' || !dir._server_id) return false;
@@ -92,7 +96,11 @@ angular
         return `fill: ${file.error ? '#ff5722' : 'white'}; height: 24px;`;
       };
       $scope.getTime = model => {
-        return new Date(model.get()).toLocaleString();
+        if (model) {
+          return new Date(model.get()).toLocaleString();
+        } else {
+          return "-";
+        }
       };
 
       $scope.change_curr_dir = (dir, path) => {

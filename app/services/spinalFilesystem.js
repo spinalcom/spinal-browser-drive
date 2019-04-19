@@ -422,27 +422,31 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
           visa: model._info.visaValidation ? model._info.visaValidation
             .isValid.get() : -1
         };
-        window.SpinalDrive_App._getOrCreate_log(model).then(
-          logs => {
-            if (logs.length === 0) {
-              let tab = {
-                date: Date.now(),
-                name: scope.user.username,
-                action: "1st visit"
-              };
-              window.SpinalDrive_App._pushLog(logs, tab);
+        try {
+          window.SpinalDrive_App._getOrCreate_log(model).then(
+            logs => {
+              if (logs.length === 0) {
+                let tab = {
+                  date: Date.now(),
+                  name: scope.user.username,
+                  action: "1st visit"
+                };
+                window.SpinalDrive_App._pushLog(logs, tab);
+              }
+
+              item.created_at = logs[0].date;
+              item.log = logs;
+
+              this.handle_FE_progressBar(model, item);
+              deferred.resolve(item);
+            },
+            () => {
+              wait_tmp_serverid_loop(scope, deferred, model);
             }
-
-            item.created_at = logs[0].date;
-            item.log = logs;
-
-            this.handle_FE_progressBar(model, item);
-            deferred.resolve(item);
-          },
-          () => {
-            wait_tmp_serverid_loop(scope, deferred, model);
-          }
-        );
+          );
+        } catch (e) {
+          deferred.resolve(item);
+        }
       }
     };
     let create_file_explorer_obj = (scope, model) => {
