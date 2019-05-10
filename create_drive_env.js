@@ -184,7 +184,7 @@ function compile_lib(config) {
   externalLibs.forEach(element => {
     if (typeof element === "string") {
       b.external(element);
-    } else b.external(element.name);
+    } else {b.external(element.name);}
   });
 
   bundle();
@@ -200,9 +200,9 @@ function bundle() {
       global: true,
       presets: ["es2015"]
     })
-    .transform("windowify", {
-      global: true
-    })
+    // .transform("windowify", {
+    //   global: true
+    // })
     .transform("uglifyify", {
       global: true,
       mangle: {
