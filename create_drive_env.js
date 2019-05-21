@@ -200,9 +200,6 @@ function bundle() {
       global: true,
       presets: ["es2015"]
     })
-    // .transform("windowify", {
-    //   global: true
-    // })
     .transform("uglifyify", {
       global: true,
       mangle: {
