@@ -12,16 +12,17 @@ var b = browserify({
 externalLibs.forEach(element => {
   if (typeof element === "string") {
     b.external(element);
-  } else b.external(element.name);
+  } else {
+    b.external(element.name);
+  }
 });
 
-b
-  .transform("uglifyify", {
-    global: true,
-    mangle: {
-      keep_fnames: true
-    }
-  })
+b.transform("uglifyify", {
+  global: true,
+  mangle: {
+    keep_fnames: true
+  }
+})
   .bundle()
   .pipe(exorcist("www/js/app.compile.min.js.map"))
   .pipe(fs.createWriteStream("www/js/app.compile.min.js"));
@@ -34,13 +35,20 @@ var bLibs = browserify({
 externalLibs.forEach(element => {
   if (typeof element === "string") {
     bLibs.require(element);
-  } else
+  } else {
     bLibs.require(element.name, {
       expose: element.expose
     });
+  }
 });
 
 bLibs
+  .transform("uglifyify", {
+    global: true,
+    mangle: {
+      keep_fnames: true
+    }
+  })
   .bundle()
   .pipe(exorcist("www/js/lib.compile.min.js.map"))
   .pipe(fs.createWriteStream("www/js/lib.compile.min.js"));
