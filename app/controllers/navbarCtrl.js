@@ -49,27 +49,12 @@ angular
               );
           });
       };
-      $scope.GoToAdmin = function(event) {
+      $scope.GoToAdmin = function() {
+        const win = window.open("/html/admin/", "_blank");
+        win.focus();
         $mdSidenav("right")
           .close()
-          .then(function() {
-            $mdDialog
-              .show(
-                $mdDialog
-                  .confirm()
-                  .ariaLabel("confirm menu")
-                  .ok("Confirm")
-                  .cancel("Cancel")
-                  .title("Do you want to go to admin ?")
-                  .targetEvent(event)
-              )
-              .then(
-                function() {
-                  window.location = "/html/admin/";
-                },
-                function() {}
-              );
-          });
+          .then(function() {});
       };
 
       $scope.modifyPassword = function(event) {
@@ -107,7 +92,7 @@ angular
       };
       $scope.menuList = [
         {
-          name: "Go to Admin",
+          name: "Open Admin",
           action: $scope.GoToAdmin
         },
         {
@@ -180,10 +165,10 @@ angular
 
         {
           id: "drag-inspector",
-          name: "Inspector",
+          name: "DB Inspector",
           cfg: {
             isClosable: true,
-            title: "Inspector",
+            title: "DB Inspector",
             type: "component",
             componentName: "SpinalHome",
             componentState: {
