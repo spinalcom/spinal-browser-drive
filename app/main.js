@@ -32,3 +32,4 @@ require("./controllers/FileExplorerCtrl.js");
 require("./controllers/navbarCtrl.js");
 require("./controllers/InspectorCtrl.js");
 require("./controllers/loginCtrl.js");
+FileSystem.is_cordova = true;
