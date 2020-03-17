@@ -13,11 +13,13 @@
             ng-repeat="dir in fs_path"
             ng-class="{active : $index === (fs_path.length - 1)}"
             ng-click="fsmoveToParent(dir)">
-            
-            <ng-md-icon ng-if="isBreadcrumbIconShown(dir)" icon="folder_shared"
-            style="fill: rgb(255, 255, 255);height: 20px; margin: 10px 0 0 0;"
-            class="md-avatar-icon"></ng-md-icon>
-            {{dir.name}}</li>
+
+          <ng-md-icon ng-if="isBreadcrumbIconShown(dir)"
+                      icon="folder_shared"
+                      style="fill: rgb(255, 255, 255);height: 20px; margin: 10px 0 0 0;"
+                      class="md-avatar-icon"></ng-md-icon>
+          {{dir.name}}
+        </li>
       </ol>
     </div>
     <div style="float:left;height:20px;padding-right: 0px;"
@@ -62,9 +64,9 @@
           <th md-column
               style="padding: 0;">Last Modified</th>
 
-          <th md-column 
-          style="width: 30px;text-align: center">Visa</th>
-            
+          <th md-column
+              style="width: 30px;text-align: center">Visa</th>
+
           <th md-column
               style="width: 45px;"></th>
         </tr>
@@ -79,7 +81,6 @@
             file-obj="file"
             file-list="directory"
             ng-class="{fsfileselected:file.selected,over:file.over,selectdrop:file.selectdrop}"
-      
             drag-events="dragCfg"
             ng-click="selectFile($event,file)"
             ng-dblclick="ondblclick(file)"
@@ -91,24 +92,29 @@
             <ng-md-icon icon="{{getIcon(file.model_type)}}"
                         ng-attr-style="{{getStyle(file)}}"
                         class="md-avatar-icon"></ng-md-icon>
-            <div style="float: left;margin-left: 20px;width: -webkit-fill-available;overflow: hidden;text-overflow: ellipsis;;">
+            <div
+                 style="float: left;margin-left: 20px;width: -webkit-fill-available;overflow: hidden;text-overflow: ellipsis;;">
               <span style="white-space: nowrap;">
-                <md-tooltip md-delay="500">{{file.name}}</md-tooltip>{{file.name}}</span>
+                <md-tooltip md-delay="500">{{file.name}}</md-tooltip>
+                {{file.name}}
+              </span>
             </div>
-            <md-progress-linear ng-if="file.upload_pecent"
+            <md-progress-linear ng-if="file.upload_pecent !== undefined"
                                 style="bottom: 0;right: 0;position: absolute;"
                                 ng-class="{'md-warn': file.error}"
                                 md-mode="determinate"
-                                value="{{file.upload_pecent}}"></md-progress-linear>
+                                value="{{file.upload_pecent}}">
+            </md-progress-linear>
           </td>
           <td md-cell>{{file.model_type}}</td>
           <!-- <td md-cell>{{file.owner}}</td> -->
           <td md-cell>{{getTime(file.created_at)}}</td>
           <td md-cell
-              style="padding: 0;">{{getTime(file.log[file.log.length -1].date)}}</td>
+              style="padding: 0;">{{getTime(file.log[file.log.length -1].date)}}
+          </td>
 
           <td md-cell>{{ file.visa >= 0 ? file.visa + "%" : "-" }}</td>
-          
+
           <td>
             <md-menu>
               <md-button aria-label="+"
