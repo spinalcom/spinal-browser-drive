@@ -105,6 +105,10 @@
                                 md-mode="determinate"
                                 value="{{file.upload_pecent}}">
             </md-progress-linear>
+            <md-progress-linear ng-if="file.upload_pecent === 0"
+            style="bottom: 0;right: 0;position: absolute;"
+            md-mode="indeterminate">
+            </md-progress-linear>
           </td>
           <td md-cell>{{file.model_type}}</td>
           <!-- <td md-cell>{{file.owner}}</td> -->
