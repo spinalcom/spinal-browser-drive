@@ -34,14 +34,17 @@ var ln = path.resolve(module_path + "/icons");
 var browserPath = path.resolve(rootPath + "/.browser_organs");
 var icons = path.resolve(browserPath + "/icons");
 
-mkdirp(browserPath, function(err) {
-  if (err) {console.error(err);}
-  else {
-    if (!fs.existsSync(icons)) {
-      fs.symlinkSync(
-        path.relative(browserPath, ln),
-        icons
-      );
+mkdirp(browserPath).then(
+  function(err) {
+      if (err) {console.error(err);}
+      else {
+        if (!fs.existsSync(icons)) {
+          fs.symlinkSync(
+            path.relative(browserPath, ln),
+            icons
+          );
+        }
+      }
     }
-  }
-});
+)
+
