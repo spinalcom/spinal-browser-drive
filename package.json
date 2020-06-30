@@ -1,6 +1,6 @@
 {
   "name": "spinal-browser-drive",
-  "version": "v2.0.5",
+  "version": "v2.0.6",
   "homepage": "https://github.com/spinalcom/spinal-browser-drive",
   "authors": [
     "laurent <htd.laurent@gmail.com>"
@@ -20,6 +20,7 @@
     "tests"
   ],
   "dependencies": {
+    "mkdirp": "^1.0.4"
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-es2015-classes": "^6.24.1",
