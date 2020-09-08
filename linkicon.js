@@ -46,8 +46,11 @@ function cb(err) {
   }
 }
 
-const prom = mkdirp(browserPath, cb);
-
-if (prom) {
-  prom.then(cb)
-}
+try {
+  const prom = mkdirp(browserPath, cb);
+  if (prom) {
+    prom.then(cb)
+  }
+} catch (e) {
+  mkdirp(browserPath).then(cb);
+} 
