@@ -1,0 +1,246 @@
+/*
+ * Copyright 2018 SpinalCom - www.spinalcom.com
+ *
+ * This file is part of SpinalCore.
+ *
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ *
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ *
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+import mergeArray from '../utils/mergeArray';
+import knownExt from '../utils/knownExt';
+const angular = require('angular');
+import path from 'path';
+
+type VersionReturn = {
+  date: any,
+  versionNbr: number,
+  serverId?: number,
+  upload_pecent?: number,
+};
+
+type FileVersionReturn = {
+  file: spinal.File<any>;
+  versions: VersionReturn[];
+  current: number;
+};
+
+const controller = {
+  ctrlName: 'fileVersionManagerCtrl',
+  templateName: 'file_version_manager.html',
+  templateUri: 'app/templates/file_version_manager.html',
+  ctrl: [
+    '$scope',
+    'fileVersionManagerService',
+    '$mdDialog',
+    '$http',
+    function ($scope, fileVersionManagerService, $mdDialog, $http) {
+      $scope.fileVersion = [];
+      $scope.currentVersion = null;
+      $scope.openAllVersion = false;
+      $scope.filename = '';
+      $scope.descriptonVersion = 1;
+      $scope.canUpload = true;
+      $scope.descriptonText = '';
+      $scope.onClickVersion = (ev, item: VersionReturn) => {
+        if (item === $scope.currentVersion) return true;
+        const confirm = $mdDialog.confirm()
+          .title('Confirm the current version modification.')
+          .textContent(`The current version will be set from version ${$scope.currentVersion.versionNbr} to version ${item.versionNbr}.`)
+          .ariaLabel('Confirm the current version modification.')
+          .clickOutsideToClose(true).targetEvent(ev).ok('ok')
+          .cancel('cancel');
+
+        $mdDialog.show(confirm).then(
+          function () {
+            fileVersionManagerService.setVersion(item.versionNbr);
+          },
+          function () { });
+      };
+      $scope.canPreview = () => {
+        const ext = path.extname($scope.filename).toLocaleUpperCase();
+        for (let idx = 0; idx < knownExt.length; idx++) {
+          const extname = knownExt[idx];
+          if (ext === extname) {
+            return true;
+          }
+        }
+        return false;
+      };
+      $scope.onClickPreview = async (ev, item: VersionReturn) => {
+        if (!item.serverId) {
+          console.error('item.serverId not set');
+          return;
+        }
+        const img = await $http.get(`/sceen/_?u=${item.serverId}`,
+          { responseType: 'arraybuffer' }
+        );
+        // img is a buffer of the image
+        const ext = path.extname($scope.filename).toLocaleLowerCase().replace('.', '');
+        const imgsrc = `data:image/${ext};base64,${btoa(String.fromCharCode(...new Uint8Array(img.data)))}`;
+
+        $mdDialog.show({
+          clickOutsideToClose: true,
+          escapeToClose: true,
+          template: `<md-dialog layout-padding aria-label="preview dialog"
+        style="min-width: 60vw; min-height: 70vh;">
+<h3>Preview</h3>
+<md-dialog-content style="height: calc(70vh - 16px);overflow: hidden;">
+<img style="width: 100%; height: 100%; object-fit: contain;" src="${imgsrc}" />
+</md-dialog-content>
+</md-dialog>`,
+        });
+      };
+
+      $scope.onClickDescription = (ev, item: VersionReturn) => {
+        fileVersionManagerService.getDescription(item.versionNbr).then(
+          (text) => {
+            $scope.descriptonVersion = item.versionNbr;
+            $scope.descriptonText = text;
+            $scope.descriptonDialog = $mdDialog.show({
+              contentElement: document.getElementById('version-description-dialog'),
+              parent: angular.element(document.body),
+              targetEvent: ev,
+              clickOutsideToClose: true,
+            }).then((result) => {
+            }).catch((err) => {
+            });
+          },
+          (err) => {
+            console.error(err);
+          },
+        );
+      };
+      $scope.onDescriptionSave = () => {
+        fileVersionManagerService.setDescription($scope.descriptonVersion, $scope.descriptonText)
+          .then(() => {
+            $mdDialog.hide();
+          });
+      };
+      $scope.onDescriptionClose = () => {
+        $mdDialog.hide();
+      };
+
+      $scope.onClickDeleteVersion = (ev, item: VersionReturn) => {
+        if (item === $scope.currentVersion) return true;
+        const confirm = $mdDialog.confirm()
+          .title(`Confirm the deletion of the version ${item.versionNbr}.`)
+          .textContent(`The Version ${item.versionNbr} of the ${$scope.filename
+            } file will be deleted. This action is not reversible.`)
+          .ariaLabel(`Confirm the deletion of the version ${item.versionNbr}.`)
+          .clickOutsideToClose(true).targetEvent(ev).ok('ok')
+          .cancel('cancel');
+
+        $mdDialog.show(confirm).then(
+          function () {
+            return fileVersionManagerService.removeVersionById(item.versionNbr);
+          },
+          function () { });
+      };
+
+      $scope.onClickUpload = () => {
+        angular.element('.version-manager-container input#input-upload').click();
+      };
+      $scope.addNewVerion = (file) => {
+        if (file) {
+          fileVersionManagerService.addNewVersion(file).then(
+            (res) => {
+              // // to do later
+              // if (res.versionFilename !== $scope.filename) {
+              //   // filename changed
+              //   var confirm = $mdDialog.confirm()
+              //     .title('Update Name ?')
+              //     .textContent('The new file version have a new name do you wish to update it ?')
+              //     .ariaLabel('Update Name ?')
+              //     .ok('Yes')
+              //     .cancel('No');
+
+              //   $mdDialog.show(confirm).then(function () {
+              //     // $scope.status = 'You decided to get rid of your debt.';
+              //     $scope.filename = res.versionFilename;
+              //   }, function () {
+              //     $scope.status = 'You decided to keep your debt.';
+              //   });
+
+              // }
+              res.path.then(
+                () => { // download finish
+                  if (res.filename === $scope.filename) {
+                    for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
+                      const element: VersionReturn = $scope.fileVersion[idx];
+                      if (res.version === element.versionNbr) {
+                        if (element.upload_pecent) {
+                          delete element.upload_pecent;
+                        } break;
+                      }
+                    }
+                  }
+                },
+                () => { // download error
+                  console.error('download error');
+                },
+                (progress) => { // download progress
+                  if (res.filename === $scope.filename) {
+                    for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
+                      const element: VersionReturn = $scope.fileVersion[idx];
+                      if (res.version === element.versionNbr) {
+                        element.upload_pecent = progress;
+                        break;
+                      }
+                    }
+                  }
+                },
+              );
+            },
+          );
+        }
+      };
+
+      $scope.$watch(
+        '$viewContentLoaded',
+        function () {
+          const uplaodInput = $('.version-manager-container input#input-upload');
+          const handleInput = () => {
+            $scope.addNewVerion(uplaodInput[0].files[0]);
+          };
+          uplaodInput.on('change', handleInput);
+          fileVersionManagerService.controllerOpenRegister(
+            (data: FileVersionReturn) => { // on change
+              if (data.file._info.model_type?.get() !== 'Path') $scope.canUpload = false;
+              else $scope.canUpload = true;
+              $scope.filename = data.file.name.get();
+              mergeArray($scope.fileVersion, data.versions, (origin, to) => {
+                return origin.versionNbr === to.versionNbr && origin.date === to.date;
+              }, (origin, to) => {
+                return origin.versionNbr - to.versionNbr;
+              });
+              for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
+                const element: VersionReturn = $scope.fileVersion[idx];
+                if (data.current === element.versionNbr) {
+                  $scope.currentVersion = element; break;
+                }
+              }
+              // $scope.$apply();
+            },
+            () => { // on destroy
+              uplaodInput.off('change', handleInput);
+
+            });
+        });
+    }],
+};
+export default controller;

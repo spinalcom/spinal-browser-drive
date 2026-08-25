@@ -1,0 +1,33 @@
+<md-content ng-click="onFocus()" style="height: inherit;cursor: auto;" folder-drop folderdrop-events="folderDropCfg"
+  ng-class="{over:dropOnFolder}">
+  <div class="fs-layer-header" style="max-height:33px; min-width:400px; width: 100%;">
+    <div style="float:left; min-width:100px; max-height: 33px;" class="col-xs-6">
+      <p>{{name}}</p>
+    </div>
+    <input ng-model='filterExpr' style="max-height: 25px; color: black;">
+    <hr>
+  </div>
+  <div style="height: calc(100% - 33px);" folder-drop folderdrop-events="folderDropCfg">
+    <div ng-if="loading" layout="row" layout-sm="column" layout-align="space-around">
+      <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    </div>
+    <table
+      style="table-layout: fixed; min-width: 400px; width: 94%; max-height: 100%; margin-left:3%; margin-right: 3%">
+      <thead style=" border-bottom: 1px solid #ddd;">
+        <tr style="height: 25px; border-top: 1px;">
+          <th style="width: 45%">date</th>
+          <th style="width: 15%">name</th>
+          <th style="width: 40%">action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="action in records | filter:filterExpr"
+          style="height:25px; border-bottom: 1px solid gray; margin-left: 3%">
+          <td>{{action.date}}</td>
+          <td>{{action.name}}</td>
+          <td>{{action.action}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</md-content>

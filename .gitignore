@@ -7,3 +7,5 @@ node_modules
 .apps.json
 launch.config.js
 nerve-center
+.parcel-cache
+submod

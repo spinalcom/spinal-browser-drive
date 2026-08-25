@@ -1,47 +1,27 @@
 {
   "name": "spinal-browser-drive",
-  "version": "v2.0.8",
+  "version": "v3.0.0",
   "homepage": "https://github.com/spinalcom/spinal-browser-drive",
   "authors": [
-    "laurent <htd.laurent@gmail.com>"
+    "laurent <l.hatamdan@spinalcom.com>"
   ],
-  "bin": {
-    "create_drive_env": "create_drive_env.js"
-  },
   "description": "Utility to manage the SpinalCom FileSystem and more ...",
-  "main": "index.html",
   "license": "SpinalCore",
   "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "mkdirp": "^1.0.4",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-plugin-transform-es2015-classes": "^6.24.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserify": "^14.5.0",
-    "commander": "^2.13.0",
-    "exorcist": "^1.0.0",
-    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git",
-    "spinal-core-hub": "git+https://github.com/spinalcom/spinal-core-hub.git",
-    "spinal-lib-drive-env": "git+https://github.com/spinalcom/spinal-lib-drive-env.git",
-    "lodash.throttle": "^4.1.1",
-    "uglifyify": "^4.0.5"
-  },
   "scripts": {
-    "spinal-register": "spinal-register --browser 'spinal-browser-'",
-    "compile": "node compile_js.js",
-    "link-icons": "node linkicon.js",
-    "postinstall": "npm run link-icons && npm run spinal-register"
+    "copy:templates": "mkdir -p www/app && cp -R src/templates www/app/templates",
+    "copy:assets": "cp -R src/assets www/assets",
+    "build": "rm -rf www && parcel build src/index.html --no-autoinstall --no-optimize --public-url '/html/drive/' --dist-dir www/ --no-scope-hoist --no-content-hash && npm run copy:templates && npm run copy:assets",
+    "dev": "npm run copy:templates && npm run copy:assets && parcel watch src/index.html  --public-url '/html/drive/' --dist-dir www/"
   },
   "devDependencies": {
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@parcel/packager-raw-url": "^2.3.2",
+    "@parcel/packager-xml": "^2.16.4",
+    "@parcel/transformer-typescript-tsc": "^2.3.2",
+    "@parcel/transformer-webmanifest": "^2.3.2",
+    "@parcel/transformer-xml": "^2.16.4",
+    "aes-js": "^3.1.2",
     "angular": "^1.6.6",
     "angular-animate": "^1.6.10",
     "angular-aria": "^1.6.10",
@@ -51,30 +31,30 @@
     "angular-moment": "^1.3.0",
     "angular-route": "^1.6.6",
     "bootstrap": "^3.3.7",
-    "browserify-hmr": "^0.3.6",
-    "csso": "^3.4.0",
-    "csso-cli": "^2.0.2",
+    "buffer": "^6.0.3",
     "d3": "^4.12.0",
     "d3-context-menu": "*",
-    "eslint-plugin-prettier": "^2.6.0",
+    "events": "^3.3.0",
     "font-awesome": "^4.7.0",
-    "golden-layout": "1.5.9",
+    "golden-layout": "^1.5.9",
+    "jquery": "^3.7.1",
     "jquery-ui": "^1.12.1",
     "jstree": "^3.3.4",
+    "lodash.throttle": "^4.1.1",
     "material-design-icons": "^3.0.1",
     "moment": "^2.24.0",
-    "node-notifier": "^5.2.1",
-    "spectrum-colorpicker": "^1.8.0",
-    "svg-morpheus": "^0.3.0",
-    "watchify": "^3.11.0"
-  },
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
+    "parcel": "^2.12.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "spinal-core-connectorjs": "git+https://github.com/spinalcom/spinal-core-connectorjs.git",
+    "spinal-core-connectorjs_type": "github:spinalcom/spinal-core-connectorjs_type",
+    "spinal-env-drive-core": "github:spinalcom/spinal-env-drive-core",
+    "spinal-env-viewer-graph-service": "github:spinalcom/Spinal-Graph-Service",
+    "spinal-model-file_version_model": "github:spinalcom/spinal-model-file_version_model",
+    "spinal-model-graph": "github:spinalcom/spinal-model-graph"
   },
   "resolutions": {
-    "jquery": "^3.2.1",
+    "jquery": "^3.7.1",
     "d3": "^4.12.0"
   }
 }

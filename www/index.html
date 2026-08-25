@@ -1,89 +1,45 @@
-<!DOCTYPE html>
-<html lang="en"
-      style="background-color: #292929;overflow: hidden;">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="theme-color"
-        content="#292929">
-  <meta name="viewport"
-        content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <base href="/html/drive/">
-  <link href="css/css.compile.css"
-        rel="stylesheet"
-        type="text/css" />
-  <link rel="apple-touch-icon"
-        sizes="180x180"
-        href="/html/icons/apple-touch-icon.png">
-  <link rel="icon"
-        type="image/png"
-        sizes="32x32"
-        href="/html/icons/favicon-32x32.png">
-  <link rel="icon"
-        type="image/png"
-        sizes="16x16"
-        href="/html/icons/favicon-16x16.png">
-  <link rel="manifest"
-        href="/html/icons/site.webmanifest">
-  <link rel="mask-icon"
-        href="/html/icons/safari-pinned-tab.svg"
-        color="#5bbad5">
-  <link rel="shortcut icon"
-        href="/html/icons/favicon.ico">
-  <meta name="msapplication-TileColor"
-        content="#da532c">
-  <meta name="msapplication-config"
-        content="/html/icons/browserconfig.xml">
-  <title>Spinal Drive</title>
+<!DOCTYPE html><html lang="en" style="background-color: #292929; overflow: hidden"><head><link rel="stylesheet" href="/html/drive/spinal-browser-drive.9de5317d.css">
+      <meta charset="UTF-8">
+      <base href="/html/drive/">
+      <meta name="theme-color" content="#292929">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+      <link rel="apple-touch-icon" sizes="180x180" href="/html/drive/apple-touch-icon.a604ae26.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="/html/drive/favicon-32x32.c3fb34a3.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="/html/drive/favicon-16x16.d16dc5ad.png">
+      <link rel="manifest" href="/html/drive/icons/site.webmanifest">
+      <link rel="mask-icon" href="/html/drive/safari-pinned-tab.719d63dc.svg" color="#5bbad5">
+      <link rel="shortcut icon" href="/html/drive/favicon.2be89e63.ico">
+      <meta name="msapplication-TileColor" content="#da532c">
+      <meta name="msapplication-config" content="/html/drive/icons/browserconfig.xml">
+      <script type="module" src="/html/drive/spinal-browser-drive.ca490109.js"></script>
+      <title>Spinal Drive</title>
 </head>
 
-<body>
-  <div ng-app="SpinalApp"
-       style="height: 100%;">
-    <navbar></navbar>
-    <ng-view></ng-view>
-    <md-sidenav class="md-sidenav-right md-whiteframe-4dp"
-                md-component-id="right"
-                ng-cloak>
-      <div ng-controller="RightMenuCtrl">
-        <md-toolbar class="md-theme-light">
-          <section layout="row"
-                   layout-sm="row"
-                   layout-align="center center"
-                   layout-wrap>
-            <div class="md-toolbar-tools"
-                 style="width: 80%;"> {{username}}</div>
-            <md-button class="md-fab"
-                       aria-label="btn.label"
-                       style="height: 40px; width: 40px;"
-                       ng-click="close()">
-              <ng-md-icon icon="menu"
-                          style="fill:black; height: 24px;"
-                          class=""></ng-md-icon>
-            </md-button>
-          </section>
-        </md-toolbar>
-        <md-content layout-padding>
-          <md-list ng-cloak>
-            <md-list-item ng-repeat="menu in menuList"
-                          ng-click="menu.action($event)">
-              <p> {{ menu.name }} </p>
-            </md-list-item>
-            <md-divider></md-divider>
-        </md-content>
+<body style="background-color: #292929; overflow: hidden">
+      <div ng-app="SpinalApp" style="height: 100%">
+            <navbar></navbar>
+            <ng-view></ng-view>
+            <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" ng-cloak="">
+                  <div ng-controller="RightMenuCtrl">
+                        <md-toolbar class="md-theme-light">
+                              <section layout="row" layout-sm="row" layout-align="center center" layout-wrap="">
+                                    <div class="md-toolbar-tools" style="width: 80%"> {{username}}</div>
+                                    <md-button class="md-fab" aria-label="btn.label" style="width: 40px; height: 40px" ng-click="close()">
+                                          <ng-md-icon icon="menu" style="fill: #000; height: 24px" class=""></ng-md-icon>
+                                    </md-button>
+                              </section>
+                        </md-toolbar>
+                        <md-content layout-padding="">
+                              <md-list ng-cloak="">
+                                    <md-list-item ng-repeat="menu in menuList" ng-click="menu.action($event)">
+                                          <p> {{ menu.name }} </p>
+                                    </md-list-item>
+                                    <md-divider></md-divider>
+                              </md-list>
+                        </md-content>
+                  </div>
+            </md-sidenav>
       </div>
-    </md-sidenav>
-  </div>
 
-  <script type="text/javascript"
-          src="js/lib.compile.min.js"></script>
-  <script type="text/javascript"
-          src="js/app.compile.min.js"></script>
-  <script type="text/javascript"
-          src="../lib/spinal-lib-drive-env.js"></script>
-  <script>
-    FileSystem.CONNECTOR_TYPE = "Browser";
-  </script>
-</body>
 
-</html>
+</body></html>
