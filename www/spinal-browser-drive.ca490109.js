@@ -130522,8 +130522,9 @@ var _index1 = require("./spinal-env-drive-plugin-digital_twin/src/index");
 var _index2 = require("./spinal-env-drive-plugin-forge_viewer/index");
 var _index3 = require("./spinal-env-drive-plugin-graph-inspector/index");
 var _index4 = require("./spinal-env-drive-plugin-version_manager/src/index");
+var _index5 = require("./spinal-env-drive-appstore-btn/index");
 
-},{"./spinal-env-drive-plugin-base/index":"dLOsV","./spinal-env-drive-panel-logs/main":"fRqLT","./spinal-env-drive-plugin-digital_twin/src/index":"2rFYT","./spinal-env-drive-plugin-forge_viewer/index":"34K6S","./spinal-env-drive-plugin-graph-inspector/index":"hpnXE","./spinal-env-drive-plugin-version_manager/src/index":"5JwHT"}],"dLOsV":[function(require,module,exports,__globalThis) {
+},{"./spinal-env-drive-plugin-base/index":"dLOsV","./spinal-env-drive-panel-logs/main":"fRqLT","./spinal-env-drive-plugin-digital_twin/src/index":"2rFYT","./spinal-env-drive-plugin-forge_viewer/index":"34K6S","./spinal-env-drive-plugin-graph-inspector/index":"hpnXE","./spinal-env-drive-plugin-version_manager/src/index":"5JwHT","./spinal-env-drive-appstore-btn/index":"9JRV0"}],"dLOsV":[function(require,module,exports,__globalThis) {
 /*
  * Copyright 2026 SpinalCom - www.spinalcom.com
  * 
@@ -147377,6 +147378,86 @@ angular.module('app.controllers').run([
     }
 ]);
 
-},{"spinal-core-connectorjs_type":"1A32E","a57bc0f85bf7d6fd":"2nTHc","2417f124f3801f2a":"cQPh9","157606b60db26cb9":"4enzJ"}]},["fILKw"], "fILKw", "parcelRequire21ce", {})
+},{"spinal-core-connectorjs_type":"1A32E","a57bc0f85bf7d6fd":"2nTHc","2417f124f3801f2a":"cQPh9","157606b60db26cb9":"4enzJ"}],"9JRV0":[function(require,module,exports,__globalThis) {
+/*
+ * Copyright 2026 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */ var _spinalEnvDriveCore = require("spinal-env-drive-core");
+var _aesJs = require("aes-js");
+let spinalDrive_Env = window.spinalDrive_Env;
+class SpinalOpenDashboard extends (0, _spinalEnvDriveCore.SpinalDrive_App) {
+    constructor(){
+        super("ST_APPLIST", "ST App list", "ST_APPLIST", "apps");
+    }
+    get #k() {
+        return [
+            10,
+            95,
+            124,
+            68,
+            55,
+            24,
+            90,
+            57,
+            34,
+            65,
+            81,
+            22,
+            75,
+            7,
+            110,
+            1
+        ];
+    }
+    action(obj) {
+        let authService = obj.scope.injector.get("authService");
+        let fs_path = obj.scope.fs_path;
+        let username = authService.get_user().username;
+        let path = "/__users__/" + username;
+        for(var i = 1; i < fs_path.length; i++)path += "/" + fs_path[i].name;
+        path += "/" + obj.file.name;
+        let myWindow = window.open("", "");
+        let location = "/html/spinaltwin/?path=" + this.encrypt(path);
+        myWindow.document.location = location;
+        myWindow.focus();
+    }
+    encrypt(text) {
+        var key = this.#k;
+        var aesCtr = new (0, _aesJs.ModeOfOperation).ctr(key, new (0, _aesJs.Counter)(5));
+        var textBytes = (0, _aesJs.utils).utf8.toBytes(text);
+        var encryptedBytes = aesCtr.encrypt(textBytes);
+        var encryptedHex = (0, _aesJs.utils).hex.fromBytes(encryptedBytes);
+        return encodeURIComponent(encryptedHex);
+    }
+    is_shown(d) {
+        if (d && d.file && d.file._server_id) {
+            let file = window.FileSystem._objects[d.file._server_id];
+            if (file && file instanceof File && file._info.model_type && (file._info.model_type.get() === "BIM Project" || file._info.model_type.get() === "Digital twin")) return true;
+        }
+        return false;
+    }
+}
+spinalDrive_Env.add_applications('FileExplorer', new SpinalOpenDashboard());
+
+},{"spinal-env-drive-core":"2nTHc","aes-js":"evEuu"}]},["fILKw"], "fILKw", "parcelRequire21ce", {})
 
 //# sourceMappingURL=spinal-browser-drive.ca490109.js.map

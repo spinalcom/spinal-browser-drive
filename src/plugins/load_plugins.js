@@ -28,3 +28,4 @@ import "./spinal-env-drive-plugin-digital_twin/src/index";
 import "./spinal-env-drive-plugin-forge_viewer/index";
 import "./spinal-env-drive-plugin-graph-inspector/index";
 import "./spinal-env-drive-plugin-version_manager/src/index";
+import "./spinal-env-drive-appstore-btn/index";
