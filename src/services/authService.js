@@ -66,6 +66,15 @@ angular.module("app.spinalcom").factory("authService", [
     };
 
     factory.login = (username, password) => {
+      if (!username || !password) {
+        throw new Error("Username and password are required.");
+      }
+      if (typeof username !== "string" || typeof password !== "string") {
+        throw new Error("Username and password must be strings.");
+      }
+      if (username.trim() === "" || password.trim() === "") {
+        throw new Error("Username and password cannot be empty.");
+      }
       if (config.mode === "admin") {
         return adminLogin(username, password);
       } else {
