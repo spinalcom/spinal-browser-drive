@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #292929;overflow: hidden;">
+
+<head>
+  <meta charset="UTF-8">
+  <base href="/html/admin/" />
+  <meta name="theme-color" content="#292929">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
+  <link rel="manifest" href="./icons/site.webmanifest">
+  <link rel="mask-icon" href="./icons/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="./icons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-config" content="./icons/browserconfig.xml">
+  <script type="module" src="./main.admin.js"></script>
+  <title>Spinal admin</title>
+</head>
+
+<body style="background-color: #292929;overflow: hidden;">
+  <div ng-app="SpinalApp" style="height: 100%;">
+    <navbar></navbar>
+    <ng-view></ng-view>
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right" ng-cloak>
+      <div ng-controller="RightMenuCtrl">
+        <md-toolbar class="md-theme-light">
+          <section layout="row" layout-sm="row" layout-align="center center" layout-wrap>
+            <div class="md-toolbar-tools" style="width: 80%;"> {{username}}</div>
+            <md-button class="md-fab" aria-label="btn.label" style="height: 40px; width: 40px;" ng-click="close()">
+              <ng-md-icon icon="menu" style="fill:black; height: 24px;" class=""></ng-md-icon>
+            </md-button>
+          </section>
+        </md-toolbar>
+        <md-content layout-padding>
+          <md-list ng-cloak>
+            <md-list-item ng-repeat="menu in menuList" ng-click="menu.action($event)">
+              <p> {{ menu.name }} </p>
+            </md-list-item>
+            <md-divider></md-divider>
+          </md-list>
+        </md-content>
+      </div>
+    </md-sidenav>
+  </div>
+</body>
+
+</html>

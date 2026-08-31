@@ -1,36 +1,63 @@
+/*
+ * Copyright 2026 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+
+import {
+  SpinalUserManager
+} from "spinal-core-connectorjs";
 var angular = require("angular");
 
 angular
   .module("app.controllers")
   .controller("RightMenuCtrl", [
     "$scope",
-    "$timeout",
     "$mdSidenav",
     "$location",
     "authService",
     "$mdDialog",
     "$templateCache",
-    function(
+    "config",
+    function (
       $scope,
-      $timeout,
       $mdSidenav,
       $location,
       authService,
       $mdDialog,
-      $templateCache
+      $templateCache,
+      config
     ) {
       authService.wait_connect().then(() => {
         $scope.username = authService.get_user().username;
       });
 
-      $scope.close = function() {
+      $scope.close = function () {
         $mdSidenav("right").close();
       };
 
       $scope.logOut = () => {
         $mdSidenav("right")
           .close()
-          .then(function() {
+          .then(function () {
             $mdDialog
               .show(
                 $mdDialog
@@ -42,25 +69,39 @@ angular
                   .targetEvent(event)
               )
               .then(
-                function() {
+                function () {
                   $location.path("/login");
                 },
-                function() {}
+                function () { }
               );
           });
       };
-      $scope.GoToAdmin = function() {
+      $scope.GoToAdmin = function () {
         const win = window.open("/html/admin/", "_blank");
         win.focus();
         $mdSidenav("right")
           .close()
-          .then(function() {});
+          .then(function () { });
       };
-
-      $scope.modifyPassword = function(event) {
+      $scope.GoToDrive = function () {
+        const win = window.open("/html/drive/", "_blank");
+        win.focus();
         $mdSidenav("right")
           .close()
-          .then(function() {
+          .then(function () { });
+      };
+      $scope.GoToUserManager = function () {
+        const win = window.open("/html/user_role_manager/", "_blank");
+        win.focus();
+        $mdSidenav("right")
+          .close()
+          .then(function () { });
+      };
+
+      $scope.modifyPassword = function (event) {
+        $mdSidenav("right")
+          .close()
+          .then(function () {
             let my_prompt = $mdDialog
               .confirm()
               .ariaLabel("confirm menu")
@@ -69,7 +110,7 @@ angular
               .title("Do you want to modify your password ?")
               .targetEvent(event);
             $mdDialog.show(my_prompt).then(
-              function() {
+              function () {
                 $mdDialog.show({
                   ariaLabel: "changePasswordModal",
                   template: $templateCache.get("changePasswordModal.html"),
@@ -86,24 +127,33 @@ angular
                   ]
                 });
               },
-              function() {}
+              function () { }
             );
           });
       };
-      $scope.menuList = [
-        {
+      $scope.menuList = [];
+      if (config.mode === "admin") {
+        $scope.menuList.push({
+          name: "Open Drive",
+          action: $scope.GoToDrive
+        }, {
+          name: "Open User Manager",
+          action: $scope.GoToUserManager
+        });
+      } else {
+        $scope.menuList.push({
           name: "Open Admin",
           action: $scope.GoToAdmin
-        },
-        {
-          name: "Change Password",
-          action: $scope.modifyPassword
-        },
-        {
-          name: "Log out",
-          action: $scope.logOut
-        }
-      ];
+        });
+      }
+      $scope.menuList.push({
+        name: "Change Password",
+        action: $scope.modifyPassword
+      });
+      $scope.menuList.push({
+        name: "Log out",
+        action: $scope.logOut
+      });
     }
   ])
   .controller("navbarCtrl", [
@@ -112,7 +162,7 @@ angular
     "$location",
     "goldenLayoutService",
     "$mdSidenav",
-    function($scope, authService, $location, goldenLayoutService, $mdSidenav) {
+    function ($scope, authService, $location, goldenLayoutService, $mdSidenav) {
       $scope.username = "";
       $scope.connected = false;
 
@@ -184,7 +234,7 @@ angular
       }
     }
   ]);
-var changePasswordModelCtrl = function(
+var changePasswordModelCtrl = function (
   $scope,
   authService,
   $mdToast,
@@ -192,14 +242,14 @@ var changePasswordModelCtrl = function(
   $mdDialog
 ) {
   $scope.passwordInputType = "password";
-  $scope.showPassword = function() {
+  $scope.showPassword = function () {
     $scope.passwordInputType = "text";
   };
-  $scope.hidePassword = function() {
+  $scope.hidePassword = function () {
     $scope.passwordInputType = "password";
   };
 
-  $scope.cancel = function() {
+  $scope.cancel = function () {
     $mdDialog.cancel();
   };
   $scope.change_password = {
@@ -207,22 +257,22 @@ var changePasswordModelCtrl = function(
     password: "",
     confirm_password: ""
   };
-  $scope.onError = function(err) {
+  $scope.onError = function (err) {
     $mdToast.showSimple("Error : " + err);
   };
   let options = location.host + "/";
 
   $scope.change_password = (user_id, password, new_password) => {
     let deferred = $q.defer();
-    window.SpinalUserManager.change_password(
+    SpinalUserManager.change_password(
       options,
       user_id,
       password,
       new_password,
-      function() {
+      function () {
         deferred.resolve();
       },
-      function(err) {
+      function (err) {
         deferred.reject(err);
       }
     );
@@ -231,15 +281,15 @@ var changePasswordModelCtrl = function(
 
   $scope.get_user_id = (user_name, password) => {
     let deferred = $q.defer();
-    window.SpinalUserManager.get_user_id(
+    SpinalUserManager.get_user_id(
       options,
       user_name,
       password,
-      function(response) {
+      function (response) {
         let id = parseInt(response);
         deferred.resolve(id);
       },
-      function(err) {
+      function (err) {
         deferred.reject(err);
       }
     );
@@ -251,14 +301,14 @@ var changePasswordModelCtrl = function(
       let user = authService.get_user();
       $scope
         .get_user_id(user.username, change_password.currentPassword)
-        .then(function() {
+        .then(function () {
           $scope
             .change_password(
               user.username,
               change_password.currentPassword,
               change_password.password
             )
-            .then(function() {
+            .then(function () {
               authService.save_user(user.username, change_password.password);
               $mdToast.showSimple("Password has been successfully modified.");
               $mdDialog.hide();

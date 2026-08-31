@@ -37,6 +37,7 @@ class SpinalDrive_App_Graph_inspector extends SpinalDrive_App {
   constructor() {
     super("ST_GRAPHINSPECTOR", "ST Graph Inspector", 3000, "device_hub",
       "ST_GRAPHINSPECTOR");
+    this.order_priority = 4;
   }
   /**
    * method to handle the selection

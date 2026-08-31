@@ -35,6 +35,8 @@ const fileVersionState = [
   'Download converted file',
   'Converted',
   'Failed',
+  'File download completed, svf.zip detected', // 12
+  'Unzipping svf.zip', // 13
 ];
 
 export { fileVersionState };

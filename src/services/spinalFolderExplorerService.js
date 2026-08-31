@@ -1,14 +1,45 @@
+/*
+ * Copyright 2026 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
+
 var angular = require("angular");
+import { File, FileSystem } from "spinal-core-connectorjs";
+
 angular.module("app.spinalcom").factory("spinalFolderExplorerService", [
   "spinalModelDictionary",
   "ngSpinalCore",
   "authService",
   "spinalFileSystem",
-  function(
+  "config",
+  "$q",
+
+  function (
     spinalModelDictionary,
     ngSpinalCore,
     authService,
     spinalFileSystem,
+    config,
+    $q
   ) {
     const factory = {};
     let uid = 0;
@@ -24,7 +55,7 @@ angular.module("app.spinalcom").factory("spinalFolderExplorerService", [
     function waitModelRdy_loop(model, resolve) {
       if (
         model._server_id &&
-        typeof window.FileSystem._objects[model._server_id] !== "undefined"
+        typeof FileSystem._objects[model._server_id] !== "undefined"
       ) {
         return resolve();
       }
@@ -122,22 +153,29 @@ angular.module("app.spinalcom").factory("spinalFolderExplorerService", [
 
     function init() {
       if (initPromise !== null) return initPromise;
-      initPromise = spinalModelDictionary
-        .init()
-        .then(m => {
+      if (config.mode === "admin") {
+        initPromise = spinalModelDictionary.init().then(m => {
           rootDirectory = m;
-          return ngSpinalCore.load("/__users__");
-        })
-        .then(usersDir => {
-          let user = authService.get_user();
-          for (let idx = 0; idx < usersDir.length; idx++) {
-            const userDir = usersDir[idx];
-            if (userDir.name.get() === user.username) {
-              rootFile = userDir;
-              return;
-            }
-          }
+          rootFile = new File("root", m);
+          return;
         });
+      } else {
+        initPromise = spinalModelDictionary.init()
+          .then(m => {
+            rootDirectory = m;
+            return ngSpinalCore.load("/__users__");
+          })
+          .then(usersDir => {
+            let user = authService.get_user();
+            for (let idx = 0; idx < usersDir.length; idx++) {
+              const userDir = usersDir[idx];
+              if (userDir.name.get() === user.username) {
+                rootFile = userDir;
+                return;
+              }
+            }
+          });
+      }
       return initPromise;
     }
 
@@ -153,10 +191,14 @@ angular.module("app.spinalcom").factory("spinalFolderExplorerService", [
       if (typeof parentNode === "undefined") {
         throw new Error(`parentNode of ${id} not found. path = [${path}]`);
       }
-      const file = window.FileSystem._objects[Number(parentNode.fileId)];
-      return ngSpinalCore.loadModelPtr(file).then(directoryModel => {
-        return createItemObjByDirectory(id, directoryModel, path);
-      });
+      if (parentNode.dirId === rootDirectory._server_id) {
+        return $q.resolve(createItemObjByDirectory(id, rootDirectory, path));
+      } else {
+        const file = FileSystem._objects[Number(parentNode.fileId)];
+        return ngSpinalCore.loadModelPtr(file).then(directoryModel => {
+          return createItemObjByDirectory(id, directoryModel, path);
+        });
+      }
     }
     let itemUID = 0;
     function createItem(
@@ -193,7 +235,7 @@ angular.module("app.spinalcom").factory("spinalFolderExplorerService", [
     function registerWatcher(uid, fctOnChangeModel) {
       const rootFilePromise = init().then(() => {
         mapWatchFrame.set(uid, fctOnChangeModel);
-        const filename = `${rootFile.name.get()} (home)`;
+        const filename = config.mode === "admin" ? `root` : `${rootFile.name.get()} (home)`;
         const path = `#/${itemUID}`;
         const item = createItem(
           path,

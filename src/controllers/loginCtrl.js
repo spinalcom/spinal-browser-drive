@@ -36,7 +36,6 @@ angular.module("app.controllers").controller("loginCtrl", [
       email: "",
       password1: ""
     };
-    console.log("loginCtrl", $scope.conf);
     $scope.ConnectBtn = () => {
       authService.login($scope.conf.email, $scope.conf.password1).then(
         () => {

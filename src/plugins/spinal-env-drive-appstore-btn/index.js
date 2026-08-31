@@ -33,6 +33,7 @@ let spinalDrive_Env = window.spinalDrive_Env;
 class SpinalOpenDashboard extends SpinalDrive_App {
   constructor() {
     super("ST_APPLIST", "ST App list", "ST_APPLIST", "apps");
+    this.order_priority = 3;
   }
   get #k() {
     return [10, 95, 124, 68, 55, 24, 90, 57, 34, 65, 81, 22, 75, 7, 110, 1];

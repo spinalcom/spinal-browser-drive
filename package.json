@@ -9,10 +9,20 @@
   "license": "SpinalCore",
   "private": true,
   "scripts": {
-    "copy:templates": "mkdir -p www/app && cp -R src/templates www/app/templates",
-    "copy:assets": "cp -R src/assets www/assets",
-    "build": "rm -rf www && parcel build src/index.html --no-autoinstall --no-optimize --public-url '/html/drive/' --dist-dir www/ --no-scope-hoist --no-content-hash && npm run copy:templates && npm run copy:assets",
-    "dev": "npm run copy:templates && npm run copy:assets && parcel watch src/index.html  --public-url '/html/drive/' --dist-dir www/"
+    "post:build:drive": "npm run copy:templates.drive && npm run copy:assets.drive && npm run rename:index.drive",
+    "post:build:admin": "npm run copy:templates.admin && npm run copy:assets.admin && npm run rename:index.admin",
+    "copy:templates.drive": "mkdir -p drive/app && cp -R src/templates drive/app/templates",
+    "copy:templates.admin": "mkdir -p admin/app && cp -R src/templates admin/app/templates",
+    "copy:assets.drive": "cp -R src/assets drive/assets",
+    "copy:assets.admin": "cp -R src/assets admin/assets",
+    "rename:index.drive": "mv drive/drive.html drive/index.html",
+    "rename:index.admin": "mv admin/admin.html admin/index.html",
+    "clean:drive": "rm -rf drive",
+    "clean:admin": "rm -rf admin",
+    "build:drive": "npm run clean:drive && parcel build src/drive.html --no-autoinstall --no-optimize --public-url '/html/drive/' --dist-dir drive/ --no-scope-hoist --no-content-hash && npm run post:build:drive",
+    "build:admin": "npm run clean:admin && parcel build src/admin.html --no-autoinstall --no-optimize --public-url '/html/admin/' --dist-dir admin/ --no-scope-hoist --no-content-hash && npm run post:build:admin",
+    "build": "echo use npm run build:drive , npm run build:admin or npm run build:all",
+    "build:all": "npm run build:drive && npm run build:admin"
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",

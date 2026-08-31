@@ -27,7 +27,7 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
   "$q",
   "spinalModelDictionary",
   "ngSpinalCore",
-  function($q, spinalModelDictionary, ngSpinalCore) {
+  function ($q, spinalModelDictionary, ngSpinalCore) {
     // let this = {};
     let initPromise = null;
     this.current_dir = 0;
@@ -84,38 +84,6 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
       return initPromise;
     };
 
-    // this.ptrRdy_defer = (ptr, promise, isnew = false) => {
-    //   if (!ptr.data) console.log("ERROR HERE in ptrRdy_defer");
-    //   if (
-    //     // !ptr.data ||
-    //     !ptr.data.value ||
-    //     window.FileSystem._tmp_objects[ptr.data.value]
-    //   ) {
-    //     setTimeout(() => {
-    //       this.ptrRdy_defer(ptr, promise, true);
-    //     }, 200);
-    //     return;
-    //   }
-    //   if (window.FileSystem._objects[ptr.data.value]) {
-    //     promise({
-    //       model: window.FileSystem._objects[ptr.data.value],
-    //       firstTime: isnew
-    //     });
-    //   } else {
-    //     ptr.load(m => {
-    //       promise({
-    //         model: m,
-    //         firstTime: true
-    //       });
-    //     });
-    //   }
-    // };
-
-    // this.waitPtrRdyAndLoad = ptr => {
-    //   return new Promise(resolve => {
-    //     this.ptrRdy_defer(ptr, resolve);
-    //   });
-    // };
 
     function createDirProcessObj(uid, process, dir) {
       return { uid, process, dir };
@@ -135,167 +103,8 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
         newDir
       );
       dirMap.set(uid, dirProc);
-
-      // console.log("currDirModified", newDir);
-      // if (oldDirBindProcess.has(scope.uid) === false) {
-      //   const oldDir.get(scope.uid)
-      //   unbind(oldDirBindProcess.get(scope.uid));
-      // }
-
-      // if (oldDirBindProcess !== null) oldDir.unbind(oldDirBindProcess);
-      // oldDir = newDir;
-      // oldDirBindProcess = oldDir.bind(() => {
-      //   this.emit_subcriber("SPINAL_FS_ONCHANGE");
-      // });
     };
 
-    // this.load_dir = f => {
-    //   let deferred = $q.defer();
-    //   this.waitPtrRdyAndLoad(f._ptr)
-    //     .then(res => {
-    //       let m = res.model;
-    //       let firstTime = res.firstTime;
-    //       if (m) {
-    //         if (firstTime) {
-    //           m.bind(() => {
-    //             this.emit_subcriber("SPINAL_FS_ONCHANGE");
-    //           }, false);
-    //         }
-    //         deferred.resolve(m);
-    //       } else {
-    //         deferred.reject();
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.error(err);
-    //     });
-    //   return deferred.promise;
-    // };
-
-    // this.deferGetFolderJson_rec = (
-    //   prom_arr,
-    //   all_dir,
-    //   dir,
-    //   arr,
-    //   name,
-    //   parent,
-    //   opened
-    // ) => {
-    //   let deferred = $q.defer();
-    //   setTimeout(() => {
-    //     deferred.resolve(
-    //       this.getFolderJson_rec(all_dir, dir, arr, name, parent, opened)
-    //     );
-    //   }, 100);
-    //   return deferred.promise;
-    // };
-
-    // {
-    //   id          : "string" // required
-    //   parent      : "string" // required
-    //   text        : "string" // node text
-    //   icon        : "string" // string for custom
-    //   state       : {
-    //     opened    : boolean  // is the node open
-    //     disabled  : boolean  // is the node disabled
-    //     selected  : boolean  // is the node selected
-    //   },
-    //   li_attr     : {}  // attributes for the generated LI node
-    //   a_attr      : {}  // attributes for the generated A node
-    // }
-    // this.getFolderJson_rec = (
-    //   all_dir,
-    //   dir,
-    //   arr = [],
-    //   name = "home",
-    //   parent = "#",
-    //   opened = true
-    // ) => {
-    //   let current;
-    //   var prom_arr = [];
-    //   // search if not existing
-
-    //   if (!dir._server_id || window.FileSystem._tmp_objects[dir._server_id]) {
-    //     return this.deferGetFolderJson_rec(
-    //       prom_arr,
-    //       all_dir,
-    //       dir,
-    //       arr,
-    //       name,
-    //       parent,
-    //       opened
-    //     );
-    //   }
-
-    //   for (var key in all_dir) {
-    //     let n = all_dir[key];
-    //     if (n.model == dir._server_id && n.text == name && n.parent == parent) {
-    //       current = n;
-    //       break;
-    //     }
-    //   }
-
-    //   if (!current) {
-    //     // current not found
-    //     current = {
-    //       model: dir._server_id,
-    //       id: this.id,
-    //       parent: parent,
-    //       text: name,
-    //       state: {
-    //         opened: opened
-    //       }
-    //     };
-    //     this.id++;
-    //     if (
-    //       opened == true ||
-    //       (typeof all_dir[current.id] != "undefined" &&
-    //         all_dir[current.id].state.opened == true)
-    //     ) {
-    //       current.state.opened = true;
-    //     }
-    //   }
-
-    //   arr.push(current);
-    //   all_dir[current.id] = current;
-    //   this.folderExplorer_dir[current.id] = current;
-    //   let create_callback = (all_dir, arr, f, current) => {
-    //     return m => {
-    //       return this.getFolderJson_rec(
-    //         all_dir,
-    //         m,
-    //         arr,
-    //         f.name.get(),
-    //         current.id,
-    //         false
-    //       );
-    //     };
-    //   };
-    //   for (var i = 0; i < dir.length; i++) {
-    //     let f = dir[i];
-    //     if (
-    //       f._info.model_type.get() == "Directory" ||
-    //       f._info.model_type.get() == "Synchronized Directory"
-    //     ) {
-    //       prom_arr.push(
-    //         this.load_dir(f).then(create_callback(all_dir, arr, f, current))
-    //       );
-    //     }
-    //   }
-    //   return $q.all(prom_arr).then(() => {
-    //     return {
-    //       tree: arr,
-    //       all_dir: all_dir
-    //     };
-    //   });
-    // };
-
-    // this.onChangeNodeTree = (all_dir, data) => {
-    //   all_dir[data.node.original.id].state = data.node.state;
-    //   this.folderExplorer_dir[data.node.original.id].state = data.node.state;
-    // };
-
-    // this.onbdlclick = () => {};
     this.openFolder = (all_dir, node) => {
       if (this.curr_window && window.FileSystem._objects[node.original.model]) {
         this.curr_window.change_curr_dir(
@@ -304,30 +113,7 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
         );
       }
     };
-    // this.openFolderInNewLayer = (all_dir, node) => {
-    //   goldenLayoutService.createChild({
-    //     isClosable: true,
-    //     title: "File Explorer",
-    //     type: "component",
-    //     componentName: "SpinalHome",
-    //     componentState: {
-    //       template: "FileExplorer.html",
-    //       module: "app.FileExplorer",
-    //       controller: "FileExplorerCtrl"
-    //     }
-    //   });
-    //   $timeout(() => {
-    //     if (
-    //       this.curr_window &&
-    //       window.FileSystem._objects[node.original.model]
-    //     ) {
-    //       this.curr_window.change_curr_dir(
-    //         window.FileSystem._objects[node.original.model],
-    //         this.create_path_with_node(node)
-    //       );
-    //     }
-    //   });
-    // };
+
     this.newFolder = (all_dir, data, name) => {
       let f = window.FileSystem._objects[data.original.model];
       if (f) {
@@ -345,14 +131,6 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
       this.curr_window = scope;
     };
 
-    // this.get_node_by_id = id => {
-    //   for (var key in this.folderExplorer_dir) {
-    //     if (this.folderExplorer_dir[key].id == id) {
-    //       return this.folderExplorer_dir[key];
-    //     }
-    //   }
-    //   return 0;
-    // };
     this.create_path_with_node = data => {
       return [data, ...data.parents].reverse().map(item => {
         return {
@@ -376,15 +154,6 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
             })
           );
         });
-        // this.curr_window.change_curr_dir(
-        //   window.FileSystem._objects[data.node.original.model],
-        //   path.map(e => {
-        //     return {
-        //       name: node_parent.text,
-        //       _server_id: node_parent.model
-        //     };
-        //   })
-        // );
       }
     };
 
@@ -531,12 +300,6 @@ angular.module("app.spinalcom").service("spinalFileSystem", [
         return $q.all(q);
       });
     };
-
-    // this.getFolderJson = all_dir => {
-    //   return this.init().then(() => {
-    //     return this.getFolderJson_rec(all_dir, this.model);
-    //   });
-    // };
 
     this.FE_selected_drag = [];
     this.FE_init_dir_drag = 0;

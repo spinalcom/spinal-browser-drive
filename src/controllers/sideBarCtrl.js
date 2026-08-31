@@ -103,7 +103,7 @@ angular
         let apps = window.spinalDrive_Env.get_applications(
           "FolderExplorer",
           node
-        );
+        ).reverse();
         let res = {};
         for (var i = 0; i < apps.length; i++) {
           let app = apps[i];

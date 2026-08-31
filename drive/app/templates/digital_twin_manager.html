@@ -1,0 +1,162 @@
+<style>
+  .digital-twin-container {
+    height: 100%;
+    overflow: hidden;
+    padding-bottom: 31px;
+  }
+
+  .digital-twin-container:not(.drop-over) .digital-twin-drop-container {
+    opacity: 0;
+    z-index: -1;
+  }
+
+  .digital-twin-drop-container {
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
+    overflow: hidden;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-style: dashed;
+    border-color: beige;
+    display: flex;
+    -webkit-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    -ms-transition: opacity 0.3s ease-in-out;
+    -o-transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .digital-twin-drop-container>div.center-drop-div {
+    align-self: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .digital-twin-panel-content {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .digital-twin-panel-header {
+    display: flex;
+    background-color: #222;
+    color: #ddd;
+    padding: 5px 8px 8px;
+    overflow: hidden;
+    max-height: 31px;
+  }
+
+  .digital-twin-panel-header>p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .digital-twin-panel-list {
+    height: calc(100% - 31px);
+    overflow: auto;
+  }
+
+  .digital-twin-panel-list-empty {
+    height: calc(100% - 31px);
+    display: flex;
+    -webkit-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    -ms-transition: opacity 0.3s ease-in-out;
+    -o-transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+    overflow: hidden;
+  }
+
+  .digital-twin-panel-list-empty>.digital-twin-panel-list-empty-center {
+    align-self: center;
+    text-align: center;
+    width: 100%;
+  }
+</style>
+<md-content class="digital-twin-container"
+            folder-drop
+            folderdrop-events="folderDropCfg"
+            ng-class="{'drop-over':dropOnFolder}">
+  <md-content class="digital-twin-panel-content">
+    <div class="digital-twin-panel-header">
+      <p>Digital Twin : <strong>{{filename}}</strong></p>
+    </div>
+
+    <md-list ng-if="assets.length > 0"
+             class="digital-twin-panel-list md-dense"
+             flex>
+      <md-subheader class="md-no-sticky">Assets List</md-subheader>
+
+      <md-list-item ng-repeat="item in assets"
+                    class="md-3-line">
+        <div class="md-list-item-text"
+             layout="column">
+          <h3>
+            Asset Name : {{item.name}}
+          </h3>
+          <h4 style="z-index:1;">
+            Current Version {{item.versionId}}
+            <md-tooltip md-delay="175">
+              {{item.date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm:ss'}}
+            </md-tooltip>
+          </h4>
+          <p>Translate State : {{item.state}}</p>
+        </div>
+        <md-menu class="md-secondary">
+          <md-button class="md-icon-button"
+                     aria-label="more option"
+                     ng-click="$mdMenu.open($event)">
+            <ng-md-icon class=""
+                        icon="more_vert"
+                        style="fill: white;height:20px"></ng-md-icon>
+          </md-button>
+          <md-menu-content width="2">
+            <md-menu-item ng-if="item.state != 'Converted'">
+              <md-button ng-click="onClickConvertAssset($event, item)">Convert
+                Asset</md-button>
+            </md-menu-item>
+            <md-menu-item>
+              <md-button ng-click="onClickDeleteAssset($event, item)">Delete
+                Asset</md-button>
+            </md-menu-item>
+        </md-menu>
+        <md-progress-linear ng-if="item.translate_pecent"
+                            class="file-translate-progress-bar"
+                            md-mode="determinate"
+                            value="{{item.translate_pecent}}">
+        </md-progress-linear>
+      </md-list-item>
+    </md-list>
+
+    <div ng-if="assets.length === 0"
+         class="digital-twin-panel-list-empty">
+      <div class="digital-twin-panel-list-empty-center">
+        <h4>Drop an Autodesk Forge supported formats here !</h4>
+      </div>
+    </div>
+  </md-content>
+  <a href="https://forge.autodesk.com/en/docs/model-derivative/v2/developers_guide/supported-translations/"
+     aria-label="forge doc: supported-translations"
+     style="position: absolute; bottom: 0; right: 0;"
+     target="_blank">
+    <md-tooltip md-direction="left">Autodesk Forge supported-translations
+      formats</md-tooltip>
+    <ng-md-icon icon="info"
+                style="fill: rgb(68, 133, 244);"
+                class="md-avatar-icon"></ng-md-icon>
+  </a>
+  <md-content class="digital-twin-drop-container">
+    <div class="center-drop-div">
+      <ng-md-icon ng-attr-icon="{{dropIcon.icon}}"
+                  size="100"
+                  ng-style="dropIcon.style"></ng-md-icon>
+      <h4>Drop an Autodesk Forge supported formats here !</h4>
+    </div>
+  </md-content>
+</md-content>

@@ -50,7 +50,6 @@ class SpinalDrive_App_FileExplorer_share extends SpinalDrive_App_share {
    * @memberof SpinalDrive_App_FileExplorer_share
    */
   action(obj) {
-    console.log(obj);
     let templateCache = obj.scope.injector.get("$templateCache");
     let spinalModelDictionary = obj.scope.injector.get("spinalModelDictionary");
     let mdDialog = obj.scope.injector.get("$mdDialog");

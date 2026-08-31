@@ -110,7 +110,6 @@ angular
             $scope.directory[i].over = false;
             $scope.directory[i].selectdrop = false;
           }
-          console.log(file);
         }
         file.selected = !file.selected;
       };
@@ -536,7 +535,7 @@ angular
             file: file,
             scope: $scope
           }
-        );
+        ).reverse();
         $mdMenu.open(ev);
       };
       $scope.context_menu_file_action = ($event, item, file) => {
