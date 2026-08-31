@@ -50361,7 +50361,8 @@ var Obj_1 = require("4781075c7d59902e");
             n = Number(value);
             if (isNaN(n)) console.log("Don't know how to transform ".concat(value, " to a Val"));
         } else if (value instanceof Val) n = value._data;
-        else n = value;
+        else if (typeof value === 'number') n = value;
+        else throw new Error("Don't know how to transform ".concat(value, " to a Val"));
         if (this._data !== n) {
             this._data = n;
             return true;
@@ -51376,12 +51377,46 @@ const { toString } = Object.prototype;
 const { getPrototypeOf } = Object;
 const { iterator, toStringTag } = Symbol;
 /* Creating a function that will check if an object has a property. */ const hasOwnProperty = (({ hasOwnProperty })=>(obj, prop)=>hasOwnProperty.call(obj, prop))(Object.prototype);
+const isUnsafeObjectKey = (prop)=>typeof prop === 'string' && (prop === '__proto__' || prop === 'constructor' || prop === 'prototype');
 /**
- * Walk the prototype chain (excluding the shared Object.prototype) looking for
- * an own `prop`. This distinguishes genuine own/inherited members — including
- * class accessors and template prototypes — from members injected via
- * Object.prototype pollution (e.g. `Object.prototype.username = '...'`), which
- * live on Object.prototype itself and are therefore never matched.
+ * Determine whether an inherited object must be treated as a shared-prototype
+ * boundary. Cross-realm Object.prototype objects cannot be distinguished
+ * reliably from application-created null-prototype objects because their
+ * properties are mutable, so all inherited terminal prototypes are excluded
+ * as a fail-closed boundary. A null-prototype source still keeps its own
+ * properties, as produced by mergeConfig and other safe materialization paths.
+ *
+ * @param {*} obj The object to inspect
+ * @param {*} prototype The object's prototype
+ * @param {boolean} source Whether obj is the original traversal source
+ *
+ * @returns {boolean} True when obj is a safe prototype traversal boundary
+ */ const isPrototypeBoundary = (obj, prototype, source)=>obj === Object.prototype || !source && prototype === null;
+/**
+ * Determine whether an object can retain its identity through code paths that
+ * add, replace, and remove config properties without bypassing unsafe-key
+ * filtering. Immutable objects, unsafe-key-bearing objects, and objects with
+ * accessor or restricted data properties must be materialized instead.
+ *
+ * @param {*} obj The object to inspect
+ *
+ * @returns {boolean} True when every own property is safe and fully mutable
+ */ const isSafeAndFullyMutable = (obj)=>{
+    if (!Object.isExtensible(obj)) return false;
+    const props = Object.getOwnPropertyNames(obj);
+    if (Object.getOwnPropertySymbols) props.push(...Object.getOwnPropertySymbols(obj));
+    return props.every((prop)=>{
+        if (isUnsafeObjectKey(prop)) return false;
+        const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+        return !!descriptor && descriptor.configurable && descriptor.writable === true;
+    });
+};
+/**
+ * Walk the prototype chain (excluding the source realm's Object.prototype)
+ * looking for an own `prop`. This distinguishes genuine own/inherited members
+ * — including class accessors and template prototypes — from members injected
+ * via Object.prototype pollution (e.g. `Object.prototype.username = '...'`),
+ * which live on Object.prototype itself and are therefore never matched.
  *
  * @param {*} thing The value whose chain to inspect
  * @param {string|symbol} prop The property key to look for
@@ -51390,11 +51425,13 @@ const { iterator, toStringTag } = Symbol;
  */ const hasOwnInPrototypeChain = (thing, prop)=>{
     let obj = thing;
     const seen = [];
-    while(obj != null && obj !== Object.prototype){
+    while(obj != null){
         if (seen.indexOf(obj) !== -1) return false;
         seen.push(obj);
+        const prototype = getPrototypeOf(obj);
+        if (isPrototypeBoundary(obj, prototype, obj === thing)) return false;
         if (hasOwnProperty(obj, prop)) return true;
-        obj = getPrototypeOf(obj);
+        obj = prototype;
     }
     return false;
 };
@@ -51409,6 +51446,42 @@ const { iterator, toStringTag } = Symbol;
  *
  * @returns {*} The resolved value, or undefined when unsafe/absent
  */ const getSafeProp = (obj, prop)=>obj != null && hasOwnInPrototypeChain(obj, prop) ? obj[prop] : undefined;
+/**
+ * Flatten an object and its application-defined prototype chain into a
+ * null-prototype object. Members inherited only from the source realm's
+ * Object.prototype are deliberately excluded, while class/template members
+ * below that boundary are preserved.
+ *
+ * @param {*} thing The value to flatten
+ *
+ * @returns {*} A null-prototype copy, or the original value when it is already
+ * structurally safe or is not an object
+ */ const toSafeFlatObject = (thing)=>{
+    if (thing == null || typeof thing !== 'object' && typeof thing !== 'function') return thing;
+    const sourcePrototype = getPrototypeOf(thing);
+    if (sourcePrototype === null && isSafeAndFullyMutable(thing)) return thing;
+    const result = Object.create(null);
+    const merged = Object.create(null);
+    const seen = [];
+    let current = thing;
+    while(current != null){
+        if (seen.indexOf(current) !== -1) break;
+        seen.push(current);
+        const prototype = current === thing ? sourcePrototype : getPrototypeOf(current);
+        if (isPrototypeBoundary(current, prototype, current === thing)) break;
+        const props = Object.getOwnPropertyNames(current);
+        if (Object.getOwnPropertySymbols) props.push(...Object.getOwnPropertySymbols(current));
+        for (const prop of props){
+            if (isUnsafeObjectKey(prop)) continue;
+            if (!hasOwnProperty(merged, prop)) {
+                result[prop] = thing[prop];
+                merged[prop] = true;
+            }
+        }
+        current = prototype;
+    }
+    return result;
+};
 const kindOf = ((cache)=>(thing)=>{
         const str = toString.call(thing);
         return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
@@ -51502,9 +51575,9 @@ const typeOfTest = (type)=>(thing)=>typeof thing === type;
  */ const isPlainObject = (val)=>{
     if (!isObject(val)) return false;
     const prototype = getPrototypeOf(val);
-    return (prototype === null || prototype === Object.prototype || getPrototypeOf(prototype) === null) && // Treat any genuine (non-Object.prototype-polluted) Symbol.toStringTag or
-    // Symbol.iterator as evidence the value is a tagged/iterable type rather
-    // than a plain object, while ignoring keys injected onto Object.prototype.
+    return (prototype === null || prototype === Object.prototype || getPrototypeOf(prototype) === null) && // Treat safe own/inherited Symbol.toStringTag or Symbol.iterator members as
+    // evidence the value is tagged/iterable, while ignoring members reachable
+    // only through shared or terminal prototype boundaries.
     !hasOwnInPrototypeChain(val, toStringTag) && !hasOwnInPrototypeChain(val, iterator);
 };
 /**
@@ -52119,6 +52192,7 @@ exports.default = {
     hasOwnProp: hasOwnProperty,
     hasOwnInPrototypeChain,
     getSafeProp,
+    toSafeFlatObject,
     reduceDescriptors,
     freezeMethods,
     toObjectSet,
@@ -52194,6 +52268,8 @@ var _mergeConfigJs = require("./mergeConfig.js");
 var _mergeConfigJsDefault = parcelHelpers.interopDefault(_mergeConfigJs);
 var _buildFullPathJs = require("./buildFullPath.js");
 var _buildFullPathJsDefault = parcelHelpers.interopDefault(_buildFullPathJs);
+var _methodListJs = require("./methodList.js");
+var _methodListJsDefault = parcelHelpers.interopDefault(_methodListJs);
 var _validatorJs = require("../helpers/validator.js");
 var _validatorJsDefault = parcelHelpers.interopDefault(_validatorJs);
 var _axiosHeadersJs = require("./AxiosHeaders.js");
@@ -52227,26 +52303,25 @@ const validators = (0, _validatorJsDefault.default).validators;
         try {
             return await this._request(configOrUrl, config);
         } catch (err) {
-            if (err instanceof Error) {
+            if (err instanceof Error) try {
                 let dummy = {};
                 Error.captureStackTrace ? Error.captureStackTrace(dummy) : dummy = new Error();
+                const dummyStack = dummy.stack;
+                let stack = '';
                 // slice off the Error: ... line
-                const stack = (()=>{
-                    if (!dummy.stack) return '';
-                    const firstNewlineIndex = dummy.stack.indexOf('\n');
-                    return firstNewlineIndex === -1 ? '' : dummy.stack.slice(firstNewlineIndex + 1);
-                })();
-                try {
-                    if (!err.stack) err.stack = stack;
-                    else if (stack) {
-                        const firstNewlineIndex = stack.indexOf('\n');
-                        const secondNewlineIndex = firstNewlineIndex === -1 ? -1 : stack.indexOf('\n', firstNewlineIndex + 1);
-                        const stackWithoutTwoTopLines = secondNewlineIndex === -1 ? '' : stack.slice(secondNewlineIndex + 1);
-                        if (!String(err.stack).endsWith(stackWithoutTwoTopLines)) err.stack += '\n' + stack;
-                    }
-                } catch (e) {
-                // ignore the case where "stack" is an un-writable property
+                if (typeof dummyStack === 'string') {
+                    const firstNewlineIndex = dummyStack.indexOf('\n');
+                    stack = firstNewlineIndex === -1 ? '' : dummyStack.slice(firstNewlineIndex + 1);
                 }
+                if (!err.stack) err.stack = stack;
+                else if (stack) {
+                    const firstNewlineIndex = stack.indexOf('\n');
+                    const secondNewlineIndex = firstNewlineIndex === -1 ? -1 : stack.indexOf('\n', firstNewlineIndex + 1);
+                    const stackWithoutTwoTopLines = secondNewlineIndex === -1 ? '' : stack.slice(secondNewlineIndex + 1);
+                    if (!String(err.stack).endsWith(stackWithoutTwoTopLines)) err.stack += '\n' + stack;
+                }
+            } catch (e) {
+            // Ignore failures from custom stack hooks or un-writable stack properties.
             }
             throw err;
         }
@@ -52285,19 +52360,10 @@ const validators = (0, _validatorJsDefault.default).validators;
             withXsrfToken: validators.spelling('withXSRFToken')
         }, true);
         // Set config.method
-        config.method = (config.method || this.defaults.method || 'get').toLowerCase();
+        config.method = ((0, _utilsJsDefault.default).getSafeProp(config, 'method') || (0, _utilsJsDefault.default).getSafeProp(this.defaults, 'method') || 'get').toLowerCase();
         // Flatten headers
         let contextHeaders = headers && (0, _utilsJsDefault.default).merge(headers.common, headers[config.method]);
-        headers && (0, _utilsJsDefault.default).forEach([
-            'delete',
-            'get',
-            'head',
-            'post',
-            'put',
-            'patch',
-            'query',
-            'common'
-        ], (method)=>{
+        headers && (0, _utilsJsDefault.default).forEach((0, _methodListJsDefault.default).concat('common'), (method)=>{
             delete headers[method];
         });
         config.headers = (0, _axiosHeadersJsDefault.default).concat(contextHeaders, headers);
@@ -52408,7 +52474,7 @@ const validators = (0, _validatorJsDefault.default).validators;
 });
 exports.default = Axios;
 
-},{"../utils.js":"jI6DP","../helpers/buildURL.js":"3CNaw","./InterceptorManager.js":"bt5wS","./dispatchRequest.js":"1p0aT","./mergeConfig.js":"311Mu","./buildFullPath.js":"kg0Bk","../helpers/validator.js":"9wnyh","./AxiosHeaders.js":"9EzTj","../defaults/transitional.js":"cKdyU","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3CNaw":[function(require,module,exports,__globalThis) {
+},{"../utils.js":"jI6DP","../helpers/buildURL.js":"3CNaw","./InterceptorManager.js":"bt5wS","./dispatchRequest.js":"1p0aT","./mergeConfig.js":"311Mu","./buildFullPath.js":"kg0Bk","./methodList.js":"c1k6n","../helpers/validator.js":"9wnyh","./AxiosHeaders.js":"9EzTj","../defaults/transitional.js":"cKdyU","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3CNaw":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /**
@@ -52587,22 +52653,17 @@ const predicates = (0, _utilsJsDefault.default).toFlatObject((0, _utilsJsDefault
     if (!(0, _utilsJsDefault.default).isObject(obj)) throw new TypeError('target must be an object');
     // eslint-disable-next-line no-param-reassign
     formData = formData || new ((0, _formDataJsDefault.default) || FormData)();
-    // eslint-disable-next-line no-param-reassign
-    options = (0, _utilsJsDefault.default).toFlatObject(options, {
-        metaTokens: true,
-        dots: false,
-        indexes: false
-    }, false, function defined(option, source) {
-        // eslint-disable-next-line no-eq-null,eqeqeq
-        return !(0, _utilsJsDefault.default).isUndefined(source[option]);
-    });
-    const metaTokens = options.metaTokens;
+    const option = (name, fallback)=>{
+        const value = (0, _utilsJsDefault.default).getSafeProp(options, name);
+        return (0, _utilsJsDefault.default).isUndefined(value) ? fallback : value;
+    };
+    const metaTokens = option('metaTokens', true);
     // eslint-disable-next-line no-use-before-define
-    const visitor = options.visitor || defaultVisitor;
-    const dots = options.dots;
-    const indexes = options.indexes;
-    const _Blob = options.Blob || typeof Blob !== 'undefined' && Blob;
-    const maxDepth = options.maxDepth === undefined ? DEFAULT_FORM_DATA_MAX_DEPTH : options.maxDepth;
+    const visitor = option('visitor') || defaultVisitor;
+    const dots = option('dots', false);
+    const indexes = option('indexes', false);
+    const _Blob = option('Blob') || typeof Blob !== 'undefined' && Blob;
+    const maxDepth = option('maxDepth', DEFAULT_FORM_DATA_MAX_DEPTH);
     const useBlob = _Blob && (0, _utilsJsDefault.default).isSpecCompliantForm(formData);
     const stack = [];
     if (!(0, _utilsJsDefault.default).isFunction(visitor)) throw new TypeError('visitor must be a function');
@@ -53283,9 +53344,41 @@ parcelHelpers.defineInteropFlag(exports);
 var _utilsJs = require("../utils.js");
 var _utilsJsDefault = parcelHelpers.interopDefault(_utilsJs);
 'use strict';
+const $internals = Symbol('internals');
+// `handlers` is public and may be replaced with a nullish value by user code;
+// `clear()` has always tolerated that. Treat it as an empty stack rather than
+// dereferencing it.
+function countHandlers(handlers) {
+    return handlers ? handlers.length : 0;
+}
+function trimHandlers(handlers) {
+    if (!handlers) return;
+    while(handlers.length && handlers[handlers.length - 1] === null)handlers.pop();
+}
+function syncHandlerEntries(manager, internals) {
+    const handlers = manager.handlers;
+    const length = countHandlers(handlers);
+    if (handlers !== internals.handlersRef) {
+        internals.handlersRef = handlers;
+        internals.handlerEntries.clear();
+    } else if (length !== internals.handlersLength) {
+        if (!length) internals.handlerEntries.clear();
+        else internals.handlerEntries.forEach(function removeStaleEntry(entry, id) {
+            if (handlers[entry.index] !== entry.handler) internals.handlerEntries.delete(id);
+        });
+    }
+    internals.handlersLength = length;
+}
 class InterceptorManager {
     constructor(){
         this.handlers = [];
+        this[$internals] = {
+            handlersRef: this.handlers,
+            handlersLength: this.handlers.length,
+            handlerEntries: new Map(),
+            iterationDepth: 0,
+            nextId: 0
+        };
     }
     /**
    * Add a new interceptor to the stack
@@ -53296,13 +53389,23 @@ class InterceptorManager {
    *
    * @return {Number} An ID used to remove interceptor later
    */ use(fulfilled, rejected, options) {
-        this.handlers.push({
+        const handler = {
             fulfilled,
             rejected,
             synchronous: options ? options.synchronous : false,
             runWhen: options ? options.runWhen : null
+        };
+        const internals = this[$internals];
+        if (this.handlers == null) this.handlers = [];
+        syncHandlerEntries(this, internals);
+        const id = internals.nextId++;
+        this.handlers.push(handler);
+        internals.handlerEntries.set(id, {
+            handler,
+            index: this.handlers.length - 1
         });
-        return this.handlers.length - 1;
+        internals.handlersLength = this.handlers.length;
+        return id;
     }
     /**
    * Remove an interceptor from the stack
@@ -53311,14 +53414,30 @@ class InterceptorManager {
    *
    * @returns {void}
    */ eject(id) {
-        if (this.handlers[id]) this.handlers[id] = null;
+        const internals = this[$internals];
+        syncHandlerEntries(this, internals);
+        const entry = internals.handlerEntries.get(id);
+        if (entry) {
+            internals.handlerEntries.delete(id);
+            // Ignore IDs invalidated by clear or direct replacement of handlers.
+            if (this.handlers[entry.index] !== entry.handler) return;
+            this.handlers[entry.index] = null;
+            // Do not reuse an index while forEach is walking its length snapshot.
+            if (!internals.iterationDepth) {
+                trimHandlers(this.handlers);
+                internals.handlersLength = this.handlers.length;
+            }
+        }
     }
     /**
    * Clear all interceptors from the stack
    *
    * @returns {void}
    */ clear() {
-        if (this.handlers) this.handlers = [];
+        if (this.handlers) {
+            this.handlers = [];
+            syncHandlerEntries(this, this[$internals]);
+        }
     }
     /**
    * Iterate over all the registered interceptors
@@ -53330,9 +53449,20 @@ class InterceptorManager {
    *
    * @returns {void}
    */ forEach(fn) {
-        (0, _utilsJsDefault.default).forEach(this.handlers, function forEachHandler(h) {
-            if (h !== null) fn(h);
-        });
+        const internals = this[$internals];
+        syncHandlerEntries(this, internals);
+        internals.iterationDepth++;
+        try {
+            (0, _utilsJsDefault.default).forEach(this.handlers, function forEachHandler(h) {
+                if (h !== null) fn(h);
+            });
+        } finally{
+            if (!--internals.iterationDepth) {
+                syncHandlerEntries(this, internals);
+                trimHandlers(this.handlers);
+                internals.handlersLength = countHandlers(this.handlers);
+            }
+        }
     }
 }
 exports.default = InterceptorManager;
@@ -53353,6 +53483,8 @@ var _axiosHeadersJs = require("../core/AxiosHeaders.js");
 var _axiosHeadersJsDefault = parcelHelpers.interopDefault(_axiosHeadersJs);
 var _adaptersJs = require("../adapters/adapters.js");
 var _adaptersJsDefault = parcelHelpers.interopDefault(_adaptersJs);
+var _utilsJs = require("../utils.js");
+var _utilsJsDefault = parcelHelpers.interopDefault(_utilsJs);
 'use strict';
 /**
  * Throws a `CanceledError` if cancellation has been requested.
@@ -53364,9 +53496,13 @@ var _adaptersJsDefault = parcelHelpers.interopDefault(_adaptersJs);
     if (config.cancelToken) config.cancelToken.throwIfRequested();
     if (config.signal && config.signal.aborted) throw new (0, _canceledErrorJsDefault.default)(null, config);
 }
-function dispatchRequest(config) {
+function dispatchRequest(_config) {
+    // Interceptors may replace the merged config with an ordinary object. Flatten
+    // it at the dispatch boundary so shared prototype members cannot become
+    // request behavior, while preserving intentional template/class members.
+    const config = (0, _utilsJsDefault.default).toSafeFlatObject(_config);
     throwIfCancellationRequested(config);
-    config.headers = (0, _axiosHeadersJsDefault.default).from(config.headers);
+    config.headers = (0, _axiosHeadersJsDefault.default).from((0, _utilsJsDefault.default).getSafeProp(config, 'headers'));
     // Transform request data
     config.data = (0, _transformDataJsDefault.default).call(config, config.transformRequest);
     if ([
@@ -53406,7 +53542,7 @@ function dispatchRequest(config) {
     });
 }
 
-},{"./transformData.js":"8ANo1","../cancel/isCancel.js":"fkTUi","../defaults/index.js":"9WXKx","../cancel/CanceledError.js":"9yG1c","../core/AxiosHeaders.js":"9EzTj","../adapters/adapters.js":"hI0HS","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8ANo1":[function(require,module,exports,__globalThis) {
+},{"./transformData.js":"8ANo1","../cancel/isCancel.js":"fkTUi","../defaults/index.js":"9WXKx","../cancel/CanceledError.js":"9yG1c","../core/AxiosHeaders.js":"9EzTj","../adapters/adapters.js":"hI0HS","../utils.js":"jI6DP","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8ANo1":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>transformData);
@@ -53446,6 +53582,8 @@ var _indexJs = require("../platform/index.js");
 var _indexJsDefault = parcelHelpers.interopDefault(_indexJs);
 var _formDataToJSONJs = require("../helpers/formDataToJSON.js");
 var _formDataToJSONJsDefault = parcelHelpers.interopDefault(_formDataToJSONJs);
+var _methodListJs = require("../core/methodList.js");
+var _methodListJsDefault = parcelHelpers.interopDefault(_methodListJs);
 'use strict';
 const own = (obj, key)=>obj != null && (0, _utilsJsDefault.default).hasOwnProp(obj, key) ? obj[key] : undefined;
 /**
@@ -53550,20 +53688,12 @@ const defaults = {
         }
     }
 };
-(0, _utilsJsDefault.default).forEach([
-    'delete',
-    'get',
-    'head',
-    'post',
-    'put',
-    'patch',
-    'query'
-], (method)=>{
+(0, _utilsJsDefault.default).forEach((0, _methodListJsDefault.default), (method)=>{
     defaults.headers[method] = {};
 });
 exports.default = defaults;
 
-},{"../utils.js":"jI6DP","../core/AxiosError.js":"7z85x","./transitional.js":"cKdyU","../helpers/toFormData.js":"2RXm4","../helpers/toURLEncodedForm.js":"keaer","../platform/index.js":"626Zd","../helpers/formDataToJSON.js":"fefHq","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"cKdyU":[function(require,module,exports,__globalThis) {
+},{"../utils.js":"jI6DP","../core/AxiosError.js":"7z85x","./transitional.js":"cKdyU","../helpers/toFormData.js":"2RXm4","../helpers/toURLEncodedForm.js":"keaer","../platform/index.js":"626Zd","../helpers/formDataToJSON.js":"fefHq","../core/methodList.js":"c1k6n","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"cKdyU":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 'use strict';
@@ -53797,7 +53927,26 @@ function throwIfDepthExceeded(index) {
 }
 exports.default = formDataToJSON;
 
-},{"../utils.js":"jI6DP","../core/AxiosError.js":"7z85x","./toFormData.js":"2RXm4","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fkTUi":[function(require,module,exports,__globalThis) {
+},{"../utils.js":"jI6DP","../core/AxiosError.js":"7z85x","./toFormData.js":"2RXm4","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"c1k6n":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+'use strict';
+const methodList = Object.freeze([
+    'get',
+    'delete',
+    'head',
+    'options',
+    'post',
+    'put',
+    'patch',
+    'purge',
+    'link',
+    'unlink',
+    'query'
+]);
+exports.default = methodList;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"fkTUi":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>isCancel);
@@ -53948,6 +54097,8 @@ var _axiosErrorJs = require("../core/AxiosError.js");
 var _axiosErrorJsDefault = parcelHelpers.interopDefault(_axiosErrorJs);
 var _canceledErrorJs = require("../cancel/CanceledError.js");
 var _canceledErrorJsDefault = parcelHelpers.interopDefault(_canceledErrorJs);
+var _normalizeURLForProtocolCheckJs = require("../helpers/normalizeURLForProtocolCheck.js");
+var _normalizeURLForProtocolCheckJsDefault = parcelHelpers.interopDefault(_normalizeURLForProtocolCheckJs);
 var _parseProtocolJs = require("../helpers/parseProtocol.js");
 var _parseProtocolJsDefault = parcelHelpers.interopDefault(_parseProtocolJs);
 var _indexJs = require("../platform/index.js");
@@ -53967,7 +54118,7 @@ exports.default = isXHRAdapterSupported && function(config) {
         let { responseType, onUploadProgress, onDownloadProgress } = _config;
         let onCanceled;
         let uploadThrottled, downloadThrottled;
-        let flushUpload, flushDownload;
+        let flushUpload, flushDownload, flushDownloadWithEvent;
         function done() {
             flushUpload && flushUpload(); // flush events
             flushDownload && flushDownload(); // flush events
@@ -53978,7 +54129,37 @@ exports.default = isXHRAdapterSupported && function(config) {
         request.open(_config.method.toUpperCase(), _config.url, true);
         // Set the request timeout in MS
         request.timeout = _config.timeout;
-        function onloadend() {
+        function onloadend(event) {
+            if (!request) return;
+            // Status 0 means no response was received, which onerror and onabort normally
+            // reject before this runs. Firefox 152 fires only readystatechange and loadend for
+            // navigation-canceled requests (https://bugzilla.mozilla.org/show_bug.cgi?id=1505389),
+            // leaving settle() to resolve them as an empty success. ECONNABORTED is the error
+            // onabort raised on Firefox 151. Reads over file:, which some environments report as
+            // status 0 on success, are excluded by the request URL's scheme after browser-style
+            // preprocessing, by the page origin's scheme for relative URLs (which inherit it), or
+            // by responseURL where implemented.
+            if (request.status === 0 && ((0, _parseProtocolJsDefault.default)((0, _normalizeURLForProtocolCheckJsDefault.default)(_config.url)) || (0, _parseProtocolJsDefault.default)((0, _indexJsDefault.default).origin)) !== 'file' && !(request.responseURL && request.responseURL.startsWith('file:'))) {
+                reject(new (0, _axiosErrorJsDefault.default)('Request aborted', (0, _axiosErrorJsDefault.default).ECONNABORTED, config, request));
+                done();
+                // Clean up request
+                request = null;
+                return;
+            }
+            // When loadend is still dispatching, flushing with it gives progress
+            // listeners a final delivery whose event has a live target. The legacy
+            // ready-state fallback has no event, so replay its pending progress.
+            // A throwing listener must not block settlement; rethrow asynchronously,
+            // matching how listener errors surface on the throttle timer path.
+            try {
+                if (event) flushDownloadWithEvent && flushDownloadWithEvent(event);
+                else flushDownload && flushDownload();
+            } catch (err) {
+                setTimeout(()=>{
+                    throw err;
+                });
+            }
+            // A final progress callback can cancel the request synchronously.
             if (!request) return;
             // Prepare the response
             const responseHeaders = (0, _axiosHeadersJsDefault.default).from('getAllResponseHeaders' in request && request.getAllResponseHeaders());
@@ -54058,7 +54239,7 @@ exports.default = isXHRAdapterSupported && function(config) {
         if (responseType && responseType !== 'json') request.responseType = _config.responseType;
         // Handle progress if needed
         if (onDownloadProgress) {
-            [downloadThrottled, flushDownload] = (0, _progressEventReducerJs.progressEventReducer)(onDownloadProgress, true);
+            [downloadThrottled, flushDownload, flushDownloadWithEvent] = (0, _progressEventReducerJs.progressEventReducer)(onDownloadProgress, true);
             request.addEventListener('progress', downloadThrottled);
         }
         // Not all browsers support upload events
@@ -54091,7 +54272,7 @@ exports.default = isXHRAdapterSupported && function(config) {
     });
 };
 
-},{"../utils.js":"jI6DP","../core/settle.js":"2vmJg","../defaults/transitional.js":"cKdyU","../core/AxiosError.js":"7z85x","../cancel/CanceledError.js":"9yG1c","../helpers/parseProtocol.js":"af3D4","../platform/index.js":"626Zd","../core/AxiosHeaders.js":"9EzTj","../helpers/progressEventReducer.js":"6rzPu","../helpers/resolveConfig.js":"3RDMa","../helpers/sanitizeHeaderValue.js":"hgIfL","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2vmJg":[function(require,module,exports,__globalThis) {
+},{"../utils.js":"jI6DP","../core/settle.js":"2vmJg","../defaults/transitional.js":"cKdyU","../core/AxiosError.js":"7z85x","../cancel/CanceledError.js":"9yG1c","../helpers/normalizeURLForProtocolCheck.js":"1IRer","../helpers/parseProtocol.js":"af3D4","../platform/index.js":"626Zd","../core/AxiosHeaders.js":"9EzTj","../helpers/progressEventReducer.js":"6rzPu","../helpers/resolveConfig.js":"3RDMa","../helpers/sanitizeHeaderValue.js":"hgIfL","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2vmJg":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>settle);
@@ -54104,7 +54285,20 @@ function settle(resolve, reject, response) {
     else reject(new (0, _axiosErrorJsDefault.default)('Request failed with status code ' + response.status, response.status >= 400 && response.status < 500 ? (0, _axiosErrorJsDefault.default).ERR_BAD_REQUEST : (0, _axiosErrorJsDefault.default).ERR_BAD_RESPONSE, response.config, response.request, response));
 }
 
-},{"./AxiosError.js":"7z85x","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"af3D4":[function(require,module,exports,__globalThis) {
+},{"./AxiosError.js":"7z85x","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"1IRer":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>normalizeURLForProtocolCheck);
+'use strict';
+const urlParserControlCharacters = /[\t\n\r]/g;
+function normalizeURLForProtocolCheck(url) {
+    if (typeof url !== 'string') return url;
+    let start = 0;
+    while(start < url.length && url.charCodeAt(start) <= 0x20)start++;
+    return url.slice(start).replace(urlParserControlCharacters, '');
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"af3D4":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>parseProtocol);
@@ -54130,7 +54324,7 @@ const progressEventReducer = (listener, isDownloadStream, freq = 3)=>{
     let bytesNotified = 0;
     const _speedometer = (0, _speedometerJsDefault.default)(50, 250);
     return (0, _throttleJsDefault.default)((e)=>{
-        if (!e || typeof e.loaded !== 'number') return;
+        if (!e || !(0, _utilsJsDefault.default).isNumber(e.loaded)) return;
         const rawLoaded = e.loaded;
         const total = e.lengthComputable ? e.total : undefined;
         const loaded = Math.max(0, total != null ? Math.min(rawLoaded, total) : rawLoaded);
@@ -54207,7 +54401,7 @@ exports.default = speedometer;
  * Throttle decorator
  * @param {Function} fn
  * @param {Number} freq
- * @return {Function}
+ * @return {Array<Function>}
  */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 function throttle(fn, freq) {
@@ -54237,9 +54431,11 @@ function throttle(fn, freq) {
         }
     };
     const flush = ()=>lastArgs && invoke(lastArgs);
+    const flushWith = (...args)=>invoke(args);
     return [
         throttled,
-        flush
+        flush,
+        flushWith
     ];
 }
 exports.default = throttle;
@@ -54302,9 +54498,10 @@ function resolveConfig(config) {
         }
     }
     if ((0, _utilsJsDefault.default).isFormData(data)) {
+        const getHeaders = (0, _utilsJsDefault.default).getSafeProp(data, 'getHeaders');
         if ((0, _indexJsDefault.default).hasStandardBrowserEnv || (0, _indexJsDefault.default).hasStandardBrowserWebWorkerEnv || (0, _utilsJsDefault.default).isReactNative(data)) headers.setContentType(undefined); // browser/web worker/RN handles it
-        else if ((0, _utilsJsDefault.default).isFunction(data.getHeaders)) // Node.js FormData (like form-data package)
-        (0, _setFormDataHeadersJsDefault.default)(headers, data.getHeaders(), own('formDataHeaderPolicy'));
+        else if ((0, _utilsJsDefault.default).isFunction(getHeaders)) // Node.js FormData (like form-data package)
+        (0, _setFormDataHeadersJsDefault.default)(headers, getHeaders.call(data), own('formDataHeaderPolicy'));
     }
     // Add xsrf header
     // This is only done if running in a standard browser environment.
@@ -54394,17 +54591,10 @@ var _isAbsoluteURLJs = require("../helpers/isAbsoluteURL.js");
 var _isAbsoluteURLJsDefault = parcelHelpers.interopDefault(_isAbsoluteURLJs);
 var _combineURLsJs = require("../helpers/combineURLs.js");
 var _combineURLsJsDefault = parcelHelpers.interopDefault(_combineURLsJs);
+var _normalizeURLForProtocolCheckJs = require("../helpers/normalizeURLForProtocolCheck.js");
+var _normalizeURLForProtocolCheckJsDefault = parcelHelpers.interopDefault(_normalizeURLForProtocolCheckJs);
 'use strict';
 const malformedHttpProtocol = /^https?:(?!\/\/)/i;
-const httpProtocolControlCharacters = /[\t\n\r]/g;
-function stripLeadingC0ControlOrSpace(url) {
-    let i = 0;
-    while(i < url.length && url.charCodeAt(i) <= 0x20)i++;
-    return url.slice(i);
-}
-function normalizeURLForProtocolCheck(url) {
-    return stripLeadingC0ControlOrSpace(url).replace(httpProtocolControlCharacters, '');
-}
 // Redact the parts of a URL that can carry secrets before it is embedded in an
 // error message. AxiosError.toJSON() serializes `message` verbatim and errors
 // are commonly logged, while the opt-in `config.redact` model only cleans
@@ -54429,7 +54619,7 @@ function redactSensitiveURLParts(url) {
 }
 function assertValidHttpProtocolURL(url, config) {
     if (typeof url === 'string') {
-        const normalizedURL = normalizeURLForProtocolCheck(url);
+        const normalizedURL = (0, _normalizeURLForProtocolCheckJsDefault.default)(url);
         if (malformedHttpProtocol.test(normalizedURL)) throw new (0, _axiosErrorJsDefault.default)(`Invalid URL ${JSON.stringify(redactSensitiveURLParts(normalizedURL))}: missing "//" after protocol`, (0, _axiosErrorJsDefault.default).ERR_INVALID_URL, config);
     }
 }
@@ -54443,7 +54633,7 @@ function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls, config) {
     return requestedURL;
 }
 
-},{"./AxiosError.js":"7z85x","../helpers/isAbsoluteURL.js":"6XRC7","../helpers/combineURLs.js":"l5Wmt","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"6XRC7":[function(require,module,exports,__globalThis) {
+},{"./AxiosError.js":"7z85x","../helpers/isAbsoluteURL.js":"6XRC7","../helpers/combineURLs.js":"l5Wmt","../helpers/normalizeURLForProtocolCheck.js":"1IRer","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"6XRC7":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>isAbsoluteURL);
@@ -54548,7 +54738,7 @@ function mergeConfig(config1, config2) {
         transformResponse: defaultToConfig2,
         paramsSerializer: defaultToConfig2,
         timeout: defaultToConfig2,
-        timeoutMessage: defaultToConfig2,
+        timeoutErrorMessage: defaultToConfig2,
         withCredentials: defaultToConfig2,
         withXSRFToken: defaultToConfig2,
         adapter: defaultToConfig2,
@@ -54633,6 +54823,17 @@ var _estimateDataURLDecodedBytesJsDefault = parcelHelpers.interopDefault(_estima
 var _dataJs = require("../env/data.js");
 var _sanitizeHeaderValueJs = require("../helpers/sanitizeHeaderValue.js");
 const DEFAULT_CHUNK_SIZE = 65536;
+const DEFAULT_REQUEST_OPTIONS = {
+    cache: 'default',
+    redirect: 'follow',
+    referrer: 'about:client',
+    referrerPolicy: '',
+    mode: 'cors',
+    integrity: '',
+    keepalive: false,
+    priority: 'auto',
+    window: null
+};
 const { isFunction } = (0, _utilsJsDefault.default);
 /**
  * Encode a UTF-8 string to a Latin-1 byte string for use with btoa().
@@ -54735,7 +54936,7 @@ const factory = (env)=>{
         return length == null ? getBodyLength(body) : length;
     };
     return async (config)=>{
-        let { url, method, data, signal, cancelToken, timeout, onDownloadProgress, onUploadProgress, responseType, headers, withCredentials = 'same-origin', fetchOptions, maxContentLength, maxBodyLength } = (0, _resolveConfigJsDefault.default)(config);
+        let { url, method, data, signal, cancelToken, timeout, onDownloadProgress, onUploadProgress, responseType, headers, withCredentials = 'same-origin', fetchOptions, maxContentLength, maxBodyLength, maxRedirects } = (0, _resolveConfigJsDefault.default)(config);
         const hasMaxContentLength = (0, _utilsJsDefault.default).isNumber(maxContentLength) && maxContentLength > -1;
         const hasMaxBodyLength = (0, _utilsJsDefault.default).isNumber(maxBodyLength) && maxBodyLength > -1;
         const own = (key)=>(0, _utilsJsDefault.default).hasOwnProp(config, key) ? config[key] : undefined;
@@ -54845,17 +55046,38 @@ const factory = (env)=>{
             }
             // Set User-Agent header if not already set (fetch defaults to 'node' in Node.js)
             headers.set('User-Agent', 'axios/' + (0, _dataJs.VERSION), false);
-            const resolvedOptions = {
-                ...fetchOptions,
+            const safeFetchOptions = fetchOptions == null ? fetchOptions : Object.assign(Object.create(null), fetchOptions);
+            if (safeFetchOptions) {
+                // These options are owned by Axios and are already reflected in the
+                // resolved Request passed to fetch.
+                delete safeFetchOptions.body;
+                delete safeFetchOptions.headers;
+                delete safeFetchOptions.method;
+                delete safeFetchOptions.signal;
+                delete safeFetchOptions.duplex;
+                delete safeFetchOptions.credentials;
+            }
+            const resolvedOptions = Object.assign(Object.create(null), safeFetchOptions, {
                 signal: composedSignal,
                 method: method.toUpperCase(),
                 headers: (0, _sanitizeHeaderValueJs.toByteStringHeaderObject)(headers.normalize()),
                 body: data,
                 duplex: 'half',
                 credentials: isCredentialsSupported ? withCredentials : undefined
-            };
+            });
+            if (isRequestSupported) {
+                (0, _utilsJsDefault.default).forEach(DEFAULT_REQUEST_OPTIONS, (value, key)=>{
+                    if (resolvedOptions[key] === undefined) resolvedOptions[key] = value;
+                });
+                if (resolvedOptions.signal === undefined) resolvedOptions.signal = null;
+                if (resolvedOptions.body === undefined) resolvedOptions.body = null;
+            }
+            if (maxRedirects === 0) {
+                resolvedOptions.redirect = 'manual';
+                if (safeFetchOptions) safeFetchOptions.redirect = 'manual';
+            }
             request = isRequestSupported && new Request(url, resolvedOptions);
-            let response = await (isRequestSupported ? _fetch(request, fetchOptions) : _fetch(url, resolvedOptions));
+            let response = await (isRequestSupported ? _fetch(request, safeFetchOptions) : _fetch(url, resolvedOptions));
             const responseHeaders = (0, _axiosHeadersJsDefault.default).from(response.headers);
             // Cheap pre-check: if the server honestly declares a content-length that
             // already exceeds the cap, reject before we start streaming.
@@ -55229,7 +55451,7 @@ function estimateDataURLBufferAllocation(url) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "VERSION", ()=>VERSION);
-const VERSION = "1.19.0";
+const VERSION = "1.20.0";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9wnyh":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -55472,14 +55694,20 @@ const HttpStatusCode = {
     Gone: 410,
     LengthRequired: 411,
     PreconditionFailed: 412,
-    PayloadTooLarge: 413,
+    /**
+   * @deprecated Use `ContentTooLarge` instead.
+   */ PayloadTooLarge: 413,
+    ContentTooLarge: 413,
     UriTooLong: 414,
     UnsupportedMediaType: 415,
     RangeNotSatisfiable: 416,
     ExpectationFailed: 417,
     ImATeapot: 418,
     MisdirectedRequest: 421,
-    UnprocessableEntity: 422,
+    /**
+   * @deprecated Use `UnprocessableContent` instead.
+   */ UnprocessableEntity: 422,
+    UnprocessableContent: 422,
     Locked: 423,
     FailedDependency: 424,
     TooEarly: 425,
@@ -55508,7 +55736,7 @@ const HttpStatusCode = {
     InvalidSslCertificate: 526
 };
 Object.entries(HttpStatusCode).forEach(([key, value])=>{
-    HttpStatusCode[value] = key;
+    if (HttpStatusCode[value] === undefined) HttpStatusCode[value] = key;
 });
 exports.default = HttpStatusCode;
 
@@ -123471,7 +123699,29 @@ let SpinalDrive_App = require("a31afcb4989275b4");
 module.exports = SpinalDrive_App_list;
 
 },{"a31afcb4989275b4":"1HlQl"}],"1HlQl":[function(require,module,exports,__globalThis) {
-require("e2070dfe5766655f");
+/*
+ * Copyright 2026 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */ require("e2070dfe5766655f");
 /**
  * interface on an app
  */ class SpinalDrive_App {
@@ -123578,34 +123828,22 @@ SpinalDrive_App._log = (file, tab)=>{
     });
 };
 SpinalDrive_App._pushLog = (logsModel, tab)=>{
+    // remove old records from logsModel > 2 years
+    let twoYearsAgo = new Date();
+    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+    let twoYearsAgoTimestamp = twoYearsAgo.getTime();
+    const logToRemove = [];
+    for(let i = logsModel.length - 1; i >= 0; i--)if (logsModel[i].date.get() < twoYearsAgoTimestamp) logToRemove.push(logsModel[i]);
+    for(let i = 0; i < logToRemove.length; i++){
+        const index = logsModel.indexOf(logToRemove[i]);
+        if (index > -1) logsModel.splice(index, 1);
+    }
     logsModel.push(tab);
 };
 module.exports = SpinalDrive_App;
 
 },{"e2070dfe5766655f":"cQPh9"}],"6pmEm":[function(require,module,exports,__globalThis) {
-/*
- * Copyright 2026 SpinalCom - www.spinalcom.com
- * 
- * This file is part of SpinalCore.
- * 
- * Please read all of the following terms and conditions
- * of the Software license Agreement ("Agreement")
- * carefully.
- * 
- * This Agreement is a legally binding contract between
- * the Licensee (as defined below) and SpinalCom that
- * sets forth the terms and conditions that govern your
- * use of the Program. By installing and/or using the
- * Program, you agree to abide by all the terms and
- * conditions stated or referenced herein.
- * 
- * If you do not agree to abide by these terms and
- * conditions, do not demonstrate your acceptance and do
- * not install or use the Program.
- * You should have received a copy of the license along
- * with this file. If not, see
- * <http://resources.spinalcom.com/licenses.pdf>.
- */ var SpinalDrive_App_list = require("2984b2ba95d5ec2c");
+var SpinalDrive_App_list = require("2984b2ba95d5ec2c");
 /** Class representing the SpinalDrive Environnement */ class SpinalDrive_Env {
     /**
    * Creates an instance of SpinalDrive_Env.
@@ -129636,7 +129874,7 @@ var changePasswordModelCtrl = function($scope, authService, $mdToast, $q, $mdDia
     };
 };
 
-},{"13e0780cfd79b086":"4enzJ","spinal-core-connectorjs":"cQPh9"}],"jyx8O":[function(require,module,exports,__globalThis) {
+},{"spinal-core-connectorjs":"cQPh9","13e0780cfd79b086":"4enzJ"}],"jyx8O":[function(require,module,exports,__globalThis) {
 /*
  * Copyright 2026 SpinalCom - www.spinalcom.com
  * 
