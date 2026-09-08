@@ -27,10 +27,10 @@ const angular = require('angular');
 import path from 'path';
 
 type VersionReturn = {
-  date: any,
-  versionNbr: number,
-  serverId?: number,
-  upload_pecent?: number,
+  date: any;
+  versionNbr: number;
+  serverId?: number;
+  upload_pecent?: number;
 };
 
 type FileVersionReturn = {
@@ -58,18 +58,24 @@ const controller = {
       $scope.descriptonText = '';
       $scope.onClickVersion = (ev, item: VersionReturn) => {
         if (item === $scope.currentVersion) return true;
-        const confirm = $mdDialog.confirm()
+        const confirm = $mdDialog
+          .confirm()
           .title('Confirm the current version modification.')
-          .textContent(`The current version will be set from version ${$scope.currentVersion.versionNbr} to version ${item.versionNbr}.`)
+          .textContent(
+            `The current version will be set from version ${$scope.currentVersion.versionNbr} to version ${item.versionNbr}.`
+          )
           .ariaLabel('Confirm the current version modification.')
-          .clickOutsideToClose(true).targetEvent(ev).ok('ok')
+          .clickOutsideToClose(true)
+          .targetEvent(ev)
+          .ok('ok')
           .cancel('cancel');
 
         $mdDialog.show(confirm).then(
           function () {
             fileVersionManagerService.setVersion(item.versionNbr);
           },
-          function () { });
+          function () {}
+        );
       };
       $scope.canPreview = () => {
         const ext = path.extname($scope.filename).toLocaleUpperCase();
@@ -86,11 +92,14 @@ const controller = {
           console.error('item.serverId not set');
           return;
         }
-        const img = await $http.get(`/sceen/_?u=${item.serverId}`,
-          { responseType: 'arraybuffer' }
-        );
+        const img = await $http.get(`/sceen/_?u=${item.serverId}`, {
+          responseType: 'arraybuffer',
+        });
         // img is a buffer of the image
-        const ext = path.extname($scope.filename).toLocaleLowerCase().replace('.', '');
+        const ext = path
+          .extname($scope.filename)
+          .toLocaleLowerCase()
+          .replace('.', '');
         const imgsrc = `data:image/${ext};base64,${btoa(String.fromCharCode(...new Uint8Array(img.data)))}`;
 
         $mdDialog.show({
@@ -111,22 +120,26 @@ const controller = {
           (text) => {
             $scope.descriptonVersion = item.versionNbr;
             $scope.descriptonText = text;
-            $scope.descriptonDialog = $mdDialog.show({
-              contentElement: document.getElementById('version-description-dialog'),
-              parent: angular.element(document.body),
-              targetEvent: ev,
-              clickOutsideToClose: true,
-            }).then((result) => {
-            }).catch((err) => {
-            });
+            $scope.descriptonDialog = $mdDialog
+              .show({
+                contentElement: document.getElementById(
+                  'version-description-dialog'
+                ),
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+              })
+              .then((result) => {})
+              .catch((err) => {});
           },
           (err) => {
             console.error(err);
-          },
+          }
         );
       };
       $scope.onDescriptionSave = () => {
-        fileVersionManagerService.setDescription($scope.descriptonVersion, $scope.descriptonText)
+        fileVersionManagerService
+          .setDescription($scope.descriptonVersion, $scope.descriptonText)
           .then(() => {
             $mdDialog.hide();
           });
@@ -137,110 +150,129 @@ const controller = {
 
       $scope.onClickDeleteVersion = (ev, item: VersionReturn) => {
         if (item === $scope.currentVersion) return true;
-        const confirm = $mdDialog.confirm()
+        const confirm = $mdDialog
+          .confirm()
           .title(`Confirm the deletion of the version ${item.versionNbr}.`)
-          .textContent(`The Version ${item.versionNbr} of the ${$scope.filename
-            } file will be deleted. This action is not reversible.`)
+          .textContent(
+            `The Version ${item.versionNbr} of the ${
+              $scope.filename
+            } file will be deleted. This action is not reversible.`
+          )
           .ariaLabel(`Confirm the deletion of the version ${item.versionNbr}.`)
-          .clickOutsideToClose(true).targetEvent(ev).ok('ok')
+          .clickOutsideToClose(true)
+          .targetEvent(ev)
+          .ok('ok')
           .cancel('cancel');
 
         $mdDialog.show(confirm).then(
           function () {
             return fileVersionManagerService.removeVersionById(item.versionNbr);
           },
-          function () { });
+          function () {}
+        );
       };
 
       $scope.onClickUpload = () => {
-        angular.element('.version-manager-container input#input-upload').click();
+        $('.version-manager-container input#input-upload')?.click();
       };
       $scope.addNewVerion = (file) => {
         if (file) {
-          fileVersionManagerService.addNewVersion(file).then(
-            (res) => {
-              // // to do later
-              // if (res.versionFilename !== $scope.filename) {
-              //   // filename changed
-              //   var confirm = $mdDialog.confirm()
-              //     .title('Update Name ?')
-              //     .textContent('The new file version have a new name do you wish to update it ?')
-              //     .ariaLabel('Update Name ?')
-              //     .ok('Yes')
-              //     .cancel('No');
+          fileVersionManagerService.addNewVersion(file).then((res) => {
+            // // to do later
+            // if (res.versionFilename !== $scope.filename) {
+            //   // filename changed
+            //   var confirm = $mdDialog.confirm()
+            //     .title('Update Name ?')
+            //     .textContent('The new file version have a new name do you wish to update it ?')
+            //     .ariaLabel('Update Name ?')
+            //     .ok('Yes')
+            //     .cancel('No');
 
-              //   $mdDialog.show(confirm).then(function () {
-              //     // $scope.status = 'You decided to get rid of your debt.';
-              //     $scope.filename = res.versionFilename;
-              //   }, function () {
-              //     $scope.status = 'You decided to keep your debt.';
-              //   });
+            //   $mdDialog.show(confirm).then(function () {
+            //     // $scope.status = 'You decided to get rid of your debt.';
+            //     $scope.filename = res.versionFilename;
+            //   }, function () {
+            //     $scope.status = 'You decided to keep your debt.';
+            //   });
 
-              // }
-              res.path.then(
-                () => { // download finish
-                  if (res.filename === $scope.filename) {
-                    for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
-                      const element: VersionReturn = $scope.fileVersion[idx];
-                      if (res.version === element.versionNbr) {
-                        if (element.upload_pecent) {
-                          delete element.upload_pecent;
-                        } break;
+            // }
+            res.path.then(
+              () => {
+                // download finish
+                if (res.filename === $scope.filename) {
+                  for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
+                    const element: VersionReturn = $scope.fileVersion[idx];
+                    if (res.version === element.versionNbr) {
+                      if (element.upload_pecent) {
+                        delete element.upload_pecent;
                       }
+                      break;
                     }
                   }
-                },
-                () => { // download error
-                  console.error('download error');
-                },
-                (progress) => { // download progress
-                  if (res.filename === $scope.filename) {
-                    for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
-                      const element: VersionReturn = $scope.fileVersion[idx];
-                      if (res.version === element.versionNbr) {
-                        element.upload_pecent = progress;
-                        break;
-                      }
+                }
+              },
+              () => {
+                // download error
+                console.error('download error');
+              },
+              (progress) => {
+                // download progress
+                if (res.filename === $scope.filename) {
+                  for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
+                    const element: VersionReturn = $scope.fileVersion[idx];
+                    if (res.version === element.versionNbr) {
+                      element.upload_pecent = progress;
+                      break;
                     }
                   }
-                },
-              );
-            },
-          );
+                }
+              }
+            );
+          });
         }
       };
 
-      $scope.$watch(
-        '$viewContentLoaded',
-        function () {
-          const uplaodInput = $('.version-manager-container input#input-upload');
-          const handleInput = () => {
-            $scope.addNewVerion(uplaodInput[0].files[0]);
-          };
-          uplaodInput.on('change', handleInput);
-          fileVersionManagerService.controllerOpenRegister(
-            (data: FileVersionReturn) => { // on change
-              if (data.file._info.model_type?.get() !== 'Path') $scope.canUpload = false;
-              else $scope.canUpload = true;
-              $scope.filename = data.file.name.get();
-              mergeArray($scope.fileVersion, data.versions, (origin, to) => {
-                return origin.versionNbr === to.versionNbr && origin.date === to.date;
-              }, (origin, to) => {
+      $scope.$watch('$viewContentLoaded', function () {
+        const uplaodInput = $('.version-manager-container input#input-upload');
+        const handleInput = () => {
+          $scope.addNewVerion(uplaodInput[0].files[0]);
+        };
+        uplaodInput.on('change', handleInput);
+        fileVersionManagerService.controllerOpenRegister(
+          (data: FileVersionReturn) => {
+            // on change
+            if (data.file._info.model_type?.get() !== 'Path')
+              $scope.canUpload = false;
+            else $scope.canUpload = true;
+            $scope.filename = data.file.name.get();
+            mergeArray(
+              $scope.fileVersion,
+              data.versions,
+              (origin, to) => {
+                return (
+                  origin.versionNbr === to.versionNbr && origin.date === to.date
+                );
+              },
+              (origin, to) => {
                 return origin.versionNbr - to.versionNbr;
-              });
-              for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
-                const element: VersionReturn = $scope.fileVersion[idx];
-                if (data.current === element.versionNbr) {
-                  $scope.currentVersion = element; break;
-                }
               }
-              // $scope.$apply();
-            },
-            () => { // on destroy
-              uplaodInput.off('change', handleInput);
-
-            });
-        });
-    }],
+            );
+            for (let idx = 0; idx < $scope.fileVersion.length; idx++) {
+              const element: VersionReturn = $scope.fileVersion[idx];
+              if (data.current === element.versionNbr) {
+                $scope.currentVersion = element;
+                break;
+              }
+            }
+            // $scope.$apply();
+          },
+          () => {
+            // on destroy
+            uplaodInput.off('change', handleInput);
+          }
+        );
+      });
+    },
+  ],
 };
 export default controller;

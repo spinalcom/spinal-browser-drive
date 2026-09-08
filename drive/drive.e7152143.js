@@ -146995,7 +146995,7 @@ const controller = {
                 }, function() {});
             };
             $scope.onClickUpload = ()=>{
-                angular.element('.version-manager-container input#input-upload').click();
+                $('.version-manager-container input#input-upload')?.click();
             };
             $scope.addNewVerion = (file)=>{
                 if (file) fileVersionManagerService.addNewVersion(file).then((res)=>{
@@ -147016,6 +147016,7 @@ const controller = {
                     //   });
                     // }
                     res.path.then(()=>{
+                        // download finish
                         if (res.filename === $scope.filename) for(let idx = 0; idx < $scope.fileVersion.length; idx++){
                             const element = $scope.fileVersion[idx];
                             if (res.version === element.versionNbr) {
@@ -147024,8 +147025,10 @@ const controller = {
                             }
                         }
                     }, ()=>{
+                        // download error
                         console.error('download error');
                     }, (progress)=>{
+                        // download progress
                         if (res.filename === $scope.filename) for(let idx = 0; idx < $scope.fileVersion.length; idx++){
                             const element = $scope.fileVersion[idx];
                             if (res.version === element.versionNbr) {
@@ -147043,6 +147046,7 @@ const controller = {
                 };
                 uplaodInput.on('change', handleInput);
                 fileVersionManagerService.controllerOpenRegister((data)=>{
+                    // on change
                     if (data.file._info.model_type?.get() !== 'Path') $scope.canUpload = false;
                     else $scope.canUpload = true;
                     $scope.filename = data.file.name.get();
@@ -147060,6 +147064,7 @@ const controller = {
                     }
                 // $scope.$apply();
                 }, ()=>{
+                    // on destroy
                     uplaodInput.off('change', handleInput);
                 });
             });
