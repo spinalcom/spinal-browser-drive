@@ -309,3 +309,73 @@ md-toast.md-error-toast-theme div.md-toast-content {
 .breadcrumb .breadcrumb-item .md-avatar-icon > svg {
   margin-bottom: -5px;
 }
+
+.header-btn-container {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+}
+
+.header-separator {
+  /* Separator between header elements */
+  background-color: #2a2a2a;
+  width: 3px;
+  height: 40px;
+  border-radius: 6px;
+  margin: 0 5px;
+}
+
+.header-user-btn {
+  /* Styles for the header user button */
+  /* looks like a pill */
+  border-radius: 20px;
+  background-color: #303030;
+  border: 1px solid #303030;
+  color: white;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.header-user-btn span {
+  margin-right: 5px;
+}
+
+.header-layout-btn {
+  /* Styles for the header layout button */
+  /* looks like a pill */
+  border-radius: 20px;
+  height: 44px;
+  border: 1px solid #222222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.header-layout-btn span {
+  margin-right: 5px;
+}
+
+.header-user-btn-icon {
+  color: white !important;
+}
+.header-user-btn:hover .header-user-btn-icon,
+.header-user-btn:focus .header-user-btn-icon,
+.header-user-btn:active .header-user-btn-icon,
+.header-user-btn:hover span,
+.header-user-btn:focus span,
+.header-user-btn:active span {
+  color: black !important;
+}
+@media (max-width: 600px) {
+  .header-btn-container span {
+    display: none;
+  }
+  .header-user-btn,
+  .header-layout-btn {
+    min-width: 44px;
+  }
+}

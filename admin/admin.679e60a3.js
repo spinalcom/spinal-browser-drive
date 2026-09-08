@@ -124049,7 +124049,29 @@ angular.module("app.route").config([
 ]);
 
 },{"2d9544ed5a947439":"4enzJ"}],"VD2Ag":[function(require,module,exports,__globalThis) {
-var angular = require("f6b696a3cbf9a60b");
+/*
+ * Copyright 2026 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */ var angular = require("f6b696a3cbf9a60b");
 var $ = require("3030fa649f2b78cc");
 compareTo.$inject = [];
 function compareTo() {
@@ -124086,7 +124108,7 @@ angular.module("app.directives").directive("navbar", [
                 layoutInfo: "=info"
             },
             replace: true,
-            template: '<li ng-repeat="layout in layoutInfo"  id="{{layout.id}}"><a >{{layout.name}}</a></li>',
+            template: '<md-menu-item ng-repeat="layout in layoutInfo"  id="{{layout.id}}"><md-button ng-click="">{{layout.name}}</md-button></md-menu-item>',
             link: (scope)=>{
                 goldenLayoutService.wait_ready().then(()=>{
                     let create_callback = (goldenLayoutService, layout)=>{

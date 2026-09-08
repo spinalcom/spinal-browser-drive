@@ -1,23 +1,35 @@
 <md-toolbar class="md-theme-light">
-  <section layout="row" layout-sm="row" layout-align="right center" layout-wrap style="height: 64px;">
-    <a class="dropdown-toggle navbar-text" data-toggle="dropdown" role="button" aria-haspopup="true"
-      aria-expanded="false" style="margin-top: 0px; margin-bottom: 0px;">
-      <img src="assets/imgs/logo_medium.png" alt="SpinalCom" style="height: 42px;margin-top: 4px;" />
-      <span class="caret" ng-if="connected"></span>
-    </a>
-    <ul class="dropdown-menu" ng-if="connected">
-      <menu-glayout info="layouts"></menu-glayout>
-      <li ng-if="layouts.length == 0">
-        No layout available
-      </li>
-    </ul>
+  <section layout="row" layout-sm="row" layout-align="right center" layout-wrap
+    style="height: 64px; flex-wrap: nowrap;">
+    <img src="assets/imgs/logo_medium.png" alt="SpinalCom" style="height: 42px;padding: 4px 10px;" />
     <div flex></div>
-    <div ng-if="connected" style="right:0;">
-      <span style="vertical-align: sub;">{{username}}</span>
-      <md-button class="md-fab" aria-label="btn.label" style="height: 40px; width: 40px;" ng-click="clickUser()">
-        <ng-md-icon icon="person" style="fill:white; height: 24px;" class=""></ng-md-icon>
-      </md-button>
+    <div ng-if="connected" class="header-btn-container">
+      <md-menu md-position-mode="target bottom">
+        <md-button ng-click="$mdMenu.open($event)" class="header-layout-btn" aria-label="Open sample menu">
+          <md-tooltip>
+            Add layout
+          </md-tooltip>
+          <span>Add layout</span>
+          <md-icon>library_add</md-icon>
 
+        </md-button>
+        <md-menu-content>
+          <menu-glayout info="layouts"></menu-glayout>
+          <md-menu-item ng-if="layouts.length == 0">
+            No layout available
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+
+      <div class="header-separator"></div>
+      <md-button class="header-user-btn" aria-label="btn.label" ng-click="clickUser()">
+        <span>{{username}}</span>
+        <md-tooltip>
+          Open sidebar
+        </md-tooltip>
+
+        <md-icon class="header-user-btn-icon">person</md-icon>
+      </md-button>
     </div>
   </section>
   </section>
