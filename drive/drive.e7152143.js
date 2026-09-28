@@ -124366,11 +124366,16 @@ angular.module("app.spinalcom").factory("ngSpinalCore", [
             let url_path = '';
             if ((0, _spinalCoreConnectorjs.FileSystem).CONNECTOR_TYPE === 'Node' || (0, _spinalCoreConnectorjs.FileSystem).is_cordova) {
                 url_path = `${a._protocol}//${a._url}`;
-                if (a._port) url_path += `:${a._port}`;
+                if (a._port) url_path += `:${a._port}/get_change_user_password`;
             } else url_path = `/get_change_user_password`;
             url_path = `${url_path}?e=${username}&op=${password}&np=${new_password}`;
-            const data = await service.conn._axiosInst(url_path);
-            return data.data;
+            try {
+                const data = await service.conn._axiosInst(url_path);
+                return data.data;
+            } catch (error) {
+                console.error(error);
+                throw "Error changing password";
+            }
         };
         return service;
     }
