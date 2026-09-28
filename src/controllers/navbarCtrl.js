@@ -123,6 +123,7 @@ angular
                     "$mdToast",
                     "$q",
                     "$mdDialog",
+                    'ngSpinalCore',
                     changePasswordModelCtrl
                   ]
                 });
@@ -239,7 +240,8 @@ var changePasswordModelCtrl = function (
   authService,
   $mdToast,
   $q,
-  $mdDialog
+  $mdDialog,
+  ngSpinalCore
 ) {
   $scope.passwordInputType = "password";
   $scope.showPassword = function () {
@@ -260,59 +262,20 @@ var changePasswordModelCtrl = function (
   $scope.onError = function (err) {
     $mdToast.showSimple("Error : " + err);
   };
-  let options = location.host + "/";
-
-  $scope.change_password = (user_id, password, new_password) => {
-    let deferred = $q.defer();
-    SpinalUserManager.change_password(
-      options,
-      user_id,
-      password,
-      new_password,
-      function () {
-        deferred.resolve();
-      },
-      function (err) {
-        deferred.reject(err);
-      }
-    );
-    return deferred.promise;
-  };
-
-  $scope.get_user_id = (user_name, password) => {
-    let deferred = $q.defer();
-    SpinalUserManager.get_user_id(
-      options,
-      user_name,
-      password,
-      function (response) {
-        let id = parseInt(response);
-        deferred.resolve(id);
-      },
-      function (err) {
-        deferred.reject(err);
-      }
-    );
-    return deferred.promise;
-  };
 
   $scope.changePasswordSubmit = (newpasswordForm, change_password) => {
     if (newpasswordForm.$valid) {
       let user = authService.get_user();
-      $scope
-        .get_user_id(user.username, change_password.currentPassword)
+      ngSpinalCore
+        .change_password(
+          user.username,
+          change_password.currentPassword,
+          change_password.password
+        )
         .then(function () {
-          $scope
-            .change_password(
-              user.username,
-              change_password.currentPassword,
-              change_password.password
-            )
-            .then(function () {
-              authService.save_user(user.username, change_password.password);
-              $mdToast.showSimple("Password has been successfully modified.");
-              $mdDialog.hide();
-            }, $scope.onError);
+          authService.save_user(user.username, change_password.password);
+          $mdToast.showSimple("Password has been successfully modified.");
+          $mdDialog.hide();
         }, $scope.onError);
       return;
     }

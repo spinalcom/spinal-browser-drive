@@ -124362,6 +124362,16 @@ angular.module("app.spinalcom").factory("ngSpinalCore", [
             mapModelDictionary.set(model.data.value, promise);
             return promise;
         };
+        service.change_password = async function(username, password, new_password) {
+            let url_path = '';
+            if ((0, _spinalCoreConnectorjs.FileSystem).CONNECTOR_TYPE === 'Node' || (0, _spinalCoreConnectorjs.FileSystem).is_cordova) {
+                url_path = `${a._protocol}//${a._url}`;
+                if (a._port) url_path += `:${a._port}`;
+            } else url_path = `/get_change_user_password`;
+            url_path = `${url_path}?e=${username}&op=${password}&np=${new_password}`;
+            const data = await service.conn._axiosInst(url_path);
+            return data.data;
+        };
         return service;
     }
 ]);
@@ -129769,6 +129779,7 @@ angular.module("app.controllers").controller("RightMenuCtrl", [
                             "$mdToast",
                             "$q",
                             "$mdDialog",
+                            'ngSpinalCore',
                             changePasswordModelCtrl
                         ]
                     });
@@ -129866,7 +129877,7 @@ angular.module("app.controllers").controller("RightMenuCtrl", [
         for(var i = 0; i < $scope.layouts.length; i++)goldenLayoutService.registerPanel($scope.layouts[i]);
     }
 ]);
-var changePasswordModelCtrl = function($scope, authService, $mdToast, $q, $mdDialog) {
+var changePasswordModelCtrl = function($scope, authService, $mdToast, $q, $mdDialog, ngSpinalCore) {
     $scope.passwordInputType = "password";
     $scope.showPassword = function() {
         $scope.passwordInputType = "text";
@@ -129885,35 +129896,13 @@ var changePasswordModelCtrl = function($scope, authService, $mdToast, $q, $mdDia
     $scope.onError = function(err) {
         $mdToast.showSimple("Error : " + err);
     };
-    let options = location.host + "/";
-    $scope.change_password = (user_id, password, new_password)=>{
-        let deferred = $q.defer();
-        (0, _spinalCoreConnectorjs.SpinalUserManager).change_password(options, user_id, password, new_password, function() {
-            deferred.resolve();
-        }, function(err) {
-            deferred.reject(err);
-        });
-        return deferred.promise;
-    };
-    $scope.get_user_id = (user_name, password)=>{
-        let deferred = $q.defer();
-        (0, _spinalCoreConnectorjs.SpinalUserManager).get_user_id(options, user_name, password, function(response) {
-            let id = parseInt(response);
-            deferred.resolve(id);
-        }, function(err) {
-            deferred.reject(err);
-        });
-        return deferred.promise;
-    };
     $scope.changePasswordSubmit = (newpasswordForm, change_password)=>{
         if (newpasswordForm.$valid) {
             let user = authService.get_user();
-            $scope.get_user_id(user.username, change_password.currentPassword).then(function() {
-                $scope.change_password(user.username, change_password.currentPassword, change_password.password).then(function() {
-                    authService.save_user(user.username, change_password.password);
-                    $mdToast.showSimple("Password has been successfully modified.");
-                    $mdDialog.hide();
-                }, $scope.onError);
+            ngSpinalCore.change_password(user.username, change_password.currentPassword, change_password.password).then(function() {
+                authService.save_user(user.username, change_password.password);
+                $mdToast.showSimple("Password has been successfully modified.");
+                $mdDialog.hide();
             }, $scope.onError);
             return;
         }

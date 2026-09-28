@@ -23,7 +23,7 @@
  */
 
 var angular = require("angular");
-import { spinalCore, FileSystem, File, Ptr } from "spinal-core-connectorjs";
+import { spinalCore, FileSystem, File, Ptr, getUrlPath } from "spinal-core-connectorjs";
 
 angular.module("app.spinalcom").factory("ngSpinalCore", [
   "$q",
@@ -106,6 +106,21 @@ angular.module("app.spinalcom").factory("ngSpinalCore", [
       mapModelDictionary.set(model.data.value, promise);
       return promise;
     };
+
+    service.change_password = async function (username, password, new_password) {
+      let url_path = '';
+      if (FileSystem.CONNECTOR_TYPE === 'Node' || FileSystem.is_cordova) {
+        url_path = `${a._protocol}//${a._url}`;
+        if (a._port) url_path += `:${a._port}`;
+      } else {
+        url_path = `/get_change_user_password`;
+      }
+      url_path = `${url_path}?e=${username}&op=${password}&np=${new_password}`;
+      const data = await service.conn._axiosInst(url_path);
+      return data.data;
+    };
+
+
     return service;
   }
 ]);
