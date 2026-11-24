@@ -1,0 +1,13 @@
+{
+  "name": "spinal-studio-svelte",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:graphe": "vitest run tests/graphe",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "5.1.1"
+  }
+}
