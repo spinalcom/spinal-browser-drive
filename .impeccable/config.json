@@ -7,13 +7,13 @@
         "rule": "overused-font",
         "value": "geist",
         "createdAt": "2026-11-24T09:28:39.866Z",
-        "reason": "Police de l'identité viewer-rs, reprise volontairement (D5 identité commune)"
+        "reason": "Choix de conception (spec 05 §2.2, décision D5) : police de l'identité viewer-rs, reprise pour unifier viewer et application"
       },
       {
         "rule": "overused-font",
         "value": "geist mono",
         "createdAt": "2026-11-24T09:28:39.871Z",
-        "reason": "Police mono de l'identité viewer-rs (D5)"
+        "reason": "Choix de conception (spec 05 §2.2, D5) : police mono de viewer-rs, pour les valeurs tabulaires"
       },
       {
         "rule": "cramped-padding",
