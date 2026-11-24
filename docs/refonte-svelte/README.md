@@ -30,7 +30,7 @@ Critère de réussite : **les 183 capacités** recensées dans [`capacites-studi
 
 | Fichier | Contenu |
 |---|---|
-| [00-points-concrets.md](00-points-concrets.md) | **Liste concrète et numérotée de ce qu'il faut faire, à commenter** |
+| [00-points-concrets.md](00-points-concrets.md) | **Liste complète et numérotée de ce qu'il faut faire (3 000 points, 183 capacités), à commenter** |
 | [01-architecture.md](01-architecture.md) | Stack, structure du code, couche de données hub, réactivité, viewer, actions, tâches asynchrones, sécurité, performance, build et déploiement |
 | [02-ux.md](02-ux.md) | Principes UX, structure de l'application, modèles d'interaction transverses (sélection, actions, confirmations, lots, asynchrone, erreurs), clavier, accessibilité, responsive |
 | [03-drive-admin.md](03-drive-admin.md) | Écrans du Drive, préparation d'un jumeau, inspecteurs, administration du hub |
