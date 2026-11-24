@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Accueil — Drive</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  main { max-width: 1240px; margin: 0 auto; padding: 32px 32px 96px; }
+  .hello { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+  .hello h1 { font: 600 24px/30px var(--sans); letter-spacing: -.015em; margin: 0 0 4px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .twin { padding: 16px; display: flex; flex-direction: column; gap: 14px; cursor: pointer; transition: box-shadow .15s, transform .15s; }
+  .twin:hover { box-shadow: var(--shadow-2); transform: translateY(-1px); }
+  .twin .thumb { height: 128px; border-radius: 10px; background: linear-gradient(160deg, #eef3f7, #dfe7ee); position: relative; overflow: hidden; }
+  :root[data-theme="dark"] .twin .thumb { background: linear-gradient(160deg, #1b2733, #131d27); }
+  .twin .thumb svg.iso { position: absolute; inset: 0; margin: auto; width: 70%; height: 90%; }
+  .twin .head { display: flex; align-items: flex-start; gap: 10px; }
+  .twin .name { font: 600 15px/20px var(--sans); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .steps .s { display: flex; flex-direction: column; gap: 6px; }
+  .steps .s .l { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+  .steps .s .l .i { width: 12px; height: 12px; }
+  .steps .bar { height: 3px; }
+  .sec { display: flex; align-items: center; justify-content: space-between; margin: 32px 0 12px; }
+  .recent { padding: 4px 0; }
+  .recent .r { display: grid; grid-template-columns: 28px 1fr 220px 120px 32px; align-items: center; gap: 12px; height: 48px; padding: 0 16px; border-top: 1px solid var(--line); }
+  .recent .r:first-child { border-top: 0; }
+  .recent .r:hover { background: var(--sheet-hover); }
+  .fic { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; }
+  .add { border: 1.5px dashed var(--line-2); background: transparent; box-shadow: none; display: grid; place-items: center; text-align: center; color: var(--muted); min-height: 280px; }
+  .add:hover { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
+  .add .big { width: 44px; height: 44px; border-radius: 12px; background: var(--ink); color: #fff; display: grid; place-items: center; margin: 0 auto 12px; }
+  .pins { position: relative; }
+</style>
+</head>
+<body>
+<main>
+  <div class="hello">
+    <div>
+      <div class="caption" style="margin-bottom:6px">Lundi 24 novembre</div>
+      <h1>Bonjour, admin</h1>
+      <div class="t2">3 jumeaux · 2 conversions en cours · 148 fichiers</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <a class="btn" href="explorateur.html" data-i="folder">Mes fichiers</a>
+      <a class="btn primary" href="nouveau-jumeau.html" data-i="sparkles">Nouveau jumeau</a>
+    </div>
+  </div>
+
+  <div class="sec"><div class="group-title">Jumeaux numériques</div><a class="btn ghost sm" href="explorateur.html">Tout voir</a></div>
+  <div class="grid pins">
+    <span class="ux-pin ux" style="left:-11px;top:-11px">1</span>
+    <article class="card twin" onclick="location.href='jumeau.html'">
+      <div class="thumb"><svg class="iso" viewBox="0 0 200 160"><g fill="none" stroke="#9fb1c1" stroke-width="1.4">
+        <path d="M100 20 160 50 160 120 100 150 40 120 40 50Z" fill="#fff" fill-opacity=".55"/><path d="M40 50 100 80 160 50M100 80v70"/>
+        <path d="M40 75 100 105 160 75M40 98 100 128 160 98" stroke-opacity=".6"/></g>
+        <path d="M100 80 160 50 160 120 100 150Z" fill="#ff7a00" fill-opacity=".14"/></svg></div>
+      <div class="head"><div style="flex:1"><div class="name">Tour Horizon</div><div class="caption">Projets › Tour Horizon · ouvert il y a 2 h</div></div>
+        <span class="badge ok" data-i="check">Prêt</span></div>
+      <div class="steps">
+        <div class="s"><span class="l" data-i="file-box">3/3 maquettes</span><div class="bar ok"><i style="width:100%"></i></div></div>
+        <div class="s"><span class="l" data-i="building-2">Espaces</span><div class="bar ok"><i style="width:100%"></i></div></div>
+        <div class="s"><span class="l" data-i="layers">Classés</span><div class="bar"><i style="width:72%"></i></div></div>
+        <div class="s"><span class="l" data-i="activity">GTB</span><div class="bar"><i style="width:35%"></i></div></div>
+      </div>
+      <div style="display:flex;gap:8px"><a class="btn ink sm" href="jumeau.html" data-i="arrow-up-right" style="flex:1;justify-content:center">Ouvrir dans le Studio</a></div>
+    </article>
+
+    <article class="card twin" onclick="location.href='jumeau.html'">
+      <div class="thumb"><svg class="iso" viewBox="0 0 200 160"><g fill="none" stroke="#9fb1c1" stroke-width="1.4">
+        <path d="M30 70 100 35 170 70 170 110 100 145 30 110Z" fill="#fff" fill-opacity=".55"/><path d="M30 70 100 105 170 70M100 105v40"/></g></svg>
+        <div style="position:absolute;left:12px;bottom:12px;right:12px" class="card"><div style="padding:8px 10px;display:flex;gap:8px;align-items:center;font-size:12px">
+          <span style="color:var(--info)" data-i="loader-2" data-icls="spin"></span><span style="flex:1">Conversion CVC.ifc — étape 4/6</span><span class="num">62 %</span></div></div></div>
+      <div class="head"><div style="flex:1"><div class="name">Campus Delta</div><div class="caption">Projets › Campus · modifié hier</div></div>
+        <span class="badge info" data-i="loader-2" data-icls="spin">Conversion</span></div>
+      <div class="steps">
+        <div class="s"><span class="l" data-i="file-box">1/2 maquettes</span><div class="bar info"><i style="width:62%"></i></div></div>
+        <div class="s"><span class="l" data-i="building-2">Espaces</span><div class="bar"><i style="width:0"></i></div></div>
+        <div class="s"><span class="l" data-i="layers">Classés</span><div class="bar"><i style="width:0"></i></div></div>
+        <div class="s"><span class="l" data-i="activity">GTB</span><div class="bar"><i style="width:0"></i></div></div>
+      </div>
+      <div style="display:flex;gap:8px"><button class="btn sm" style="flex:1;justify-content:center" data-i="eye">Suivre la conversion</button></div>
+    </article>
+
+    <a class="card twin add" href="nouveau-jumeau.html">
+      <div><div class="big" data-i="plus"></div><div class="subtitle" style="color:var(--text)">Nouveau jumeau</div>
+        <div class="caption" style="max-width:220px;margin:4px auto 0">Déposez vos maquettes Revit ou IFC : conversion et scène sont préparées pour vous.</div></div>
+    </a>
+  </div>
+
+  <div class="sec"><div class="group-title">Récemment modifiés</div><a class="btn ghost sm" href="explorateur.html">Ouvrir le Drive</a></div>
+  <div class="card recent pins">
+    <span class="ux-pin ux" style="left:-11px;top:-11px">2</span>
+    <div class="r"><span class="fic" style="background:#eaf1fb;color:var(--info)" data-i="file-box"></span><div><b style="font-weight:500">TOUR_HORIZON_ARC.rvt</b> <span class="badge accent" style="margin-left:6px">v4</span><div class="caption">Projets › Tour Horizon › Maquettes</div></div><span class="caption">Nouvelle version par admin</span><span class="caption">il y a 2 h</span><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+    <div class="r"><span class="fic" style="background:#fdeceb;color:var(--danger)" data-i="file-text"></span><div><b style="font-weight:500">CCTP_lot_CVC.pdf</b><div class="caption">Projets › Tour Horizon › Documents</div></div><span class="caption">Partagé avec m.durand</span><span class="caption">hier, 17:42</span><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+    <div class="r"><span class="fic" style="background:#eaf6ef;color:var(--ok)" data-i="file-image"></span><div><b style="font-weight:500">Facade_nord.jpg</b><div class="caption">Projets › Tour Horizon › Photos</div></div><span class="caption">Déposé par admin</span><span class="caption">21 nov.</span><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+    <div class="r"><span class="fic" style="background:var(--ground-2);color:var(--text-2)" data-i="folder"></span><div><b style="font-weight:500">Relevés 2026</b><div class="caption">Projets › Campus</div></div><span class="caption">Créé par admin</span><span class="caption">20 nov.</span><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+  </div>
+</main>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Accueil</h3>
+  <ol>
+    <li><div><b>Les jumeaux d'abord, avec leur état de préparation.</b> Chaque carte montre où en est le jumeau (maquettes, espaces, classements, GTB) et mène directement à l'action utile : ouvrir, ou suivre la conversion.<span class="was">on arrivait dans un dossier, sans savoir ce qui restait à faire.</span></div></li>
+    <li><div><b>Fichiers récents</b> avec ce qui a changé et qui l'a fait. Plus besoin de naviguer pour retrouver ce sur quoi on travaillait.<span class="was">aucune notion de récent.</span></div></li>
+    <li><div><b>Une seule action principale (orange)</b> : « Nouveau jumeau ». C'est le parcours qui compte le plus ; le reste est secondaire.</div></li>
+    <li><div><b>Ctrl K partout</b> : chercher un fichier ou un jumeau dans tout le Drive, ou lancer une action. Essayez-le.<span class="was">recherche limitée au dossier ouvert.</span></div></li>
+    <li><div><b>Les tâches longues</b> (icône de chargement en haut à droite, avec un compteur) restent visibles où qu'on soit.</div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>mount({ page: 'index.html' })</script>
+</body>
+</html>

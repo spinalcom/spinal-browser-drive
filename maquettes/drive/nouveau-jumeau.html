@@ -1,0 +1,108 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nouveau jumeau — Drive</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  main { max-width: 1120px; margin: 0 auto; padding: 28px 32px 110px; display: grid; grid-template-columns: 240px 1fr; gap: 32px; align-items: start; }
+  .steps { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 2px; }
+  .st { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 10px 8px; border-radius: 10px; align-items: start; }
+  .st .n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 600 12px/1 var(--mono); border: 1.5px solid var(--line-2); color: var(--muted); background: var(--sheet); }
+  .st.done .n { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .st.now { background: var(--sheet); box-shadow: var(--shadow-1); }
+  .st.now .n { background: var(--ink); border-color: var(--ink); color: #fff; box-shadow: 0 0 0 4px var(--accent-soft); }
+  .st b { font-weight: 500; display: block; }
+  .st.now b { font-weight: 600; }
+  .panel { padding: 28px; }
+  .panel h2 { font: 600 20px/26px var(--sans); letter-spacing: -.01em; margin: 0 0 4px; }
+  .drop { border: 2px dashed var(--line-2); border-radius: 14px; padding: 22px; display: flex; align-items: center; gap: 16px; margin: 20px 0 16px; background: var(--ground); }
+  .drop:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .drop .big { width: 48px; height: 48px; border-radius: 12px; background: var(--ink); color: #fff; display: grid; place-items: center; }
+  .src { display: grid; grid-template-columns: 22px 30px 1fr 150px 160px 32px; gap: 12px; align-items: center; padding: 10px 14px; }
+  .src + .src { border-top: 1px solid var(--line); }
+  .src .fic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; }
+  .src.off { opacity: .55; }
+  .ck { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--line-2); display: grid; place-items: center; }
+  .ck.on { background: var(--accent); border-color: var(--accent); color: #14202c; }
+  .ck .i { width: 12px; height: 12px; stroke-width: 3; }
+  .opt { display: flex; gap: 12px; padding: 14px; border-radius: 12px; border: 1px solid var(--line); align-items: flex-start; }
+  .opt.on { border-color: var(--accent); background: var(--accent-soft); }
+  .sw { width: 36px; height: 20px; border-radius: 999px; background: var(--ink); position: relative; flex: none; margin-top: 2px; }
+  .sw::after { content: ""; position: absolute; right: 3px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); }
+  .foot { display: flex; align-items: center; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .sum { padding: 16px 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+  .sum .k { font: 500 22px/28px var(--mono); }
+  .pos { position: relative; }
+</style>
+</head>
+<body>
+<main>
+  <nav class="steps pos" aria-label="Étapes">
+    <span class="ux-pin ux" style="left:-11px;top:-11px">1</span>
+    <div class="caption" style="padding:0 8px 10px">Nouveau jumeau</div>
+    <div class="st done"><span class="n" data-i="check"></span><div><b>Nom et emplacement</b><span class="caption">Tour Horizon · Projets</span></div></div>
+    <div class="st now"><span class="n">2</span><div><b>Maquettes</b><span class="caption">3 sur 5 retenues</span></div></div>
+    <div class="st"><span class="n">3</span><div><b>Préparation</b><span class="caption">conversion et scène</span></div></div>
+    <div class="caption" style="margin-top:16px;padding:10px;border-radius:10px;background:var(--ground-2);line-height:17px">Vous pouvez quitter à tout moment : ce qui est déjà créé reste dans le Drive, et la préparation continue en arrière-plan.</div>
+  </nav>
+
+  <section class="card panel pos">
+    <h2>Quelles maquettes composent le jumeau ?</h2>
+    <div class="t2">Déposez des fichiers ou choisissez-en dans le Drive. On convertit tout ce qui est reconnu.</div>
+
+    <div class="drop pos">
+      <span class="ux-pin ux" style="left:-11px;top:-11px">2</span>
+      <div class="big" data-i="upload" data-icls="lg"></div>
+      <div style="flex:1"><b style="font-weight:600">Déposez vos maquettes ici</b><div class="caption">RVT, IFC, NWD, DWG, SVF.ZIP… — plusieurs fichiers à la fois</div></div>
+      <button class="btn" data-i="folder">Choisir dans le Drive</button>
+      <button class="btn" data-i="file-up">Parcourir…</button>
+    </div>
+
+    <div class="card pos" style="overflow:hidden">
+      <span class="ux-pin ux" style="left:-11px;top:14px">3</span>
+      <div class="src"><span class="ck on" data-i="check"></span><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_ARC.rvt</div><div class="caption">Drive › Projets › Tour Horizon › Maquettes · v4</div></div><span class="badge ok" data-i="check">Déjà convertie</span><span class="caption">réutilisée telle quelle</span><button class="btn ghost sm icon" data-i="x"></button></div>
+      <div class="src"><span class="ck on" data-i="check"></span><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_CVC.ifc</div><div class="caption">déposé · 186 Mo</div></div><span class="badge accent">À convertir</span><div><div class="bar"><i style="width:100%"></i></div><div class="caption" style="margin-top:3px">transfert terminé</div></div><button class="btn ghost sm icon" data-i="x"></button></div>
+      <div class="src"><span class="ck on" data-i="check"></span><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_ELEC.ifc</div><div class="caption">déposé · 94 Mo</div></div><span class="badge accent">À convertir</span><div><div class="bar"><i style="width:38%"></i></div><div class="caption num" style="margin-top:3px">38 %</div></div><button class="btn ghost sm icon" data-i="x"></button></div>
+      <div class="src off"><span class="ck"></span><span class="fic" style="background:var(--danger-soft);color:var(--danger)" data-i="file-text"></span><div><div style="font-weight:500">CCTP_lot_CVC.pdf</div><div class="caption">déposé · 2 Mo</div></div><span class="badge">Pas une maquette</span><span class="caption">rangé dans Documents</span><button class="btn ghost sm icon" data-i="x"></button></div>
+      <div class="src off"><span class="ck"></span><span class="fic" style="background:var(--ground-2);color:var(--muted)" data-i="file"></span><div><div style="font-weight:500">export_rooms.xlsx</div><div class="caption">déposé · 48 Ko</div></div><span class="badge">Format non reconnu</span><span class="caption">ignoré</span><button class="btn ghost sm icon" data-i="x"></button></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px" class="pos">
+      <span class="ux-pin ux" style="left:-11px;top:-11px">4</span>
+      <div class="group-title">Préparation automatique</div>
+      <div class="opt on"><span class="sw"></span><div><b style="font-weight:500">Convertir les maquettes</b><div class="caption">Lancé dès la fin du transfert, une conversion à la fois par l'organ forge.</div></div></div>
+      <div class="opt on"><span class="sw"></span><div><b style="font-weight:500">Créer la scène par défaut</b><div class="caption">Toutes les maquettes prêtes, alignées sur la première (origine Revit commune). Modifiable ensuite dans le Studio.</div></div></div>
+    </div>
+
+    <div class="card sum">
+      <div><div class="caption">Maquettes</div><div class="k">3</div></div>
+      <div><div class="caption">À convertir</div><div class="k">2</div></div>
+      <div><div class="caption">Déjà prêtes</div><div class="k">1</div></div>
+      <div><div class="caption">Durée estimée</div><div class="k">~ 9 min</div></div>
+    </div>
+
+    <div class="foot">
+      <a class="btn ghost" href="index.html">Annuler</a>
+      <span style="flex:1"></span>
+      <button class="btn" data-i="chevron-left">Retour</button>
+      <a class="btn primary lg" href="jumeau.html" data-i="sparkles">Créer le jumeau et préparer</a>
+    </div>
+  </section>
+</main>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Nouveau jumeau</h3>
+  <ol>
+    <li><div><b>Un seul assistant, trois étapes</b>, à la place de cinq opérations dispersées : créer le jumeau, ouvrir le gestionnaire, ajouter chaque fichier, lancer chaque conversion, puis composer la scène dans le Studio.<span class="was">rien ne guidait ; il fallait connaître l'ordre.</span></div></li>
+    <li><div><b>Déposer directement dans l'assistant</b>, ou choisir dans le Drive. Les transferts démarrent tout de suite, pendant qu'on continue.</div></li>
+    <li><div><b>Tri automatique et expliqué</b> : maquettes à convertir, déjà converties (réutilisées sans rien refaire), fichiers qui ne sont pas des maquettes (rangés dans Documents), formats inconnus (ignorés), chacun avec sa raison. Deux fichiers de même nom ne sont plus confondus : on compare leur identité, pas leur nom.<span class="was">anti-doublon par le nom.</span></div></li>
+    <li><div><b>Préparation automatique</b> : conversion lancée sans clic de plus, scène par défaut créée avec toutes les maquettes prêtes. Un récapitulatif chiffré dit ce qui va se passer.</div></li>
+    <li><div><b>Le bouton dit ce qu'il fait</b> : « Créer le jumeau et préparer ». On arrive ensuite sur la page du jumeau, qui suit l'avancement.</div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>mount({ page: 'nouveau-jumeau.html' })</script>
+</body>
+</html>

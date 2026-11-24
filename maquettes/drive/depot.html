@@ -1,0 +1,134 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dépôt et tâches — Drive</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  body { overflow: hidden; }
+  .bg { position: absolute; inset: 48px 0 0 0; display: grid; grid-template-columns: 260px 1fr; filter: saturate(.9); }
+  .bg .l { background: var(--sheet); border-right: 1px solid var(--line); }
+  .bg .r { padding: 20px; }
+  .ghostrow { height: 36px; border-bottom: 1px solid var(--line); background: var(--sheet); }
+  .tray { position: fixed !important; top: 56px; right: 12px; left: auto; width: 420px; background: var(--sheet); border-radius: 16px; box-shadow: var(--shadow-3); z-index: 48; overflow: visible; }
+  body.show-ux .tray { right: 384px; }
+  .tray header { padding: 14px 16px 10px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); }
+  .tgroup { padding: 10px 8px 6px; }
+  .task { display: grid; grid-template-columns: 32px 1fr auto; gap: 10px; padding: 10px 8px; border-radius: 10px; align-items: start; }
+  .task:hover { background: var(--sheet-hover); }
+  .task .ti { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; }
+  .task .bar { margin-top: 8px; }
+  .task .sub { display: flex; justify-content: space-between; margin-top: 4px; }
+  .stepper { display: flex; gap: 3px; margin-top: 8px; }
+  .stepper i { flex: 1; height: 4px; border-radius: 3px; background: var(--ground-2); }
+  .stepper i.d { background: var(--ok); } .stepper i.c { background: var(--info); position: relative; overflow: hidden; }
+  .stepper i.c::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent); animation: sh 1.4s infinite; }
+  @keyframes sh { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+  .stepnames { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .details { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--ground); font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
+  .details div { display: flex; gap: 6px; align-items: center; }
+  .details .i { width: 13px; height: 13px; }
+  .pos { position: relative; }
+  .seg button { white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="bg"><div class="l"></div><div class="r"><div class="card" style="height:70vh;overflow:hidden">
+  <div class="ghostrow" style="background:var(--sheet)"></div><div class="ghostrow"></div><div class="ghostrow"></div><div class="ghostrow"></div><div class="ghostrow"></div></div></div></div>
+
+<!-- dialogue de collision -->
+<div class="scrim" style="z-index:45;padding-right:460px">
+  <div class="dialog pos" style="width:min(600px,100%)">
+    <span class="ux-pin ux" style="left:-11px;top:-11px">1</span>
+    <header><div class="ico-wrap" style="background:var(--warn-soft);color:var(--warn)" data-i="copy" data-icls="lg"></div>
+      <div><div class="title">3 fichiers portent déjà ce nom dans « Maquettes »</div><div class="caption" style="margin-top:2px">Sur 12 fichiers déposés. Les 9 autres sont en cours de transfert.</div></div></header>
+    <div class="body" style="display:flex;flex-direction:column;gap:10px">
+      <div class="card" style="overflow:hidden">
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 14px">
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_ARC.rvt</div><div class="caption">déposé : 418 Mo · existant : v4, 412 Mo</div></div></div>
+          <div class="seg" style="justify-self:end"><button class="on">Nouvelle version</button><button>Garder les 2</button><button>Ignorer</button></div></div>
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)">
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--danger)" data-i="file-text"></span><div><div style="font-weight:500">Notice_CVC.pdf</div><div class="caption">déposé : 2,1 Mo · existant : 2,1 Mo, identique</div></div></div>
+          <div class="seg" style="justify-self:end"><button>Nouvelle version</button><button>Garder les 2</button><button class="on">Ignorer</button></div></div>
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)">
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--ok)" data-i="file-image"></span><div><div style="font-weight:500">Plan_R+1.png</div><div class="caption">devient « Plan_R+1 (2).png »</div></div></div>
+          <div class="seg" style="justify-self:end"><button>Nouvelle version</button><button class="on">Garder les 2</button><button>Ignorer</button></div></div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px"><span class="ck" style="width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line-2);display:inline-block"></span>Retenir ce choix pour les prochains dépôts de cette session</label>
+    </div>
+    <footer><button class="btn">Tout ignorer</button><button class="btn primary" data-i="upload">Continuer avec ces choix</button></footer>
+  </div>
+</div>
+
+<!-- plateau des tâches -->
+<section class="tray" aria-label="Tâches">
+  <span class="ux-pin ux" style="left:-11px;top:-11px">2</span>
+  <header><span data-i="activity"></span><b style="flex:1;font-weight:600">Tâches</b><span class="badge info">3 en cours</span><button class="btn ghost sm" style="margin-left:4px">Effacer les terminées</button></header>
+  <div style="max-height:calc(100vh - 140px);overflow:auto">
+    <div class="tgroup"><div class="group-title" style="padding:0 8px 6px">En cours</div>
+      <div class="task">
+        <span class="ti" style="background:var(--accent-soft);color:var(--accent-ink)" data-i="upload"></span>
+        <div><div style="font-weight:500">Dépôt de 9 fichiers dans Maquettes</div>
+          <div class="bar"><i style="width:46%"></i></div>
+          <div class="sub caption"><span class="num">612 / 1 330 Mo · 48 Mo/s</span><span>~ 15 s</span></div></div>
+        <button class="btn ghost sm icon" data-i="x" title="Annuler le dépôt"></button>
+      </div>
+      <div class="task pos">
+        <span class="ux-pin ux" style="left:-14px;top:12px">3</span>
+        <span class="ti" style="background:var(--info-soft);color:var(--info)" data-i="refresh-cw"></span>
+        <div><div style="font-weight:500">Conversion TOUR_HORIZON_CVC.ifc</div><div class="caption">Jumeau Tour Horizon · v2</div>
+          <div class="stepper"><i class="d"></i><i class="d"></i><i class="d"></i><i class="c"></i><i></i><i></i></div>
+          <div class="stepnames"><span>Envoi</span><span>Télécharg.</span><span>Forge</span><b style="color:var(--info);font-weight:500">Conversion</b><span>Récup.</span><span>Prête</span></div>
+          <div class="sub caption" style="margin-top:6px"><span>État écrit par l'organ forge · il y a 3 s</span><span class="num">4 min 12 s</span></div></div>
+        <button class="btn ghost sm icon" data-i="more-horizontal"></button>
+      </div>
+      <div class="task">
+        <span class="ti" style="background:var(--info-soft);color:var(--info)" data-i="refresh-cw"></span>
+        <div><div style="font-weight:500">Conversion TOUR_HORIZON_ELEC.ifc</div><div class="caption">En file d'attente · 2e</div>
+          <div class="stepper"><i class="d"></i><i class="c"></i><i></i><i></i><i></i><i></i></div></div>
+        <button class="btn ghost sm icon" data-i="more-horizontal"></button>
+      </div>
+    </div>
+    <div class="tgroup" style="border-top:1px solid var(--line)"><div class="group-title" style="padding:4px 8px 6px">Terminées</div>
+      <div class="task pos">
+        <span class="ux-pin ux" style="left:-14px;top:12px">4</span>
+        <span class="ti" style="background:var(--danger-soft);color:var(--danger)" data-i="alert-circle"></span>
+        <div><div style="font-weight:500">Conversion Parking_v0.nwd <span class="badge danger" style="margin-left:4px">Échec</span></div>
+          <div class="details"><div style="color:var(--danger)"><span data-i="x-circle"></span>Forge : format NWD non accepté par ce compte APS</div>
+            <div class="muted"><span data-i="clock"></span>10 nov., 14:22 · étape 3/6</div></div>
+          <div style="display:flex;gap:6px;margin-top:8px"><button class="btn sm" data-i="refresh-cw">Réessayer</button><button class="btn sm ghost" data-i="copy">Copier le détail</button></div></div>
+        <span></span>
+      </div>
+      <div class="task">
+        <span class="ti" style="background:var(--warn-soft);color:var(--warn)" data-i="alert-triangle"></span>
+        <div><div style="font-weight:500">Déplacement de 14 éléments <span class="badge warn" style="margin-left:4px">Partiel</span></div>
+          <div class="details"><div style="color:var(--ok)"><span data-i="check"></span>12 déplacés vers Archives</div>
+            <div style="color:var(--warn)"><span data-i="ban"></span>2 ignorés : dossiers synchronisés</div></div></div>
+        <span></span>
+      </div>
+      <div class="task">
+        <span class="ti" style="background:var(--ok-soft);color:var(--ok)" data-i="check"></span>
+        <div><div style="font-weight:500">Conversion TOUR_HORIZON_ARC.rvt v4</div><div class="caption">Prête · il y a 2 h · 3 min 40 s</div></div>
+        <button class="btn sm ghost" data-i="external-link">Ouvrir</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toasts" style="bottom:72px"><div class="toast"><span data-i="check-circle-2"></span><span><b>Conversion terminée</b> : TOUR_HORIZON_ARC.rvt v4 est prête dans le Jumeau Tour Horizon</span><button class="act">Ouvrir</button></div></div>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Dépôt et tâches</h3>
+  <ol>
+    <li><div><b>Collisions traitées en une seule fois</b>, fichier par fichier, avec un choix par défaut intelligent : maquette de même nom → nouvelle version ; fichier identique → ignorer ; sinon → garder les deux avec « (2) ». Les fichiers sans collision partent tout de suite.<span class="was">le nom existant était ignoré, ce qui créait des doublons ou des écrasements silencieux.</span></div></li>
+    <li><div><b>Plateau des tâches</b> (le compteur en haut à droite) : dépôts, conversions, déplacements par lot. Il reste disponible en changeant de page ; fermer l'onglet pendant un dépôt demande confirmation.<span class="was">progression seulement dans la ligne du fichier, perdue en changeant de dossier.</span></div></li>
+    <li><div><b>Conversion suivie par étapes réelles</b>, telles que l'organ les écrit (envoi, téléchargement, Forge, conversion, récupération), avec le temps écoulé. On montre l'état rapporté, pas celui demandé : « il y a 3 s » prouve que l'organ répond.<span class="was">un pourcentage sur la ligne et aucune notification.</span></div></li>
+    <li><div><b>Échecs et résultats partiels lisibles</b> : la cause en français, l'étape, « Réessayer », « Copier le détail » pour le support. Un lot partiel dit ce qui a été fait et ce qui a été ignoré, avec la raison.<span class="was">« Error » sans cause.</span></div></li>
+    <li><div><b>Notification à la fin</b> (toast avec « Ouvrir »), même si l'on est ailleurs dans l'application.</div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>mount({ page: 'depot.html' })</script>
+</body>
+</html>

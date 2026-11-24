@@ -1,0 +1,109 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jumeau — Drive</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  main { max-width: 1240px; margin: 0 auto; padding: 24px 32px 110px; }
+  .hero { display: grid; grid-template-columns: 360px 1fr; gap: 0; overflow: hidden; }
+  .hero .vis { background: radial-gradient(120% 90% at 30% 20%, #26384a, #14202c); position: relative; min-height: 250px; }
+  .hero .vis svg { position: absolute; inset: 0; margin: auto; width: 82%; }
+  .hero .info { padding: 24px 28px; display: flex; flex-direction: column; gap: 14px; }
+  .hero h1 { font: 600 24px/30px var(--sans); letter-spacing: -.015em; margin: 0; }
+  .readiness { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 4px; }
+  .rd { padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--ground); display: flex; flex-direction: column; gap: 6px; }
+  .rd .h { display: flex; align-items: center; gap: 6px; font: 500 12.5px var(--sans); }
+  .rd .v { font: 500 18px/22px var(--mono); }
+  .rd.ok .h { color: var(--ok); } .rd.run .h { color: var(--info); } .rd.todo .h { color: var(--muted); }
+  .grid2 { display: grid; grid-template-columns: 1fr 360px; gap: 20px; margin-top: 20px; align-items: start; }
+  .mq { display: grid; grid-template-columns: 34px 1fr 90px 260px 40px; gap: 14px; align-items: center; padding: 14px 18px; }
+  .mq + .mq { border-top: 1px solid var(--line); }
+  .mq .fic { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: var(--info-soft); color: var(--info); }
+  .stepper { display: flex; gap: 3px; }
+  .stepper i { flex: 1; height: 5px; border-radius: 3px; background: var(--ground-2); }
+  .stepper i.d { background: var(--ok); } .stepper i.c { background: var(--info); } .stepper i.e { background: var(--danger); }
+  .sc { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .pos { position: relative; }
+</style>
+</head>
+<body>
+<main>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><a class="btn ghost sm" href="explorateur.html" data-i="chevron-left">Tour Horizon</a><span class="caption">Projets › Tour Horizon</span></div>
+
+  <section class="card hero pos">
+    <span class="ux-pin ux" style="left:-11px;top:-11px">1</span>
+    <div class="vis">
+      <svg viewBox="0 0 300 220"><g fill="none" stroke="#5f7a92" stroke-width="1.2">
+        <path d="M150 20 250 70 250 170 150 210 50 170 50 70Z" fill="#1c2b39"/><path d="M50 70 150 120 250 70M150 120v90"/>
+        <path d="M50 103 150 153 250 103M50 137 150 187 250 137" stroke-opacity=".55"/></g>
+        <path d="M150 120 250 70 250 170 150 210Z" fill="#ff7a00" fill-opacity=".18"/>
+        <path d="M150 120 250 70 250 103 150 153Z" fill="#ff7a00" fill-opacity=".35"/></svg>
+      <button class="btn sm" style="position:absolute;left:14px;bottom:14px;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.16);color:#e6edf3" data-i="scan-eye">Aperçu 3D</button>
+    </div>
+    <div class="info">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="flex:1"><div class="caption" style="display:flex;gap:6px;align-items:center"><span style="color:#6d28d9" data-i="boxes"></span>Jumeau numérique</div><h1>Tour Horizon</h1>
+          <div class="t2">Créé le 3 sept. par admin · 3 maquettes · 41 238 objets</div></div>
+        <button class="btn" data-i="share-2">Partager</button>
+        <button class="btn ink lg" data-i="arrow-up-right">Ouvrir dans le Studio</button>
+      </div>
+      <div class="readiness">
+        <div class="rd ok"><div class="h" data-i="file-box">Maquettes</div><div class="v">2 / 3</div><div class="bar ok"><i style="width:67%"></i></div></div>
+        <div class="rd ok"><div class="h" data-i="layers">Scène</div><div class="v" style="font-family:var(--sans);font-size:16px">Prête</div><div class="caption">par défaut</div></div>
+        <div class="rd todo"><div class="h" data-i="building-2">Espaces</div><div class="v">—</div><div class="caption">pas encore créés</div></div>
+        <div class="rd todo"><div class="h" data-i="layout-grid">Classements</div><div class="v">—</div><div class="caption">après les espaces</div></div>
+        <div class="rd todo"><div class="h" data-i="activity">GTB</div><div class="v">—</div><div class="caption">non raccordée</div></div>
+      </div>
+      <div class="pos" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:var(--accent-soft);color:var(--accent-ink)">
+        <span class="ux-pin ux" style="left:-11px;top:-11px">2</span>
+        <span data-i="sparkles"></span><div style="flex:1;font-size:13px"><b>Prochaine étape : créer les espaces.</b> 3 niveaux et 412 pièces détectés dans TOUR_HORIZON_ARC.rvt.</div>
+        <button class="btn primary sm" data-i="arrow-right">Construire la géographie</button></div>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section class="card pos">
+      <span class="ux-pin ux" style="left:-11px;top:14px">3</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px"><div class="subtitle">Maquettes du jumeau</div><button class="btn sm" data-i="plus">Ajouter des maquettes</button></div>
+      <div class="mq"><span class="fic" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_ARC.rvt</div><div class="caption">v4 · 38 104 objets</div></div><span class="badge ok" data-i="check">Prête</span><div class="stepper"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+      <div class="mq"><span class="fic" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_STR.rvt</div><div class="caption">v2 · 3 134 objets</div></div><span class="badge ok" data-i="check">Prête</span><div class="stepper"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+      <div class="mq"><span class="fic" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_CVC.ifc</div><div class="caption">v2 · conversion · étape 4/6 · 4 min 12 s</div></div><span class="badge info" data-i="loader-2" data-icls="spin">Conversion</span><div class="stepper"><i class="d"></i><i class="d"></i><i class="d"></i><i class="c"></i><i></i><i></i></div><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+      <div style="margin:8px 18px 16px;padding:12px 14px;border-radius:10px;background:var(--ground);display:flex;gap:10px;font-size:12.5px;color:var(--text-2)">
+        <span data-i="info"></span><div>Retirer une maquette du jumeau ne supprime ni le fichier, ni ses versions, ni ses conversions : ils restent dans le Drive.</div></div>
+    </section>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <section class="card sc pos">
+        <span class="ux-pin ux" style="left:-11px;top:-11px">4</span>
+        <div class="group-title">Scènes</div>
+        <div style="display:flex;gap:10px;align-items:center"><span class="fic" style="width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-ink)" data-i="layers"></span><div style="flex:1"><div style="font-weight:500">Tour Horizon <span class="badge accent" style="margin-left:4px">par défaut</span></div><div class="caption">2 maquettes · la 3e s'ajoutera une fois prête</div></div></div>
+        <div class="caption">La composition et les décalages se règlent dans le Studio.</div>
+      </section>
+      <section class="card sc">
+        <div class="group-title">Accès</div>
+        <div style="display:flex;align-items:center;gap:-6px"><span class="avatar">AD</span><span class="avatar" style="background:#5b7a3a;margin-left:-6px;box-shadow:0 0 0 2px var(--sheet)">MD</span><span class="caption" style="margin-left:10px">admin, m.durand</span></div>
+      </section>
+      <section class="card sc">
+        <div class="group-title">Expert</div>
+        <a class="btn ghost sm" style="justify-content:flex-start" data-i="database">Inspecter le modèle</a>
+        <div class="caption mono">id serveur 94827187918656</div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Jumeau</h3>
+  <ol>
+    <li><div><b>Une page par jumeau</b>, et plus seulement une ligne dans un dossier. Elle donne l'état de préparation, étape par étape (maquettes, scène, espaces, classements, GTB), avec le bouton principal pour ouvrir le Studio.<span class="was">un gestionnaire d'assets dans un panneau, sans vue d'ensemble.</span></div></li>
+    <li><div><b>La prochaine étape est suggérée</b>, avec les chiffres utiles (« 412 pièces détectées »). On accompagne l'intégrateur sans l'enfermer : chaque étape reste accessible aussi depuis le Studio.</div></li>
+    <li><div><b>Les conversions sont suivies sur la page</b>, étape par étape. La relance est impossible pendant qu'une conversion tourne (plus de travaux en double). La note sous la liste dit clairement ce que « retirer » touche, et ce qu'il ne touche pas.<span class="was">bouton relançable à tout moment ; retrait sans confirmation.</span></div></li>
+    <li><div><b>Scène par défaut créée automatiquement</b> ; elle accueillera la 3e maquette dès qu'elle sera prête.</div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>mount({ page: 'jumeau.html' })</script>
+</body>
+</html>

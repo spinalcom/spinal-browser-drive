@@ -1,0 +1,66 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connexion — SpinalCore</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  body { display: grid; grid-template-columns: 1.1fr 1fr; min-height: 100vh; }
+  body.show-ux { padding-right: 372px; }
+  .art { background: radial-gradient(120% 100% at 20% 10%, #26384a 0, #14202c 55%, #0c151e 100%); color: var(--on-ink); padding: 48px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+  .art svg.g { position: absolute; right: -60px; bottom: -40px; width: 82%; opacity: .9; }
+  .art h2 { font: 600 34px/40px var(--sans); letter-spacing: -.02em; margin: 0; max-width: 440px; }
+  .art p { color: var(--on-ink-2); max-width: 400px; font-size: 15px; line-height: 23px; }
+  .form { display: grid; place-items: center; padding: 48px; background: var(--ground); }
+  .box { width: min(380px, 100%); display: flex; flex-direction: column; gap: 18px; }
+  .box h1 { font: 600 24px/30px var(--sans); margin: 0; letter-spacing: -.01em; }
+  .err { display: flex; gap: 10px; padding: 12px 14px; border-radius: 10px; background: var(--danger-soft); color: var(--danger); font-size: 13px; }
+  .resume { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: var(--sheet); border: 1px solid var(--line); }
+  .pos { position: relative; }
+</style>
+</head>
+<body>
+  <section class="art">
+    <div class="brand" style="font-size:16px"><span class="mark"></span>SpinalCore</div>
+    <div style="position:relative;z-index:1"><h2>Le Drive et le Studio du jumeau numérique.</h2>
+      <p>Déposez vos maquettes, préparez le jumeau, structurez les espaces et raccordez le bâtiment.</p></div>
+    <svg class="g" viewBox="0 0 400 300"><g fill="none" stroke="#3d566d" stroke-width="1.2">
+      <path d="M200 20 340 90 340 230 200 290 60 230 60 90Z" fill="#17242f"/><path d="M60 90 200 160 340 90M200 160v130"/>
+      <path d="M60 137 200 207 340 137M60 183 200 253 340 183" stroke-opacity=".6"/></g>
+      <path d="M200 160 340 90 340 137 200 207Z" fill="#ff7a00" fill-opacity=".4"/>
+      <path d="M200 207 340 137 340 183 200 253Z" fill="#ff7a00" fill-opacity=".14"/></svg>
+    <div class="caption" style="color:#7f93a6;position:relative;z-index:1">Hub local · 127.0.0.1:17500</div>
+  </section>
+  <section class="form">
+    <div class="box">
+      <div><h1>Connexion</h1><div class="t2">Compte du hub SpinalCore</div></div>
+      <div class="resume pos">
+        <span class="ux-pin ux" style="left:-11px;top:-11px">1</span>
+        <span class="avatar">AD</span><div style="flex:1"><div style="font-weight:500">Continuer en tant qu'admin</div><div class="caption">session ouverte dans un autre onglet</div></div><button class="btn sm ink">Continuer</button></div>
+      <div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px"><span style="flex:1;height:1px;background:var(--line)"></span>ou un autre compte<span style="flex:1;height:1px;background:var(--line)"></span></div>
+      <div class="err pos"><span class="ux-pin ux" style="left:-11px;top:-11px">2</span><span data-i="alert-circle"></span><div><b>Ce compte n'est pas administrateur du hub.</b> Le mot de passe est correct : décochez « Administration » pour accéder au Drive.</div></div>
+      <div class="field"><label>Identifiant</label><input class="input lg" value="m.durand"></div>
+      <div class="field"><label>Mot de passe</label><div style="position:relative"><input class="input lg" type="password" value="••••••••••"><button class="btn ghost sm icon" style="position:absolute;right:6px;top:6px" data-i="eye" title="Afficher"></button></div></div>
+      <label style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:var(--accent);display:grid;place-items:center;color:#14202c" data-i="check"></span>Administration du hub</label>
+      <a class="btn primary lg" href="index.html" style="justify-content:center">Se connecter</a>
+      <div class="caption" style="display:flex;gap:6px"><span data-i="shield"></span>Le mot de passe n'est conservé que pour cet onglet.</div>
+    </div>
+  </section>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Connexion</h3>
+  <ol>
+    <li><div><b>Reprendre sa session</b> sans retaper son mot de passe si un onglet est déjà connecté. Ouvrir la page ne déconnecte plus.<span class="was">ouvrir la page de connexion déconnectait.</span></div></li>
+    <li><div><b>Des erreurs qui distinguent les cas</b> : mauvais mot de passe, compte non administrateur, hub injoignable, chacun avec la solution.<span class="was">un message unique, quel que soit le problème.</span></div></li>
+    <li><div><b>Mot de passe gardé pour l'onglet seulement</b>, plus dans le stockage permanent du navigateur.<span class="was">identifiants dans localStorage.</span></div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>
+  // pas de barre supérieure sur la connexion : seulement la navigation des maquettes et les notes
+  (function () { try { const t = localStorage.getItem('mq-theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+    mount({ page: 'connexion.html' }); document.querySelector('.topbar').remove(); })();
+</script>
+</body>
+</html>

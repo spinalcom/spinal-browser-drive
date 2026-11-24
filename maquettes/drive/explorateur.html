@@ -1,0 +1,231 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Explorateur — Drive</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  body { overflow: hidden; }
+  .shell { display: grid; grid-template-columns: 240px minmax(0,1fr) 320px; height: calc(100vh - 48px); }
+  body.show-ux .shell { height: calc(100vh - 48px); }
+  aside.tree { background: var(--sheet); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; }
+  .tree .scroll { overflow: auto; padding: 8px 8px 80px; flex: 1; }
+  .tn { display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border-radius: 7px; color: var(--text-2); cursor: pointer; white-space: nowrap; }
+  .tn:hover { background: var(--sheet-hover); color: var(--text); }
+  .tn.on { background: var(--accent-soft); color: var(--accent-ink); font-weight: 500; }
+  .tn .chev { width: 14px; height: 14px; color: var(--muted); }
+  .tn .sp { width: 14px; }
+  .tn .c { margin-left: auto; font: 400 11.5px var(--mono); color: var(--muted); }
+  .tn.drop { box-shadow: inset 0 0 0 2px var(--accent); background: var(--accent-soft); }
+  .tree .quick { padding: 12px 8px 4px; display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid var(--line); }
+  main.list { display: flex; flex-direction: column; min-width: 0; background: var(--ground); position: relative; }
+  .bar1 { display: flex; align-items: center; gap: 12px; padding: 14px 20px 10px; }
+  .crumbs { display: flex; align-items: center; gap: 2px; font: 500 14px/20px var(--sans); min-width: 0; flex: 1; }
+  .crumbs a { color: var(--muted); text-decoration: none; padding: 4px 6px; border-radius: 6px; }
+  .crumbs a:hover { background: var(--ground-2); color: var(--text); }
+  .crumbs b { padding: 4px 6px; font-weight: 600; }
+  .crumbs .i { color: var(--line-2); width: 14px; height: 14px; }
+  .bar2 { display: flex; align-items: center; gap: 8px; padding: 0 20px 12px; }
+  .table { margin: 0 20px; background: var(--sheet); border-radius: 12px; box-shadow: var(--shadow-1); border: 1px solid var(--line); overflow: hidden; flex: 1; display: flex; flex-direction: column; margin-bottom: 76px; }
+  .thead, .tr { display: grid; grid-template-columns: 36px minmax(220px, 1fr) 100px 150px 110px 150px 40px; align-items: center; }
+  .thead { height: 36px; border-bottom: 1px solid var(--line); font: 500 12px/1 var(--sans); color: var(--muted); position: sticky; top: 0; background: var(--sheet); }
+  .thead > div { display: flex; align-items: center; gap: 4px; padding: 0 8px; }
+  .thead .sorted { color: var(--text); }
+  .tbody { overflow: auto; flex: 1; }
+  .tr { height: var(--row); border-bottom: 1px solid var(--line); cursor: default; position: relative; }
+  .tr > div { padding: 0 8px; min-width: 0; white-space: nowrap; overflow: hidden; }
+  .tr:hover { background: var(--sheet-hover); }
+  .tr:hover .rowact { opacity: 1; }
+  .tr.sel { background: var(--accent-soft); }
+  .tr.sel::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+  .tr.focus { box-shadow: inset 0 0 0 2px var(--accent); }
+  .nm { display: flex !important; align-items: center; gap: 10px; }
+  .nm .fic { width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; flex: none; }
+  .nm .fic .i { width: 14px; height: 14px; }
+  .nm b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+  .ck { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--line-2); display: grid; place-items: center; background: var(--sheet); }
+  .tr.sel .ck, .ck.on { background: var(--accent); border-color: var(--accent); color: #14202c; }
+  .ck .i { width: 12px; height: 12px; stroke-width: 3; }
+  .rowact { opacity: 0; }
+  .rename { height: 26px; border: 1.5px solid var(--accent); border-radius: 6px; padding: 0 8px; outline: none; width: 280px; background: var(--sheet); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .selbar { position: absolute; width: max-content; left: 50%; transform: translateX(-50%); bottom: 84px; background: var(--ink); color: var(--on-ink); border-radius: 12px;
+    display: flex; align-items: center; gap: 4px; padding: 6px 6px 6px 14px; box-shadow: var(--shadow-3); z-index: 30; }
+  .selbar .btn.ghost { color: var(--on-ink); }
+  .selbar .btn.ghost:hover { background: var(--ink-3); color: #fff; }
+  .selbar .sep { width: 1px; height: 20px; background: rgba(255,255,255,.14); margin: 0 4px; }
+  .selbar .btn.danger-ghost { color: #ff9b8c; }
+  .selbar .btn.danger-ghost:hover { background: rgba(255,107,87,.16); }
+  .selbar .btn[disabled] { opacity: .35; }
+  aside.details { background: var(--sheet); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; }
+  .dhead { padding: 20px 20px 12px; display: flex; gap: 12px; align-items: flex-start; }
+  .dhead .big { width: 44px; height: 44px; border-radius: 11px; display: grid; place-items: center; flex: none; }
+  .dbody { padding: 16px 20px; overflow: auto; flex: 1; display: flex; flex-direction: column; gap: 18px; padding-bottom: 80px; }
+  .kv { display: grid; grid-template-columns: 104px 1fr; align-items: center; row-gap: 10px; font-size: 13px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; }
+  .preview { height: 150px; border-radius: 10px; background: linear-gradient(160deg, #eef3f7, #dfe7ee); display: grid; place-items: center; position: relative; }
+  :root[data-theme="dark"] .preview { background: linear-gradient(160deg, #1b2733, #131d27); }
+  .used { display: flex; flex-direction: column; gap: 6px; }
+  .used a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); color: var(--text); text-decoration: none; }
+  .used a:hover { border-color: var(--line-2); background: var(--sheet-hover); }
+  .drophint { position: absolute; inset: 120px 20px 76px; border: 2px dashed var(--accent); border-radius: 14px; background: color-mix(in srgb, var(--accent-soft) 85%, transparent);
+    display: none; place-items: center; z-index: 25; text-align: center; color: var(--accent-ink); }
+  body.dragging .drophint { display: grid; }
+  .pos { position: relative; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- arbre -->
+  <aside class="tree pos">
+    <span class="ux-pin ux" style="right:-11px;top:60px">1</span>
+    <div class="quick">
+      <div class="tn" onclick="location.href='index.html'"><span class="sp"></span><span data-i="house"></span>Accueil</div>
+      <div class="tn"><span class="sp"></span><span data-i="clock"></span>Récents</div>
+      <div class="tn"><span class="sp"></span><span data-i="users"></span>Partagés avec moi<span class="c">4</span></div>
+    </div>
+    <div class="scroll">
+      <div class="group-title" style="padding:10px 8px 6px">Mes fichiers</div>
+      <div class="tn"><span data-i="chevron-down" data-icls="chev"></span><span data-i="folder-open"></span>admin</div>
+      <div class="tn" style="padding-left:22px"><span data-i="chevron-down" data-icls="chev"></span><span data-i="folder-open"></span>Projets</div>
+      <div class="tn" style="padding-left:36px"><span data-i="chevron-right" data-icls="chev"></span><span data-i="folder"></span>Campus Delta</div>
+      <div class="tn" style="padding-left:36px"><span data-i="chevron-down" data-icls="chev"></span><span data-i="folder-open"></span>Tour Horizon</div>
+      <div class="tn on" style="padding-left:50px"><span data-i="chevron-right" data-icls="chev"></span><span data-i="folder-open"></span>Maquettes<span class="c">6</span></div>
+      <div class="tn drop" style="padding-left:50px" title="Dépôt possible ici"><span data-i="chevron-right" data-icls="chev"></span><span data-i="folder"></span>Documents<span class="c">38</span></div>
+      <div class="tn" style="padding-left:50px"><span class="sp"></span><span data-i="folder"></span>Photos<span class="c">94</span></div>
+      <div class="tn" style="padding-left:22px"><span data-i="chevron-right" data-icls="chev"></span><span data-i="folder"></span>Archives</div>
+      <div class="tn" style="padding-left:22px"><span data-i="chevron-right" data-icls="chev"></span><span data-i="folder-sync"></span>GED synchronisée</div>
+    </div>
+  </aside>
+
+  <!-- liste -->
+  <main class="list">
+    <div class="bar1 pos">
+      <div class="crumbs"><a href="#">admin</a><span data-i="chevron-right"></span><a href="#">Projets</a><span data-i="chevron-right"></span><a href="#">Tour Horizon</a><span data-i="chevron-right"></span><b>Maquettes</b></div>
+      <button class="btn" data-i="columns-2" title="Vue double : deux dossiers côte à côte">Vue double</button>
+      <button class="btn" data-i="plus">Nouveau</button>
+      <button class="btn primary" data-i="upload">Déposer</button>
+    </div>
+    <div class="bar2">
+      <label class="search" style="width:300px"><span data-i="search"></span><input placeholder="Filtrer ce dossier" value=""><span class="kbd l">/</span></label>
+      <div class="seg"><button class="on">Tout</button><button>Maquettes</button><button>Documents</button><button>Images</button></div>
+      <span style="flex:1"></span>
+      <span class="caption">6 éléments · 1,8 Go</span>
+      <div class="seg"><button class="on" data-i="list" title="Liste"></button><button data-i="layout-grid" title="Grille"></button></div>
+    </div>
+
+    <div class="table pos">
+      <span class="ux-pin ux" style="left:-11px;top:46px">2</span>
+      <div class="thead"><div><span class="ck"></span></div><div class="sorted">Nom <span data-i="chevron-down"></span></div><div>Type</div><div>Dernière activité</div><div>Première visite</div><div>État</div><div></div></div>
+      <div class="tbody">
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--ground-2);color:var(--text-2)" data-i="folder"></span><b>Anciennes versions</b></div><div class="t2">Dossier</div><div class="t2">12 nov.</div><div class="muted">3 sept.</div><div class="muted">—</div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+
+        <div class="tr sel"><div><span class="ck" data-i="check"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_ARC.rvt</b><span class="badge accent">v4</span></div><div class="t2">Maquette</div><div class="t2">il y a 2 h · admin</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">Prête</span></div><div><button class="btn ghost sm icon" data-i="more-horizontal"></button></div></div>
+
+        <div class="tr sel"><div><span class="ck" data-i="check"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_STR.rvt</b><span class="badge">v2</span></div><div class="t2">Maquette</div><div class="t2">18 nov. · m.durand</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">Prête</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+
+        <div class="tr focus"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><input class="rename" value="TOUR_HORIZON_CVC.ifc" aria-label="Nouveau nom"></div><div class="t2">Maquette</div><div class="t2">il y a 5 min · admin</div><div class="muted">aujourd'hui</div><div><span class="badge info" data-i="loader-2" data-icls="spin">Conversion 62 %</span></div><div></div></div>
+
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_ELEC.ifc</b></div><div class="t2">Maquette</div><div class="t2">il y a 4 min · admin</div><div class="muted">aujourd'hui</div><div style="display:flex;align-items:center;gap:8px"><div class="bar" style="width:60px"><i style="width:38%"></i></div><span class="num muted">38 %</span></div><div><button class="btn ghost sm icon rowact" data-i="x" title="Annuler le transfert"></button></div></div>
+
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--danger-soft);color:var(--danger)" data-i="file-box"></span><b>Parking_v0.nwd</b></div><div class="t2">Maquette</div><div class="t2">10 nov. · admin</div><div class="muted">10 nov.</div><div><span class="badge danger" data-i="alert-circle" title="Échec de la conversion : format NWD non pris en charge par l'organ forge">Échec</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:#f2eefe;color:#6d28d9" data-i="boxes"></span><b>Jumeau Tour Horizon</b></div><div class="t2">Jumeau</div><div class="t2">il y a 2 h · admin</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">3/3 maquettes</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+      </div>
+    </div>
+
+    <div class="selbar pos">
+      <span class="ux-pin ux" style="left:-11px;top:-11px">3</span>
+      <b style="font-weight:600;margin-right:8px">2 éléments</b>
+      <button class="btn ghost sm" data-i="download">Télécharger</button>
+      <button class="btn ghost sm" data-i="move">Déplacer vers…</button>
+      <button class="btn ghost sm" data-i="share-2">Partager</button>
+      <button class="btn ghost sm" data-i="pencil" disabled title="Renommer agit sur un seul élément">Renommer</button>
+      <span class="sep"></span>
+      <button class="btn danger-ghost sm" data-i="trash-2" onclick="document.getElementById('del').style.display='grid'">Supprimer</button>
+      <span class="sep"></span>
+      <button class="btn ghost sm icon" data-i="x" title="Tout désélectionner (Échap)"></button>
+    </div>
+  </main>
+
+  <!-- détails -->
+  <aside class="details pos">
+    <span class="ux-pin ux" style="left:-11px;top:24px">4</span>
+    <div class="dhead">
+      <div class="big" style="background:var(--info-soft);color:var(--info)" data-i="file-box" data-icls="lg"></div>
+      <div style="flex:1;min-width:0"><div class="title" style="font-size:15px">TOUR_HORIZON_ARC.rvt</div><div class="caption">Maquette Revit · 412 Mo</div></div>
+      <button class="btn ghost sm icon" data-i="x"></button>
+    </div>
+    <div class="tabs"><button class="on">Infos</button><button onclick="location.href='fichier.html'">Versions <span class="n">4</span></button><button>Partage <span class="n">2</span></button><button>Journal</button></div>
+    <div class="dbody">
+      <div class="preview"><svg viewBox="0 0 200 160" width="170"><g fill="none" stroke="#9fb1c1" stroke-width="1.4">
+        <path d="M100 20 160 50 160 120 100 150 40 120 40 50Z" fill="#fff" fill-opacity=".55"/><path d="M40 50 100 80 160 50M100 80v70"/>
+        <path d="M40 75 100 105 160 75M40 98 100 128 160 98" stroke-opacity=".6"/></g></svg>
+        <button class="btn sm" style="position:absolute;right:10px;bottom:10px" data-i="scan-eye">Aperçu 3D</button></div>
+      <dl class="kv">
+        <dt>Version</dt><dd style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="badge accent">v4 · courante</span><a href="fichier.html" class="caption" style="color:var(--text-2)">+ 3 précédentes</a></dd>
+        <dt>Conversion</dt><dd><span class="badge ok" data-i="check">Prête</span> <span class="caption">SBIM · 12 s</span></dd>
+        <dt>Modifié</dt><dd>il y a 2 h par admin</dd>
+        <dt>1re visite</dt><dd>3 sept. 2026</dd>
+        <dt>Emplacement</dt><dd class="t2">Projets › Tour Horizon › Maquettes</dd>
+      </dl>
+      <div>
+        <div class="group-title" style="margin-bottom:8px">Utilisée par</div>
+        <div class="used">
+          <a href="jumeau.html"><span style="color:#6d28d9" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Jumeau Tour Horizon</div><div class="caption">charge la v4</div></div><span data-i="chevron-right" class="muted"></span></a>
+          <a href="#"><span style="color:#6d28d9" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Tour Horizon — v1 (archive)</div><div class="caption">charge la v2</div></div><span data-i="chevron-right" class="muted"></span></a>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn sm" data-i="file-up">Nouvelle version</button>
+        <button class="btn sm" data-i="download">Télécharger</button>
+        <button class="btn sm" data-i="share-2">Partager</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- confirmation de portée -->
+<div class="scrim" id="del" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="dialog" role="alertdialog" aria-labelledby="dt">
+    <header><div class="ico-wrap" style="background:var(--danger-soft);color:var(--danger)" data-i="trash-2" data-icls="lg"></div>
+      <div><div class="title" id="dt">Retirer 2 maquettes de « Maquettes » ?</div><div class="caption" style="margin-top:2px">Elles disparaissent de ce dossier.</div></div></header>
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:4px 0">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px"><span style="color:var(--info)" data-i="file-box"></span><span style="flex:1">TOUR_HORIZON_ARC.rvt</span><span class="caption">4 versions</span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line)"><span style="color:var(--info)" data-i="file-box"></span><span style="flex:1">TOUR_HORIZON_STR.rvt</span><span class="caption">2 versions</span></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:12px;border-radius:10px;background:var(--warn-soft);color:var(--warn);font-size:12.5px;line-height:18px">
+        <span data-i="alert-triangle"></span><div><b>TOUR_HORIZON_ARC.rvt est utilisée par 2 jumeaux.</b> Ils garderont leur maquette, mais vous ne la retrouverez plus depuis ce dossier.</div></div>
+      <div style="display:flex;gap:10px;padding:12px;border-radius:10px;background:var(--ground);font-size:12.5px;line-height:18px;color:var(--text-2)">
+        <span data-i="info"></span><div><b>Ce qui ne change pas :</b> les fichiers partagés ou présents dans d'autres dossiers restent accessibles par ces emplacements. Il n'y a pas de corbeille : l'action ne s'annule pas.</div></div>
+    </div>
+    <footer><button class="btn" onclick="document.getElementById('del').style.display='none'">Annuler</button><button class="btn danger" data-i="trash-2">Retirer 2 maquettes</button></footer>
+  </div>
+</div>
+
+<div class="toasts" style="left:276px;bottom:132px"><div class="toast"><span data-i="check-circle-2"></span><span>« Plans R+1 » déplacé vers Documents</span><button class="act">Annuler</button></div></div>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Explorateur</h3>
+  <ol>
+    <li><div><b>Disposition fixe à trois colonnes</b> : arbre, liste, détails. Rien à organiser. Les dossiers acceptent le dépôt (contour orange sur « Documents »).<span class="was">panneaux GoldenLayout à disposer à la main ; dépôt sur un dossier cassé.</span></div></li>
+    <li><div><b>Le tableau dit la vérité</b> : « Première visite » au lieu d'une fausse « création », l'état réel (transfert, conversion, échec avec sa cause au survol), la version courante en badge. Filtres par type. <b>Renommer avec F2</b>, directement dans la ligne.<span class="was">fenêtre de saisie, accents refusés.</span></div></li>
+    <li><div><b>Barre de sélection</b> : elle annonce la cible réelle (« 2 éléments ») et grise ce qui ne s'applique qu'à un seul élément, avec la raison en infobulle. « Déplacer vers… » ouvre un choix de dossier : plus besoin de glisser.<span class="was">la suppression multiple ne supprimait rien.</span></div></li>
+    <li><div><b>Le panneau de détails montre l'impact</b> : par quels jumeaux, et quelle version, la maquette est utilisée. On voit avant d'agir ce qu'une nouvelle version ou une suppression va toucher.</div></li>
+    <li><div><b>Confirmation de portée</b> (cliquez « Supprimer ») : verbe exact (« Retirer »), liste, avertissement sur les jumeaux concernés, ce qui ne change pas, pas de corbeille. Le bouton reprend le verbe et le nombre.</div></li>
+    <li><div><b>Annulation immédiate</b> après un renommage ou un déplacement (toast en bas à gauche, 8 s).</div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>mount({ page: 'explorateur.html' })</script>
+</body>
+</html>
+<style>
+body.show-ux .shell { grid-template-columns: 220px minmax(0,1fr) 300px; }
+body.show-ux .thead > :nth-child(5), body.show-ux .tr > :nth-child(5) { display: none; }
+body.show-ux .thead, body.show-ux .tr { grid-template-columns: 36px minmax(200px, 1fr) 90px 140px 150px 40px; }
+.bar1 { flex-wrap: nowrap; } .crumbs { white-space: nowrap; overflow: hidden; }
+body.show-ux .bar2 .seg:first-of-type { display: none; }
+</style>

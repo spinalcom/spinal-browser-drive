@@ -1,0 +1,141 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Versions — Drive</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 32px 100px; display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+  .back { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; }
+  .fhead { grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 20px; }
+  .fhead .big { width: 52px; height: 52px; border-radius: 13px; display: grid; place-items: center; background: var(--info-soft); color: var(--info); }
+  .fhead .big .i { width: 24px; height: 24px; }
+  .tl { padding: 8px 0; }
+  .v { display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; padding: 14px 20px; position: relative; }
+  .v + .v { border-top: 1px solid var(--line); }
+  .v .num-b { width: 44px; height: 44px; border-radius: 11px; display: grid; place-items: center; font: 600 14px/1 var(--mono); background: var(--ground-2); color: var(--text-2); }
+  .v.cur .num-b { background: var(--ink); color: #fff; box-shadow: 0 0 0 3px var(--accent-soft); }
+  .v .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+  .v .desc { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--ground); color: var(--text-2); font-size: 13px; border: 1px dashed transparent; }
+  .v .desc:hover { border-color: var(--line-2); cursor: text; }
+  .v .acts { display: flex; gap: 6px; align-items: flex-start; opacity: .0; transition: opacity .12s; }
+  .v:hover .acts, .v.cur .acts { opacity: 1; }
+  .dropv { margin: 8px 20px 16px; border: 1.5px dashed var(--line-2); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; color: var(--muted); }
+  .dropv:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+  .side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 24px; }
+  .side .card { padding: 16px; }
+  .impact a { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); color: var(--text); text-decoration: none; }
+  .impact a:first-of-type { border-top: 0; }
+  .share-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+  .share-row + .share-row { border-top: 1px solid var(--line); }
+  .pos { position: relative; }
+</style>
+</head>
+<body>
+<main>
+  <div class="back"><a class="btn ghost sm" href="explorateur.html" data-i="chevron-left">Maquettes</a><span class="caption">Projets › Tour Horizon › Maquettes</span></div>
+
+  <section class="card fhead pos">
+    <div class="big" data-i="file-box"></div>
+    <div style="flex:1"><div class="title" style="font-size:18px">TOUR_HORIZON_ARC.rvt</div>
+      <div class="caption" style="margin-top:2px">Maquette Revit · 412 Mo · 4 versions · courante : <b style="color:var(--text)">v4</b> du 24 nov.</div></div>
+    <button class="btn" data-i="download">Télécharger la v4</button>
+    <button class="btn" data-i="share-2">Partager</button>
+    <button class="btn primary" data-i="file-up">Ajouter une version</button>
+  </section>
+
+  <section class="card pos">
+    <span class="ux-pin ux" style="left:-11px;top:14px">1</span>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 4px"><div class="subtitle">Historique des versions</div><div class="seg"><button class="on">Toutes</button><button>Converties</button></div></div>
+    <div class="tl">
+      <div class="v cur">
+        <div class="num-b">v4</div>
+        <div><div style="display:flex;align-items:center;gap:8px"><b style="font-weight:600">Version courante</b><span class="badge ok" data-i="check">Convertie · SBIM</span></div>
+          <div class="meta"><span title="24/11/2026 08:12:40">il y a 2 h</span><span>admin</span><span class="num">412 Mo</span></div>
+          <div class="desc">Ajout des cloisons R+3 à R+5, renumérotation des locaux techniques.</div></div>
+        <div class="acts"><button class="btn sm icon ghost" data-i="download" title="Télécharger"></button></div>
+      </div>
+      <div class="v">
+        <div class="num-b">v3</div>
+        <div><div style="display:flex;align-items:center;gap:8px"><b style="font-weight:500">12 nov. 2026</b><span class="badge ok" data-i="check">Convertie</span></div>
+          <div class="meta"><span>m.durand</span><span class="num">398 Mo</span></div>
+          <div class="desc">Mise à jour façades est/ouest.</div></div>
+        <div class="acts"><button class="btn sm" data-i="rotate-ccw" onclick="document.getElementById('cur').style.display='grid'">Rendre courante</button><button class="btn sm icon ghost" data-i="download"></button><button class="btn sm icon danger-ghost" data-i="trash-2" title="Supprimer cette version"></button></div>
+      </div>
+      <div class="v">
+        <div class="num-b">v2</div>
+        <div><div style="display:flex;align-items:center;gap:8px"><b style="font-weight:500">21 oct. 2026</b><span class="badge ok" data-i="check">Convertie</span><span class="badge" data-i="boxes">Tour Horizon — v1</span></div>
+          <div class="meta"><span>admin</span><span class="num">371 Mo</span></div>
+          <div class="desc muted" style="font-style:italic">Ajouter une description…</div></div>
+        <div class="acts"><button class="btn sm" data-i="rotate-ccw">Rendre courante</button><button class="btn sm icon ghost" data-i="download"></button></div>
+      </div>
+      <div class="v">
+        <div class="num-b">v1</div>
+        <div><div style="display:flex;align-items:center;gap:8px"><b style="font-weight:500">3 sept. 2026</b><span class="badge">Non convertie</span></div>
+          <div class="meta"><span>admin</span><span class="num">355 Mo</span></div>
+          <div class="desc">Esquisse APS.</div></div>
+        <div class="acts"><button class="btn sm" data-i="rotate-ccw">Rendre courante</button><button class="btn sm icon ghost" data-i="download"></button><button class="btn sm icon danger-ghost" data-i="trash-2"></button></div>
+      </div>
+    </div>
+    <div class="dropv pos"><span class="ux-pin ux" style="left:-11px;top:-11px">2</span><span data-i="file-up" data-icls="lg"></span><div><b style="color:var(--text);font-weight:500">Déposez un fichier ici pour créer la v5</b><div class="caption">Il deviendra la version courante. Les versions précédentes restent disponibles.</div></div></div>
+  </section>
+
+  <div class="side">
+    <section class="card impact pos">
+      <span class="ux-pin ux" style="left:-11px;top:-11px">3</span>
+      <div class="group-title" style="margin-bottom:8px">Utilisée par 2 jumeaux</div>
+      <a href="jumeau.html"><span style="color:#6d28d9" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Jumeau Tour Horizon</div><div class="caption">suit la version courante (v4)</div></div><span class="badge ok">à jour</span></a>
+      <a href="#"><span style="color:#6d28d9" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Tour Horizon — v1</div><div class="caption">scène figée sur la v2</div></div><span class="badge">v2</span></a>
+      <div style="margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--info-soft);color:var(--info);font-size:12.5px;line-height:18px;display:flex;gap:8px">
+        <span data-i="git-compare-arrows"></span><div><b>La v4 a changé 214 objets par rapport à la v3.</b> <a href="#" style="color:inherit;font-weight:600;padding:0;border:0;display:inline">Lancer la révision dans le Studio →</a></div></div>
+    </section>
+    <section class="card pos">
+      <span class="ux-pin ux" style="left:-11px;top:-11px">4</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div class="group-title">Accès</div><button class="btn sm ghost" data-i="plus">Partager</button></div>
+      <div class="share-row"><span class="avatar">AD</span><div style="flex:1"><div style="font-weight:500">admin</div><div class="caption">propriétaire</div></div></div>
+      <div class="share-row"><span class="avatar" style="background:#5b7a3a">MD</span><div style="flex:1"><div style="font-weight:500">m.durand</div><div class="caption">lecture, écriture</div></div><button class="btn sm ghost icon" data-i="x" title="Retirer l'accès"></button></div>
+      <div class="share-row"><span class="avatar" style="background:#7a3a5b">JL</span><div style="flex:1"><div style="font-weight:500">j.lopez</div><div class="caption">lecture</div></div><button class="btn sm ghost icon" data-i="x"></button></div>
+      <div class="caption" style="margin-top:8px;display:flex;gap:6px"><span data-i="info"></span>Liste et retrait des accès : à confirmer selon ce que le hub expose (O-1).</div>
+    </section>
+    <section class="card">
+      <div class="group-title" style="margin-bottom:10px">Journal</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px">
+        <div style="display:flex;gap:8px"><span class="dot" style="background:var(--accent);margin-top:6px"></span><div><b style="font-weight:500">v4 ajoutée</b> par admin<div class="caption">24 nov., 08:12</div></div></div>
+        <div style="display:flex;gap:8px"><span class="dot" style="background:var(--line-2);margin-top:6px"></span><div>Partagé avec j.lopez<div class="caption">20 nov., 16:03</div></div></div>
+        <div style="display:flex;gap:8px"><span class="dot" style="background:var(--line-2);margin-top:6px"></span><div>v3 ajoutée par m.durand<div class="caption">12 nov., 11:47</div></div></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="scrim" id="cur" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="dialog">
+    <header><div class="ico-wrap" style="background:var(--accent-soft);color:var(--accent-ink)" data-i="rotate-ccw" data-icls="lg"></div>
+      <div><div class="title">Revenir à la v3 ?</div><div class="caption" style="margin-top:2px">La v3 devient la version courante. La v4 reste dans l'historique.</div></div></header>
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px;justify-content:center;padding:14px;border-radius:12px;background:var(--ground)">
+        <div style="text-align:center"><div class="num-b" style="width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font:600 14px var(--mono);background:var(--ink);color:#fff;margin:auto">v4</div><div class="caption" style="margin-top:4px">courante</div></div>
+        <span data-i="arrow-right" class="muted"></span>
+        <div style="text-align:center"><div style="width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font:600 14px var(--mono);background:var(--accent);color:#14202c;margin:auto">v3</div><div class="caption" style="margin-top:4px">12 nov.</div></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:12px;border-radius:10px;background:var(--warn-soft);color:var(--warn);font-size:12.5px;line-height:18px">
+        <span data-i="alert-triangle"></span><div><b>Le jumeau Tour Horizon chargera la v3.</b> Les objets ajoutés dans la v4 (214) perdront leur géométrie dans la 3D. Leurs données (attributs, tickets) restent dans le graphe.</div></div>
+    </div>
+    <footer><button class="btn" onclick="document.getElementById('cur').style.display='none'">Annuler</button><button class="btn ink" data-i="rotate-ccw">Rendre la v3 courante</button></footer>
+  </div>
+</div>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Fichier et versions</h3>
+  <ol>
+    <li><div><b>Une page par fichier</b>, ouverte en double-cliquant sur une ligne : l'historique est lisible (numéro, date relative, date exacte au survol, auteur, taille, conversion), avec la description modifiable en place. Les actions d'une version apparaissent au survol.<span class="was">un panneau séparé et un menu par ligne.</span></div></li>
+    <li><div><b>Déposer sur la page crée la version suivante</b>, et le texte dit ce qui va se passer (elle devient courante, les autres restent).<span class="was">bouton puis sélecteur de fichier, sans explication.</span></div></li>
+    <li><div><b>Impact avant d'agir</b> : quels jumeaux utilisent ce fichier, sur quelle version, et le lien vers la <b>révision de maquette</b> dans le Studio. Cliquez « Rendre courante » sur la v3 : la confirmation montre v4 → v3 et ses conséquences sur le jumeau.<span class="was">aucune indication ; les jumeaux se décalaient sans prévenir.</span></div></li>
+    <li><div><b>Accès visibles</b> : qui a accès, avec quels droits, et retrait possible. À confirmer selon ce que le hub permet.<span class="was">on donnait des droits sans jamais voir ceux qui existaient.</span></div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>mount({ page: 'fichier.html' })</script>
+</body>
+</html>

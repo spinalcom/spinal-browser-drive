@@ -1,0 +1,91 @@
+<!doctype html>
+<!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin du hub</title>
+<link rel="stylesheet" href="assets/fonts.css"><link rel="stylesheet" href="assets/ds.css">
+<style>
+  main { max-width: 1240px; margin: 0 auto; padding: 28px 32px 110px; }
+  h1 { font: 600 22px/28px var(--sans); margin: 0; letter-spacing: -.01em; }
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin: 20px 0; }
+  .kpi { padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+  .kpi .v { font: 500 24px/30px var(--mono); letter-spacing: -.01em; }
+  .kpi .v small { font: 400 13px var(--sans); color: var(--muted); margin-left: 4px; }
+  .kpi svg.sp { width: 100%; height: 36px; }
+  .grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; align-items: start; }
+  .chart { padding: 18px 20px; }
+  .chart svg { width: 100%; height: 220px; }
+  .maint { padding: 6px 0; }
+  .mt { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; padding: 14px 18px; align-items: center; }
+  .mt + .mt { border-top: 1px solid var(--line); }
+  .mt .ic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--ground-2); color: var(--text-2); }
+  .users { margin-top: 20px; }
+  .ur { display: grid; grid-template-columns: 36px 1fr 200px 160px 40px; gap: 12px; padding: 10px 18px; align-items: center; border-top: 1px solid var(--line); }
+  .pos { position: relative; }
+</style>
+</head>
+<body>
+<main>
+  <div style="display:flex;align-items:flex-end;gap:16px">
+    <div style="flex:1"><div class="caption" style="display:flex;gap:6px;align-items:center"><span class="dot" style="background:var(--ok)"></span>Hub en ligne · SpinalHub 4.1.2 · depuis 20 h</div><h1>Administration du hub</h1></div>
+    <div class="seg"><button>1 h</button><button class="on">24 h</button><button>7 j</button></div>
+  </div>
+
+  <div class="kpis pos">
+    <span class="ux-pin ux" style="left:-11px;top:-11px">1</span>
+    <div class="card kpi"><span class="caption">Modèles</span><span class="v">1,84<small>M</small></span><svg class="sp" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0 22 L20 20 L40 18 L60 16 L80 11 L100 8" fill="none" stroke="var(--info)" stroke-width="1.6"/></svg></div>
+    <div class="card kpi"><span class="caption">Sessions</span><span class="v">12</span><svg class="sp" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0 20 L15 14 L30 18 L45 9 L60 12 L75 6 L100 10" fill="none" stroke="var(--info)" stroke-width="1.6"/></svg></div>
+    <div class="card kpi"><span class="caption">Utilisateurs</span><span class="v">7</span><svg class="sp" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0 18 H100" fill="none" stroke="var(--info)" stroke-width="1.6"/></svg></div>
+    <div class="card kpi"><span class="caption">Mémoire résidente</span><span class="v">2,41<small>Go</small></span><svg class="sp" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0 24 L20 22 L40 21 L60 15 L80 14 L100 12" fill="none" stroke="var(--accent)" stroke-width="1.6"/></svg></div>
+    <div class="card kpi"><span class="caption">Mémoire virtuelle</span><span class="v">5,07<small>Go</small></span><svg class="sp" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0 16 L30 15 L60 14 L100 13" fill="none" stroke="var(--accent)" stroke-width="1.6"/></svg></div>
+  </div>
+
+  <div class="grid">
+    <section class="card chart pos">
+      <div style="display:flex;align-items:center;justify-content:space-between"><div class="subtitle">Mémoire résidente</div><span class="caption">dernières 24 h · valeur au survol</span></div>
+      <svg viewBox="0 0 600 220" preserveAspectRatio="none">
+        <g stroke="var(--line)" stroke-width="1"><path d="M40 30H600M40 80H600M40 130H600M40 180H600"/></g>
+        <g font-family="Geist Mono" font-size="11" fill="var(--muted)"><text x="0" y="34">3 Go</text><text x="0" y="84">2 Go</text><text x="0" y="134">1 Go</text><text x="0" y="184">0</text>
+          <text x="40" y="210">00:00</text><text x="180" y="210">06:00</text><text x="320" y="210">12:00</text><text x="460" y="210">18:00</text></g>
+        <path d="M40 150 C80 145 110 140 150 138 S230 120 270 118 330 96 370 94 430 70 470 72 540 60 600 58 L600 180 L40 180Z" fill="var(--accent)" fill-opacity=".1"/>
+        <path d="M40 150 C80 145 110 140 150 138 S230 120 270 118 330 96 370 94 430 70 470 72 540 60 600 58" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="470" x2="470" y1="30" y2="180" stroke="var(--ink)" stroke-dasharray="3 3"/>
+        <circle cx="470" cy="72" r="4.5" fill="var(--sheet)" stroke="var(--accent)" stroke-width="2"/>
+        <g transform="translate(480 40)"><rect width="104" height="40" rx="8" fill="var(--ink)"/><text x="10" y="17" font-family="Geist" font-size="11" fill="#a9b8c6">18:24</text><text x="10" y="32" font-family="Geist Mono" font-size="13" fill="#fff">2,38 Go</text></g>
+      </svg>
+    </section>
+
+    <section class="card maint pos">
+      <span class="ux-pin ux" style="left:-11px;top:-11px">2</span>
+      <div style="padding:14px 18px 4px" class="subtitle">Maintenance</div>
+      <div class="mt"><span class="ic" data-i="hard-drive"></span><div><div style="font-weight:500">Sauvegarde</div><div class="caption">Dernière : aujourd'hui 05:05 · 1,2 Go</div></div><button class="btn sm">Sauvegarder</button></div>
+      <div class="mt"><span class="ic" style="background:var(--info-soft);color:var(--info)" data-i="loader-2" data-icls="spin"></span><div><div style="font-weight:500">Ramasse-miettes</div><div class="caption">En cours depuis 42 s · demandé par admin</div></div><button class="btn sm" disabled>En cours…</button></div>
+      <div class="mt"><span class="ic" data-i="database"></span><div><div style="font-weight:500">Nettoyer data.db</div><div class="caption">Libère les données en vrac orphelines (hub 4.1.0+)</div></div><button class="btn sm">Nettoyer…</button></div>
+    </section>
+  </div>
+
+  <section class="card users pos">
+    <span class="ux-pin ux" style="left:-11px;top:14px">3</span>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px"><div class="subtitle">Comptes du hub</div>
+      <div style="display:flex;gap:8px"><label class="search" style="width:240px"><span data-i="search"></span><input placeholder="Rechercher un compte"></label><button class="btn sm" data-i="plus">Nouveau compte</button></div></div>
+    <div class="ur" style="border-top:0;font:500 12px var(--sans);color:var(--muted);height:30px;padding-top:0;padding-bottom:0"><span></span><span>Compte</span><span>Rôle historique</span><span>Dernière activité</span><span></span></div>
+    <div class="ur"><span class="avatar">AD</span><div><div style="font-weight:500">admin <span class="badge" style="margin-left:4px" data-i="shield">système</span></div><div class="caption">id 168 · mot de passe géré par le déploiement</div></div><span class="badge">Admin</span><span class="caption">maintenant</span><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+    <div class="ur"><span class="avatar" style="background:#5b7a3a">MD</span><div><div style="font-weight:500">m.durand</div><div class="caption">id 1904</div></div><span class="badge">Intégrateur</span><span class="caption">il y a 3 h</span><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+    <div class="ur"><span class="avatar" style="background:#7a3a5b">JL</span><div><div style="font-weight:500">j.lopez</div><div class="caption">id 2210</div></div><span class="badge">Mainteneur</span><span class="caption">20 nov.</span><button class="btn ghost sm icon" data-i="more-horizontal"></button></div>
+    <div style="padding:12px 18px 16px" class="caption">Gestion complète des comptes (création, suppression, droits) : à décider (O-2). Le hub expose déjà les routes nécessaires.</div>
+  </section>
+</main>
+
+<aside class="ux ux-panel">
+  <h3 data-i="sparkles">Notes UX — Admin du hub</h3>
+  <ol>
+    <li><div><b>Des lectures avec leurs unités</b> (Go, millions), une tendance par indicateur et une courbe avec la valeur au survol, sur une période choisie.<span class="was">valeurs brutes sans unité.</span></div></li>
+    <li><div><b>La maintenance dit où elle en est</b> : dernière sauvegarde, opération en cours, qui l'a demandée. Le bouton reste bloqué tant que le hub n'a pas fini : on ne peut pas la lancer deux fois. Chaque action demande confirmation et précise sa durée.<span class="was">seuls des boutons désactivés indiquaient qu'une opération tournait.</span></div></li>
+    <li><div><b>Comptes visibles</b>, avec rôle et activité. Le compte <code>admin</code> est protégé : son mot de passe vient de la configuration Docker. Création et droits : à décider.<span class="was">le lien « User Manager » menait à une page 404.</span></div></li>
+  </ol>
+</aside>
+<script src="assets/icons.js"></script><script src="assets/app.js"></script>
+<script>mount({ section: 'admin', page: 'admin.html' })</script>
+</body>
+</html>
