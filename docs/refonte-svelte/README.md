@@ -30,6 +30,7 @@ Les 183 capacités de [`capacites-studio-drive.md`](../../../../docs/capacites-s
 | D7 | La logique métier existante est **extraite, pas réécrite** : les services Spinal sans interface sont réutilisés comme dépendances, et la logique enfouie dans les plugins est extraite depuis les sourcemaps, avec sa source citée. Seules les interfaces sont refaites. | Proposé |
 | D8 | Hébergement du code : dossier `app/` sur la branche `refonte-svelte` du dépôt Drive, **provisoirement**. À déplacer vers un dépôt dédié (`spinal-browser-studio`) si le projet est validé. | **À valider** |
 | D9 | Coexistence : les anciennes interfaces restent servies à leurs URL jusqu'à la bascule (lot 9). Aucun ancien lien n'est cassé. | Proposé |
+| D10 | **Pas de système de plugins chargés à l'exécution** (fin du modèle `loadPlugins` + `registerApp` par hook + `safeImport`). Le découpage reste modulaire : un dossier par domaine, registre d'actions statique dans le code, ateliers chargés à la demande, fonctions activables par profil ou réglage. Le spécifique client va dans le portail et le builder JSON ; l'extension métier passe par le graphe et les organs. Raison : un seul dépôt, développement rapide, donc une API de plugins coûterait plus qu'elle ne rapporte. À revoir seulement si des tiers doivent étendre le Studio sans accès au dépôt (le registre d'actions deviendrait alors l'API publique). Voir [architecture §6](01-architecture.md#6-registre-des-actions). | Choix de l'utilisateur (24/11) |
 
 ## 3. Sommaire
 

@@ -149,6 +149,7 @@ interface Action {
 
 - `quand` décide de la **visibilité** uniquement. L'autorisation réelle reste celle du hub : un refus du hub est affiché comme erreur, jamais masqué (ST-SOC-02).
 - Un test vérifie que chaque capacité de [06-tracabilite.md](06-tracabilite.md) est portée par au moins une action ou un écran.
+- **Registre statique, pas de plugins (D10).** Chaque domaine exporte ses actions depuis `lib/domaines/<domaine>/actions.ts` ; `lib/actions/registre.ts` les importe explicitement. Ajouter un domaine = un dossier + une ligne dans le registre. Aucun chargement dynamique de paquets, aucune API d'extension publique : le code des ateliers est découpé par route (SvelteKit), et une fonction se masque par profil ou réglage, pas par désinstallation. Un domaine qui échoue au chargement est signalé comme indisponible, jamais ignoré en silence (contrairement à `safeImport`).
 
 ## 7. Tâches asynchrones
 
