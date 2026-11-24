@@ -23,7 +23,7 @@
   .src { display: grid; grid-template-columns: 22px 30px 1fr 150px 160px 32px; gap: 12px; align-items: center; padding: 10px 14px; }
   .src + .src { border-top: 1px solid var(--line); }
   .src .fic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; }
-  .src.off { opacity: .55; }
+  .src.off { background: var(--ground); } .src.off .fic { filter: grayscale(1); } .src.off b, .src.off div[style*="font-weight:500"] { color: var(--text-2); }
   .ck { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--line-2); display: grid; place-items: center; }
   .ck.on { background: var(--accent); border-color: var(--accent); color: #14202c; }
   .ck .i { width: 12px; height: 12px; stroke-width: 3; }
@@ -40,7 +40,7 @@
 <body>
 <main>
   <nav class="steps pos" aria-label="Étapes">
-    <span class="ux-pin ux" style="left:-11px;top:-11px">1</span>
+    <span class="ux-pin ux" style="left:-30px;top:-4px">1</span>
     <div class="caption" style="padding:0 8px 10px">Nouveau jumeau</div>
     <div class="st done"><span class="n" data-i="check"></span><div><b>Nom et emplacement</b><span class="caption">Tour Horizon · Projets</span></div></div>
     <div class="st now"><span class="n">2</span><div><b>Maquettes</b><span class="caption">3 sur 5 retenues</span></div></div>
@@ -60,8 +60,8 @@
       <button class="btn" data-i="file-up">Parcourir…</button>
     </div>
 
-    <div class="card pos" style="overflow:hidden">
-      <span class="ux-pin ux" style="left:-11px;top:14px">3</span>
+    <div class="well pos" style="overflow:hidden">
+      <span class="ux-pin ux" style="left:-30px;top:14px">3</span>
       <div class="src"><span class="ck on" data-i="check"></span><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_ARC.rvt</div><div class="caption">Drive › Projets › Tour Horizon › Maquettes · v4</div></div><span class="badge ok" data-i="check">Déjà convertie</span><span class="caption">réutilisée telle quelle</span><button class="btn ghost sm icon" data-i="x"></button></div>
       <div class="src"><span class="ck on" data-i="check"></span><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_CVC.ifc</div><div class="caption">déposé · 186 Mo</div></div><span class="badge accent">À convertir</span><div><div class="bar"><i style="width:100%"></i></div><div class="caption" style="margin-top:3px">transfert terminé</div></div><button class="btn ghost sm icon" data-i="x"></button></div>
       <div class="src"><span class="ck on" data-i="check"></span><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_ELEC.ifc</div><div class="caption">déposé · 94 Mo</div></div><span class="badge accent">À convertir</span><div><div class="bar"><i style="width:38%"></i></div><div class="caption num" style="margin-top:3px">38 %</div></div><button class="btn ghost sm icon" data-i="x"></button></div>
@@ -70,13 +70,13 @@
     </div>
 
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px" class="pos">
-      <span class="ux-pin ux" style="left:-11px;top:-11px">4</span>
+      <span class="ux-pin ux" style="left:-30px;top:-4px">4</span>
       <div class="group-title">Préparation automatique</div>
       <div class="opt on"><span class="sw"></span><div><b style="font-weight:500">Convertir les maquettes</b><div class="caption">Lancé dès la fin du transfert, une conversion à la fois par l'organ forge.</div></div></div>
       <div class="opt on"><span class="sw"></span><div><b style="font-weight:500">Créer la scène par défaut</b><div class="caption">Toutes les maquettes prêtes, alignées sur la première (origine Revit commune). Modifiable ensuite dans le Studio.</div></div></div>
     </div>
 
-    <div class="card sum">
+    <div class="well sum">
       <div><div class="caption">Maquettes</div><div class="k">3</div></div>
       <div><div class="caption">À convertir</div><div class="k">2</div></div>
       <div><div class="caption">Déjà prêtes</div><div class="k">1</div></div>
@@ -93,7 +93,7 @@
 </main>
 
 <aside class="ux ux-panel">
-  <h3 data-i="sparkles">Notes UX — Nouveau jumeau</h3>
+  <h2 data-i="sparkles">Notes UX — Nouveau jumeau</h2>
   <ol>
     <li><div><b>Un seul assistant, trois étapes</b>, à la place de cinq opérations dispersées : créer le jumeau, ouvrir le gestionnaire, ajouter chaque fichier, lancer chaque conversion, puis composer la scène dans le Studio.<span class="was">rien ne guidait ; il fallait connaître l'ordre.</span></div></li>
     <li><div><b>Déposer directement dans l'assistant</b>, ou choisir dans le Drive. Les transferts démarrent tout de suite, pendant qu'on continue.</div></li>

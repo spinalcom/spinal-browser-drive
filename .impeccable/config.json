@@ -1,0 +1,29 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-11-24T09:28:39.866Z",
+        "reason": "Police de l'identité viewer-rs, reprise volontairement (D5 identité commune)"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-11-24T09:28:39.871Z",
+        "reason": "Police mono de l'identité viewer-rs (D5)"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "maquettes/drive/explorateur.html"
+        ],
+        "createdAt": "2026-11-24T09:28:53.436Z",
+        "reason": "Tableau dense : filets séparateurs entre lignes, texte centré verticalement dans des lignes de 36 px"
+      }
+    ]
+  }
+}

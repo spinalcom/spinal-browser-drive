@@ -23,9 +23,7 @@
   .stepper { display: flex; gap: 3px; margin-top: 8px; }
   .stepper i { flex: 1; height: 4px; border-radius: 3px; background: var(--ground-2); }
   .stepper i.d { background: var(--ok); } .stepper i.c { background: var(--info); position: relative; overflow: hidden; }
-  .stepper i.c::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent); animation: sh 1.4s infinite; }
-  @keyframes sh { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-  .stepnames { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .stepnames { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
   .details { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--ground); font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
   .details div { display: flex; gap: 6px; align-items: center; }
   .details .i { width: 13px; height: 13px; }
@@ -44,7 +42,7 @@
     <header><div class="ico-wrap" style="background:var(--warn-soft);color:var(--warn)" data-i="copy" data-icls="lg"></div>
       <div><div class="title">3 fichiers portent déjà ce nom dans « Maquettes »</div><div class="caption" style="margin-top:2px">Sur 12 fichiers déposés. Les 9 autres sont en cours de transfert.</div></div></header>
     <div class="body" style="display:flex;flex-direction:column;gap:10px">
-      <div class="card" style="overflow:hidden">
+      <div class="well" style="overflow:hidden">
         <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 14px">
           <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--info)" data-i="file-box"></span><div><div style="font-weight:500">TOUR_HORIZON_ARC.rvt</div><div class="caption">déposé : 418 Mo · existant : v4, 412 Mo</div></div></div>
           <div class="seg" style="justify-self:end"><button class="on">Nouvelle version</button><button>Garder les 2</button><button>Ignorer</button></div></div>
@@ -119,7 +117,7 @@
 <div class="toasts" style="bottom:72px"><div class="toast"><span data-i="check-circle-2"></span><span><b>Conversion terminée</b> : TOUR_HORIZON_ARC.rvt v4 est prête dans le Jumeau Tour Horizon</span><button class="act">Ouvrir</button></div></div>
 
 <aside class="ux ux-panel">
-  <h3 data-i="sparkles">Notes UX — Dépôt et tâches</h3>
+  <h2 data-i="sparkles">Notes UX — Dépôt et tâches</h2>
   <ol>
     <li><div><b>Collisions traitées en une seule fois</b>, fichier par fichier, avec un choix par défaut intelligent : maquette de même nom → nouvelle version ; fichier identique → ignorer ; sinon → garder les deux avec « (2) ». Les fichiers sans collision partent tout de suite.<span class="was">le nom existant était ignoré, ce qui créait des doublons ou des écrasements silencieux.</span></div></li>
     <li><div><b>Plateau des tâches</b> (le compteur en haut à droite) : dépôts, conversions, déplacements par lot. Il reste disponible en changeant de page ; fermer l'onglet pendant un dépôt demande confirmation.<span class="was">progression seulement dans la ligne du fichier, perdue en changeant de dossier.</span></div></li>

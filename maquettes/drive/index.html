@@ -24,7 +24,7 @@
   .steps .bar { height: 3px; }
   .sec { display: flex; align-items: center; justify-content: space-between; margin: 32px 0 12px; }
   .recent { padding: 4px 0; }
-  .recent .r { display: grid; grid-template-columns: 28px 1fr 220px 120px 32px; align-items: center; gap: 12px; height: 48px; padding: 0 16px; border-top: 1px solid var(--line); }
+  .recent .r { display: grid; grid-template-columns: 28px 1fr 220px 120px 32px; align-items: center; gap: 12px; height: 48px; padding: 6px 16px; box-sizing: border-box; border-top: 1px solid var(--line); }
   .recent .r:first-child { border-top: 0; }
   .recent .r:hover { background: var(--sheet-hover); }
   .fic { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; }
@@ -100,7 +100,7 @@
 </main>
 
 <aside class="ux ux-panel">
-  <h3 data-i="sparkles">Notes UX — Accueil</h3>
+  <h2 data-i="sparkles">Notes UX — Accueil</h2>
   <ol>
     <li><div><b>Les jumeaux d'abord, avec leur état de préparation.</b> Chaque carte montre où en est le jumeau (maquettes, espaces, classements, GTB) et mène directement à l'action utile : ouvrir, ou suivre la conversion.<span class="was">on arrivait dans un dossier, sans savoir ce qui restait à faire.</span></div></li>
     <li><div><b>Fichiers récents</b> avec ce qui a changé et qui l'a fait. Plus besoin de naviguer pour retrouver ce sur quoi on travaillait.<span class="was">aucune notion de récent.</span></div></li>

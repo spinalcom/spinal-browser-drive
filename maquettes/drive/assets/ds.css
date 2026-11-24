@@ -9,8 +9,8 @@
   --text: #14202c; --text-2: #475665; --muted: #5d6a76;
   --accent: #ff7a00; --accent-hover: #ff8f2b; --accent-ink: #ad4c00; --accent-soft: #fff1e4;
   --danger: #c8321e; --danger-soft: #fdecea;
-  --ok: #1f8a4c; --ok-soft: #e7f5ed;
-  --warn: #a86b00; --warn-soft: #fdf4e1;
+  --ok: #17703d; --ok-soft: #e7f5ed;
+  --warn: #8a5700; --warn-soft: #fdf4e1;
   --info: #2b6cb0; --info-soft: #e8f1fb;
   --shadow-1: 0 1px 2px rgba(20,32,44,.06);
   --shadow-2: 0 8px 24px -8px rgba(20,32,44,.18), 0 2px 6px rgba(20,32,44,.06);
@@ -43,6 +43,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 .mono, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12.5px; }
 .muted { color: var(--muted); }
+.twin-ic { color: var(--text); }
 .t2 { color: var(--text-2); }
 .group-title { font: 500 11px/14px var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .title { font: 600 16px/22px var(--sans); letter-spacing: -.005em; }
@@ -126,6 +127,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------- feuilles / cartes ---------- */
 .sheet { background: var(--sheet); border-radius: var(--r-sheet); box-shadow: var(--shadow-1); }
+.well { background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; }
 .card { background: var(--sheet); border-radius: var(--r-card); box-shadow: var(--shadow-1); border: 1px solid var(--line); }
 
 /* ---------- barre de progression ---------- */
@@ -171,20 +173,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* ---------- annotations UX (spécifiques aux maquettes) ---------- */
 .ux-toggle { position: fixed; right: 16px; bottom: 16px; z-index: 70; display: flex; gap: 8px; }
 .ux-toggle button { height: 36px; border-radius: 999px; border: 0; padding: 0 14px; font: 600 12.5px/1 var(--sans); cursor: pointer;
-  background: #6d28d9; color: #fff; box-shadow: 0 8px 20px -6px rgba(109,40,217,.6); display: inline-flex; align-items: center; gap: 6px; }
+  background: #b0144f; color: #fff; box-shadow: var(--shadow-2); display: inline-flex; align-items: center; gap: 6px; }
 .ux-toggle button.light { background: var(--sheet); color: var(--text); box-shadow: var(--shadow-2); }
 .ux { display: none; }
 body.show-ux .ux { display: flex; }
-.ux-pin { position: absolute; z-index: 40; width: 22px; height: 22px; border-radius: 50%; background: #6d28d9; color: #fff;
-  font: 700 11px/22px var(--sans); text-align: center; justify-content: center; align-items: center; box-shadow: 0 0 0 3px rgba(109,40,217,.25); cursor: help; }
+.ux-pin { position: absolute; z-index: 40; width: 22px; height: 22px; border-radius: 50%; background: #b0144f; color: #fff;
+  font: 700 11px/22px var(--sans); text-align: center; justify-content: center; align-items: center; box-shadow: 0 0 0 2px var(--sheet); cursor: help; }
 .ux-panel { position: fixed; top: 64px; right: 16px; width: 340px; max-height: calc(100vh - 80px); overflow: auto; z-index: 65;
-  background: #fbf9ff; border: 1px solid #ddd2fb; border-radius: 14px; box-shadow: var(--shadow-3); padding: 16px 18px; flex-direction: column; gap: 12px; }
-:root[data-theme="dark"] .ux-panel { background: #1b1630; border-color: #3b2d6b; }
-.ux-panel h3 { margin: 0; font: 600 13px/18px var(--sans); color: #6d28d9; display: flex; align-items: center; gap: 6px; }
-:root[data-theme="dark"] .ux-panel h3 { color: #b69cff; }
+  background: #fff8fa; border: 1px solid #f3cddb; border-radius: 14px; box-shadow: var(--shadow-3); padding: 16px 18px; flex-direction: column; gap: 12px; }
+:root[data-theme="dark"] .ux-panel { background: #2a1420; border-color: #5a2740; }
+.ux-panel h2 { margin: 0; font: 600 13px/18px var(--sans); color: #b0144f; display: flex; align-items: center; gap: 6px; }
+:root[data-theme="dark"] .ux-panel h2 { color: #ff8fb5; }
 .ux-panel ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: ux; }
 .ux-panel li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 12.5px; line-height: 18px; color: var(--text-2); counter-increment: ux; }
-.ux-panel li::before { content: counter(ux); width: 22px; height: 22px; border-radius: 50%; background: #6d28d9; color: #fff; font: 700 11px/22px var(--sans); text-align: center; }
+.ux-panel li::before { content: counter(ux); width: 22px; height: 22px; border-radius: 50%; background: #b0144f; color: #fff; font: 700 11px/22px var(--sans); text-align: center; }
 .ux-panel li b { color: var(--text); font-weight: 600; }
 .ux-panel .was { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); }
 .ux-panel .was::before { content: "Avant : "; font-weight: 600; }

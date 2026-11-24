@@ -33,7 +33,7 @@
   .thead > div { display: flex; align-items: center; gap: 4px; padding: 0 8px; }
   .thead .sorted { color: var(--text); }
   .tbody { overflow: auto; flex: 1; }
-  .tr { height: var(--row); border-bottom: 1px solid var(--line); cursor: default; position: relative; }
+  .tr { height: var(--row); padding-block: 4px; box-sizing: border-box; border-bottom: 1px solid var(--line); cursor: default; position: relative; }
   .tr > div { padding: 0 8px; min-width: 0; white-space: nowrap; overflow: hidden; }
   .tr:hover { background: var(--sheet-hover); }
   .tr:hover .rowact { opacity: 1; }
@@ -117,21 +117,21 @@
 
     <div class="table pos">
       <span class="ux-pin ux" style="left:-11px;top:46px">2</span>
-      <div class="thead"><div><span class="ck"></span></div><div class="sorted">Nom <span data-i="chevron-down"></span></div><div>Type</div><div>Dernière activité</div><div>Première visite</div><div>État</div><div></div></div>
+      <div class="thead"><div><span class="ck"></span></div><div class="sorted">Nom <span data-i="chevron-down"></span></div><div>Taille</div><div>Dernière activité</div><div>Première visite</div><div>État</div><div></div></div>
       <div class="tbody">
-        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--ground-2);color:var(--text-2)" data-i="folder"></span><b>Anciennes versions</b></div><div class="t2">Dossier</div><div class="t2">12 nov.</div><div class="muted">3 sept.</div><div class="muted">—</div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--ground-2);color:var(--text-2)" data-i="folder"></span><b>Anciennes versions</b></div><div class="t2" style="font-variant-numeric:tabular-nums">6 éléments</div><div class="t2">12 nov.</div><div class="muted">3 sept.</div><div class="muted">—</div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
 
-        <div class="tr sel"><div><span class="ck" data-i="check"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_ARC.rvt</b><span class="badge accent">v4</span></div><div class="t2">Maquette</div><div class="t2">il y a 2 h · admin</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">Prête</span></div><div><button class="btn ghost sm icon" data-i="more-horizontal"></button></div></div>
+        <div class="tr sel"><div><span class="ck" data-i="check"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_ARC.rvt</b><span class="badge accent">v4</span></div><div class="t2" style="font-variant-numeric:tabular-nums">412 Mo</div><div class="t2">il y a 2 h · admin</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">Prête</span></div><div><button class="btn ghost sm icon" data-i="more-horizontal"></button></div></div>
 
-        <div class="tr sel"><div><span class="ck" data-i="check"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_STR.rvt</b><span class="badge">v2</span></div><div class="t2">Maquette</div><div class="t2">18 nov. · m.durand</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">Prête</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+        <div class="tr sel"><div><span class="ck" data-i="check"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_STR.rvt</b><span class="badge">v2</span></div><div class="t2" style="font-variant-numeric:tabular-nums">96 Mo</div><div class="t2">18 nov. · m.durand</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">Prête</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
 
-        <div class="tr focus"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><input class="rename" value="TOUR_HORIZON_CVC.ifc" aria-label="Nouveau nom"></div><div class="t2">Maquette</div><div class="t2">il y a 5 min · admin</div><div class="muted">aujourd'hui</div><div><span class="badge info" data-i="loader-2" data-icls="spin">Conversion 62 %</span></div><div></div></div>
+        <div class="tr focus"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><input class="rename" value="TOUR_HORIZON_CVC.ifc" aria-label="Nouveau nom"></div><div class="t2" style="font-variant-numeric:tabular-nums">186 Mo</div><div class="t2">il y a 5 min · admin</div><div class="muted">aujourd'hui</div><div><span class="badge info" data-i="loader-2" data-icls="spin">Conversion 62 %</span></div><div></div></div>
 
-        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_ELEC.ifc</b></div><div class="t2">Maquette</div><div class="t2">il y a 4 min · admin</div><div class="muted">aujourd'hui</div><div style="display:flex;align-items:center;gap:8px"><div class="bar" style="width:60px"><i style="width:38%"></i></div><span class="num muted">38 %</span></div><div><button class="btn ghost sm icon rowact" data-i="x" title="Annuler le transfert"></button></div></div>
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--info-soft);color:var(--info)" data-i="file-box"></span><b>TOUR_HORIZON_ELEC.ifc</b></div><div class="t2" style="font-variant-numeric:tabular-nums">94 Mo</div><div class="t2">il y a 4 min · admin</div><div class="muted">aujourd'hui</div><div style="display:flex;align-items:center;gap:8px"><div class="bar" style="width:60px"><i style="width:38%"></i></div><span class="num muted">38 %</span></div><div><button class="btn ghost sm icon rowact" data-i="x" title="Annuler le transfert"></button></div></div>
 
-        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--danger-soft);color:var(--danger)" data-i="file-box"></span><b>Parking_v0.nwd</b></div><div class="t2">Maquette</div><div class="t2">10 nov. · admin</div><div class="muted">10 nov.</div><div><span class="badge danger" data-i="alert-circle" title="Échec de la conversion : format NWD non pris en charge par l'organ forge">Échec</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--danger-soft);color:var(--danger)" data-i="file-box"></span><b>Parking_v0.nwd</b></div><div class="t2" style="font-variant-numeric:tabular-nums">1,1 Go</div><div class="t2">10 nov. · admin</div><div class="muted">10 nov.</div><div><span class="badge danger" data-i="alert-circle" title="Échec de la conversion : format NWD non pris en charge par l'organ forge">Échec</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
 
-        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:#f2eefe;color:#6d28d9" data-i="boxes"></span><b>Jumeau Tour Horizon</b></div><div class="t2">Jumeau</div><div class="t2">il y a 2 h · admin</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">3/3 maquettes</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
+        <div class="tr"><div><span class="ck"></span></div><div class="nm"><span class="fic" style="background:var(--ink);color:var(--on-ink)" data-i="boxes"></span><b>Jumeau Tour Horizon</b></div><div class="t2" style="font-variant-numeric:tabular-nums">3 maq.</div><div class="t2">il y a 2 h · admin</div><div class="muted">3 sept.</div><div><span class="badge ok" data-i="check">Prêt</span></div><div><button class="btn ghost sm icon rowact" data-i="more-horizontal"></button></div></div>
       </div>
     </div>
 
@@ -173,8 +173,8 @@
       <div>
         <div class="group-title" style="margin-bottom:8px">Utilisée par</div>
         <div class="used">
-          <a href="jumeau.html"><span style="color:#6d28d9" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Jumeau Tour Horizon</div><div class="caption">charge la v4</div></div><span data-i="chevron-right" class="muted"></span></a>
-          <a href="#"><span style="color:#6d28d9" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Tour Horizon — v1 (archive)</div><div class="caption">charge la v2</div></div><span data-i="chevron-right" class="muted"></span></a>
+          <a href="jumeau.html"><span class="twin-ic" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Jumeau Tour Horizon</div><div class="caption">charge la v4</div></div><span data-i="chevron-right" class="muted"></span></a>
+          <a href="#"><span class="twin-ic" data-i="boxes"></span><div style="flex:1"><div style="font-weight:500">Tour Horizon — v1 (archive)</div><div class="caption">charge la v2</div></div><span data-i="chevron-right" class="muted"></span></a>
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -208,7 +208,7 @@
 <div class="toasts" style="left:276px;bottom:132px"><div class="toast"><span data-i="check-circle-2"></span><span>« Plans R+1 » déplacé vers Documents</span><button class="act">Annuler</button></div></div>
 
 <aside class="ux ux-panel">
-  <h3 data-i="sparkles">Notes UX — Explorateur</h3>
+  <h2 data-i="sparkles">Notes UX — Explorateur</h2>
   <ol>
     <li><div><b>Disposition fixe à trois colonnes</b> : arbre, liste, détails. Rien à organiser. Les dossiers acceptent le dépôt (contour orange sur « Documents »).<span class="was">panneaux GoldenLayout à disposer à la main ; dépôt sur un dossier cassé.</span></div></li>
     <li><div><b>Le tableau dit la vérité</b> : « Première visite » au lieu d'une fausse « création », l'état réel (transfert, conversion, échec avec sa cause au survol), la version courante en badge. Filtres par type. <b>Renommer avec F2</b>, directement dans la ligne.<span class="was">fenêtre de saisie, accents refusés.</span></div></li>
