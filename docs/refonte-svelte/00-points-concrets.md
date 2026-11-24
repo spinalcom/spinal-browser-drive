@@ -260,7 +260,7 @@ Une seule fiche par objet, qui remplace les panneaux séparés de chaque plugin.
 
 ### Analyses
 - **W-ANA-1** [=] Contextes d'analyses et familles d'entités (ST-ANA-01).
-- **W-ANA-2** [=] Éditeur : général, population, entrées, déclencheurs, calculs, sortie (ST-ANA-02 à 07, 09 à 12). [+] Une seule page avec sommaire, au lieu d'un assistant fermé.
+- **W-ANA-2** [=] Éditeur : général, population, entrées, déclencheurs, calculs, sortie (ST-ANA-02 à ST-ANA-07, ST-ANA-09 à ST-ANA-12). [+] Une seule page avec sommaire, au lieu d'un assistant fermé.
 - **W-ANA-3** [=] Prévisualiser les entrées sans aucun effet (ST-ANA-05).
 - **W-ANA-4** [=] Les 41 opérations de calcul, avec leur documentation (ST-ANA-08).
 - **W-ANA-5** [+] Graphe des dépendances entre calculs, avec les erreurs signalées.
