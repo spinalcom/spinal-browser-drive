@@ -1,0 +1,19 @@
+/* Copyright 2026 SpinalCom - www.spinalcom.com
+   Surfaces flottantes communes : Menu, ContextMenu, Select, Combobox, Popover. */
+.sc-menu-surface {
+  min-width: 200px; max-width: min(360px, 90vw); max-height: min(420px, 70vh); overflow: auto;
+  padding: 4px; border-radius: var(--sc-r-card); background: var(--sc-sheet); box-shadow: var(--sc-shadow-2);
+  border: 1px solid var(--sc-line); z-index: 80; animation: sc-in var(--sc-in) var(--sc-ease);
+}
+.sc-menu-item {
+  display: flex; align-items: center; gap: 10px; min-height: 32px; padding: 6px 10px; border-radius: var(--sc-r-value);
+  font: 400 13px/18px var(--sc-sans); color: var(--sc-text); cursor: default; outline: none; user-select: none;
+}
+.sc-menu-item[data-highlighted] { background: var(--sc-ground-2); }
+.sc-menu-item[data-disabled] { opacity: .45; }
+.sc-menu-item.danger { color: var(--sc-danger); }
+.sc-menu-item.danger[data-highlighted] { background: var(--sc-danger-soft); }
+.sc-menu-item .raccourci { margin-left: auto; padding-left: 16px; }
+.sc-menu-item .ok { color: var(--sc-accent-ink); margin-left: auto; }
+.sc-menu-sep { height: 1px; margin: 4px -4px; background: var(--sc-line); }
+.sc-menu-titre { padding: 8px 10px 4px; font: 500 11px/14px var(--sc-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--sc-muted); }

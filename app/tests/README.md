@@ -8,7 +8,13 @@ bun install                      # une fois (vitest)
 ./scripts/lier-spinal.sh         # une fois : liens vers les paquets Spinal installés (même code que le Studio livré)
 ./node_modules/.bin/vitest run   # tout
 ./node_modules/.bin/vitest run tests/graphe   # tests de graphe seulement
+./node_modules/.bin/vitest run tests/ui       # design system : T1 (logique pure) et T3 (navigateur)
 ```
+
+Design system : `bun run check` (svelte-check), `bun run test:contraste` (couples AA des jetons). Le test
+`tests/ui/navigateur.test.ts` demande la page servie : `bun run build`, puis
+`./node_modules/.bin/vite preview --host 127.0.0.1 --port 5186` ; il est ignoré si la page ne répond pas.
+Navigateur headless uniquement ; bancs sous `systemd-run --user --scope -p MemoryMax=8G`.
 
 Aucun Docker : chaque exécution lance un **hub jetable** (binaire `nerve-center/spinalhub`) dans un dossier temporaire,
 sur des ports libres, avec sa propre base. La pile de dev et `nerve-center/memory` ne sont jamais touchées.

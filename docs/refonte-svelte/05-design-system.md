@@ -2,7 +2,19 @@
 
 # 05 — Design system (spécification)
 
-Ce document fixe le contrat du design system. Sa réalisation (composants Svelte + page de démonstration `/studio/_ds`) est la première tâche après validation des specs, avant les maquettes.
+Ce document fixe le contrat du design system.
+
+**Réalisé le 24/11/2026** dans `app/src/lib/ui/` (54 fichiers) et `app/src/lib/spinal/` (TypeIcone, NoeudChip, CarteOrgan), avec la page de démonstration `/studio/_ds` : tous les composants de §3.1 à §3.5, dans leurs états, en clair, en sombre et en densité compacte. Contrôles :
+- `bun run check` : `svelte-check` sans erreur ni avertissement (les trois exceptions d'accessibilité sont documentées dans le code : séparateur focusable de `SplitPane`, lignes de `Tree` et `DataTable` au focus géré par la racine) ;
+- `bun run test:contraste` : 76 couples texte/fond AA vérifiés sur les jetons, en clair et en sombre ;
+- `tests/ui/logique.test.ts` (T1) : virtualisation, aplatissement et clavier de l'arbre, tri, formats, contrastes ;
+- `tests/ui/navigateur.test.ts` (T3) : interactions dans Chromium headless et axe-core (aucune violation sérieuse) sur la page `/_ds`.
+
+Écarts avec la version initiale de ce contrat, décidés à la réalisation :
+- jetons ajoutés : `--sc-line-3` (survol de bordure), `--sc-line-field` (bord des champs, 3:1 exigé par WCAG 1.4.11), `--sc-focus` (anneau de focus à 3:1 : l'orange `--sc-accent` n'atteint que 2,6:1 sur blanc), `--sc-on-accent`, `--sc-on-danger`, `--sc-danger-hover`, `--sc-scrim`, `--sc-toast-ok`, `--sc-toast-err` ;
+- `--sc-ok` passe à `#17703d` et `--sc-warn` à `#8a5700` en clair (l'ancien vert et l'ancien ambre étaient sous 4,5:1 sur leurs fonds) ; les fonds « soft » du thème sombre deviennent opaques, pour que le contraste soit calculable ;
+- palette de données fixée : 12 teintes OKLCH de luminosité égale (L = 0,58, C = 0,13), aucune entre 20° et 40° ;
+- polices variables (Geist et Geist Mono, OFL, latin + latin étendu) servies par Vite, plus de base64.
 
 ## 1. Direction
 

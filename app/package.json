@@ -5,9 +5,29 @@
   "scripts": {
     "test": "vitest run",
     "test:graphe": "vitest run tests/graphe",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test:contraste": "node scripts/contraste.mjs"
   },
   "devDependencies": {
+    "@sveltejs/adapter-static": "3.0.11",
+    "@sveltejs/kit": "2.70.4",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "@types/node": "24.19.2",
+    "axe-core": "4.14.0",
+    "playwright": "1.56.1",
+    "svelte": "5.57.3",
+    "svelte-check": "4.7.8",
+    "typescript": "6.0.3",
+    "vite": "8.1.7",
     "vitest": "5.1.1"
+  },
+  "dependencies": {
+    "bits-ui": "2.20.6",
+    "@internationalized/date": "3.12.4",
+    "@lucide/svelte": "1.70.0"
   }
 }

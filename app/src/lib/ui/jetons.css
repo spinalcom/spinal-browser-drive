@@ -1,0 +1,183 @@
+/* Copyright 2026 SpinalCom - www.spinalcom.com
+   Jetons du design system (docs/refonte-svelte/05-design-system.md §2).
+   Toute couleur, ombre, rayon ou durée d'un écran passe par ces variables.
+   Les couples texte/fond sont vérifiés AA par scripts/contraste.mjs, qui lit ce fichier. */
+
+@font-face { font-family: "Geist"; font-weight: 100 900; font-display: swap;
+  src: url("./fonts/geist.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Geist"; font-weight: 100 900; font-display: swap;
+  src: url("./fonts/geist-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Geist Mono"; font-weight: 100 900; font-display: swap;
+  src: url("./fonts/geist-mono.woff2") format("woff2"); }
+
+:root {
+  /* @clair */
+  --sc-ink: #14202c;
+  --sc-ink-2: #1c2b39;
+  --sc-ink-3: #263849;
+  --sc-on-ink: #f3f6f8;
+  --sc-on-ink-2: #a9b8c6;
+  --sc-ground: #f4f6f8;
+  --sc-ground-2: #e9eef2;
+  --sc-sheet: #ffffff;
+  --sc-sheet-hover: #f6f8fa;
+  --sc-line: #e6ebf0;
+  --sc-line-2: #cfd8e0;
+  --sc-line-3: #b9c5cf;
+  --sc-line-field: #8796a3;
+  --sc-focus: #d06400;
+  --sc-text: #14202c;
+  --sc-text-2: #475665;
+  --sc-muted: #5d6a76;
+  --sc-accent: #ff7a00;
+  --sc-accent-hover: #ff8f2b;
+  --sc-on-accent: #14202c;
+  --sc-accent-ink: #ad4c00;
+  --sc-accent-soft: #fff1e4;
+  --sc-danger: #c8321e;
+  --sc-danger-hover: #b02a18;
+  --sc-on-danger: #ffffff;
+  --sc-danger-soft: #fdecea;
+  --sc-ok: #17703d;
+  --sc-ok-soft: #e7f5ed;
+  --sc-warn: #8a5700;
+  --sc-warn-soft: #fdf4e1;
+  --sc-info: #2b6cb0;
+  --sc-info-soft: #e8f1fb;
+  --sc-selection-text: #ffd9b5;
+  --sc-scrim: rgba(12, 21, 30, 0.42);
+  --sc-toast-ok: #6fe0a0;
+  --sc-toast-err: #ff8d7d;
+  /* @fin */
+
+  /* Palette de données : 12 teintes de luminosité égale (OKLCH L=0,58 C=0,13), aucune entre 20° et 40° (orange d'accent). */
+  --sc-data-1: #bb5752; --sc-data-2: #937800; --sc-data-3: #698722; --sc-data-4: #348f4f;
+  --sc-data-5: #00927d; --sc-data-6: #008f9f; --sc-data-7: #0085bc; --sc-data-8: #4a79c6;
+  --sc-data-9: #736dc3; --sc-data-10: #9262b3; --sc-data-11: #ac5892; --sc-data-12: #b65577;
+
+  --sc-shadow-1: 0 1px 2px rgba(20, 32, 44, 0.06);
+  --sc-shadow-2: 0 8px 24px -8px rgba(20, 32, 44, 0.18), 0 2px 6px rgba(20, 32, 44, 0.06);
+  --sc-shadow-3: 0 24px 48px -12px rgba(20, 32, 44, 0.28), 0 2px 8px rgba(20, 32, 44, 0.08);
+
+  --sc-r-value: 6px;
+  --sc-r-control: 8px;
+  --sc-r-card: 12px;
+  --sc-r-sheet: 16px;
+  --sc-r-pill: 999px;
+
+  --sc-s-1: 2px; --sc-s-2: 4px; --sc-s-3: 6px; --sc-s-4: 8px; --sc-s-5: 12px; --sc-s-6: 16px;
+  --sc-s-7: 20px; --sc-s-8: 24px; --sc-s-9: 32px; --sc-s-10: 40px; --sc-s-11: 48px;
+
+  --sc-h-topbar: 48px;
+  --sc-h-control: 32px;
+  --sc-h-control-sm: 28px;
+  --sc-h-control-lg: 40px;
+  --sc-row: 36px;
+
+  --sc-sans: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sc-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --sc-ease: cubic-bezier(0.2, 0, 0, 1);
+  --sc-in: 120ms;
+  --sc-out: 80ms;
+
+  color-scheme: light;
+}
+
+:root[data-density="compact"] { --sc-row: 28px; }
+
+/* Thème sombre : préférence système, sauf choix explicite du clair ; ou choix explicite du sombre. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* @sombre */
+    --sc-ink: #0f1821;
+    --sc-ink-2: #16222e;
+    --sc-ink-3: #22313f;
+    --sc-on-ink: #f3f6f8;
+    --sc-on-ink-2: #93a4b4;
+    --sc-ground: #0b1219;
+    --sc-ground-2: #131d27;
+    --sc-sheet: #17222d;
+    --sc-sheet-hover: #1d2936;
+    --sc-line: #243341;
+    --sc-line-2: #31445a;
+    --sc-line-3: #445a71;
+    --sc-line-field: #55708a;
+    --sc-focus: #ff8a1f;
+    --sc-text: #eef2f5;
+    --sc-text-2: #b7c4cf;
+    --sc-muted: #8d9cab;
+    --sc-accent: #ff8a1f;
+    --sc-accent-hover: #ffa04d;
+    --sc-on-accent: #14202c;
+    --sc-accent-ink: #ffb067;
+    --sc-accent-soft: #3a2a1d;
+    --sc-danger: #ff6b57;
+    --sc-danger-hover: #ff8574;
+    --sc-on-danger: #14202c;
+    --sc-danger-soft: #3a2327;
+    --sc-ok: #4fcf86;
+    --sc-ok-soft: #1b3330;
+    --sc-warn: #f2b84b;
+    --sc-warn-soft: #342f25;
+    --sc-info: #6aa8ec;
+    --sc-info-soft: #1f3247;
+    --sc-selection-text: #6b3a10;
+    --sc-scrim: rgba(0, 0, 0, 0.55);
+    --sc-toast-ok: #6fe0a0;
+    --sc-toast-err: #ff8d7d;
+    /* @fin */
+    --sc-shadow-1: 0 0 0 1px var(--sc-line);
+    --sc-shadow-2: 0 0 0 1px var(--sc-line-2), 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+    --sc-shadow-3: 0 0 0 1px var(--sc-line-2), 0 24px 56px -12px rgba(0, 0, 0, 0.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --sc-ink: #0f1821;
+  --sc-ink-2: #16222e;
+  --sc-ink-3: #22313f;
+  --sc-on-ink: #f3f6f8;
+  --sc-on-ink-2: #93a4b4;
+  --sc-ground: #0b1219;
+  --sc-ground-2: #131d27;
+  --sc-sheet: #17222d;
+  --sc-sheet-hover: #1d2936;
+  --sc-line: #243341;
+  --sc-line-2: #31445a;
+  --sc-line-3: #445a71;
+  --sc-line-field: #55708a;
+  --sc-focus: #ff8a1f;
+  --sc-text: #eef2f5;
+  --sc-text-2: #b7c4cf;
+  --sc-muted: #8d9cab;
+  --sc-accent: #ff8a1f;
+  --sc-accent-hover: #ffa04d;
+  --sc-on-accent: #14202c;
+  --sc-accent-ink: #ffb067;
+  --sc-accent-soft: #3a2a1d;
+  --sc-danger: #ff6b57;
+  --sc-danger-hover: #ff8574;
+  --sc-on-danger: #14202c;
+  --sc-danger-soft: #3a2327;
+  --sc-ok: #4fcf86;
+  --sc-ok-soft: #1b3330;
+  --sc-warn: #f2b84b;
+  --sc-warn-soft: #342f25;
+  --sc-info: #6aa8ec;
+  --sc-info-soft: #1f3247;
+  --sc-selection-text: #6b3a10;
+  --sc-scrim: rgba(0, 0, 0, 0.55);
+  --sc-toast-ok: #6fe0a0;
+  --sc-toast-err: #ff8d7d;
+  --sc-shadow-1: 0 0 0 1px var(--sc-line);
+  --sc-shadow-2: 0 0 0 1px var(--sc-line-2), 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+  --sc-shadow-3: 0 0 0 1px var(--sc-line-2), 0 24px 56px -12px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --sc-in: 0ms; --sc-out: 0ms; }
+}

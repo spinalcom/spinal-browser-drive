@@ -2,7 +2,7 @@
 
 # Refonte du Drive et du Studio en Svelte — spécifications
 
-État : **v2, 24/11/2026**, à valider. Branche `refonte-svelte` du dépôt `spinal-browser-drive`. Rien n'est fusionné sur `dev` ni `master`.
+État : **v2, 24/11/2026**, à valider. Avancement : socle de tests de graphe (lot 0, début), maquettes du Drive (`maquettes/drive/`), **design system réalisé** (`app/src/lib/ui/`, page `/studio/_ds`). Branche `refonte-svelte` du dépôt `spinal-browser-drive`. Rien n'est fusionné sur `dev` ni `master`.
 
 ## 1. Objet
 
