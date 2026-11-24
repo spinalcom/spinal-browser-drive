@@ -2,6 +2,8 @@
 
 # 03 — Drive, préparation des jumeaux, inspecteurs, administration
 
+> **Statut : v1 écran par écran, provisoire.** Elle sera refondue avec les maquettes. Références : parcours [03-parcours.md](../03-parcours.md), recette [08-tests.md](../08-tests.md).
+
 Les identifiants entre crochets renvoient aux capacités de l'inventaire.
 
 ## 1. Connexion — `/studio/connexion` [DR-01]
@@ -82,7 +84,7 @@ La barre de sélection, qui remplace la barre d'outils quand des lignes sont coc
 - Champ de recherche d'utilisateurs du hub (préfixe du nom ou de l'identifiant), qui exclut ceux déjà choisis. Les destinataires apparaissent en jetons.
 - Trois droits à cocher, avec un libellé et une phrase d'explication chacun : Lecture (`RD`), Écriture (`WR`), Partage et administration (`AD`). Il faut au moins un utilisateur et un droit pour valider.
 - Bouton « Partager avec 2 utilisateurs ».
-- Mention explicite : « Le partage donne accès au même fichier, sans copie. La liste des accès existants et leur révocation ne sont pas disponibles. » C'est la limite historique, affichée honnêtement. La lecture des droits existants sera ajoutée si le hub l'expose : décision ouverte O-1, voir [06-tracabilite.md](06-tracabilite.md).
+- Mention explicite : « Le partage donne accès au même fichier, sans copie. La liste des accès existants et leur révocation ne sont pas disponibles. » C'est la limite historique, affichée honnêtement. La lecture des droits existants sera ajoutée si le hub l'expose : décision ouverte O-1, voir [06-tracabilite.md](../06-tracabilite.md).
 
 ### 2.6 Journal — onglet « Journal » [DR-12]
 

@@ -1,10 +1,12 @@
 <!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
 
-# Ce qu'il faut faire — liste complète et détaillée
+# Banque de cas — liste détaillée des capacités (3 000 points)
+
+> **Statut : annexe.** Ce n’est pas un cahier des charges écran par écran. Elle sert à ne rien oublier et à alimenter la base de tests ([08-tests.md](../08-tests.md)) : chaque point `[recette]` et `[!]` doit être couvert par au moins un test. Les écrans se conçoivent à partir des parcours ([03-parcours.md](../03-parcours.md)).
 
 Une ligne = un point concret. Chaque point a un numéro pour être commenté (« DR-06.3 : à changer », « ST-GEO-04.7 : pas utile »…).
 
-**Couverture : les 183 capacités de l'inventaire [`capacites-studio-drive.md`](../../../../docs/capacites-studio-drive.md), avec tout leur détail** (paramètres, valeurs par défaut, formats, états, limites, anomalies, cas de recette), plus les règles transverses de l'inventaire (§9) et les points communs à toute l'application.
+**Couverture : les 183 capacités de l'inventaire [`capacites-studio-drive.md`](../../../../../docs/capacites-studio-drive.md), avec tout leur détail** (paramètres, valeurs par défaut, formats, états, limites, anomalies, cas de recette), plus les règles transverses de l'inventaire (§9) et les points communs à toute l'application.
 
 Repères :
 
@@ -15,7 +17,7 @@ Repères :
 | **[!]** | Bug documenté de l'existant, corrigé. |
 | **[recette]** | Cas à vérifier avant de dire que c'est fait. |
 | **[non]** | Volontairement pas fait (raison donnée). |
-| **[?]** | À décider (questions O-x de [06-tracabilite.md](06-tracabilite.md)). |
+| **[?]** | À décider (questions O-x de [06-tracabilite.md](../06-tracabilite.md)). |
 
 Sommaire :
 1. Toute l'application (G)
@@ -1144,7 +1146,7 @@ Destination : Studio, atelier Géographie (§5.1), section « Recalculer » (une
 ## 6. Maquettes, classements, attributs, documents, simulation
 
 ### ST-BIM-01 — Composer et charger des scènes multimodèles
-Destination : Atelier « Maquettes et scènes », section Scènes (04-studio §5.2) ; ouverture du jumeau (§1.1, scène par défaut)
+Destination : Atelier « Maquettes et scènes », section Scènes (ecrans-studio §5.2) ; ouverture du jumeau (§1.1, scène par défaut)
 - **ST-BIM-01.1** [=] Lister les scènes du contexte `Scenes` du jumeau.
 - **ST-BIM-01.2** [=] Créer une scène avec un nom et une description.
 - **ST-BIM-01.3** [!] Le champ description de la création enregistre bien la description (l'ancien champ appelait `onNameChange` et écrasait le nom).
@@ -1176,7 +1178,7 @@ Destination : Atelier « Maquettes et scènes », section Scènes (04-studio §5
 - **ST-BIM-01.29** [recette] Scène historique écrite avec `useAllDT` relue en « Maquette complète ».
 
 ### ST-BIM-02 — Calculer et enregistrer les offsets des modèles par scène
-Destination : Atelier « Maquettes et scènes », section Décalages (04-studio §5.2)
+Destination : Atelier « Maquettes et scènes », section Décalages (ecrans-studio §5.2)
 - **ST-BIM-02.1** [=] Point d'entrée : le contexte des scènes ou une scène choisie.
 - **ST-BIM-02.2** [=] « Calculer le décalage » pour une maquette de la scène.
 - **ST-BIM-02.3** [=] « Calculer le décalage » pour toutes les maquettes de la scène en une fois.
@@ -1192,7 +1194,7 @@ Destination : Atelier « Maquettes et scènes », section Décalages (04-studio 
 - **ST-BIM-02.13** [recette] Calcul groupé puis unitaire : valeurs cohérentes et relues après rechargement.
 
 ### ST-BIM-03 — Comparer deux versions d'une maquette
-Destination : Atelier « Maquettes et scènes », section « Comparer deux versions » (04-studio §5.2)
+Destination : Atelier « Maquettes et scènes », section « Comparer deux versions » (ecrans-studio §5.2)
 - **ST-BIM-03.1** [=] Choisir un fichier BIM puis deux numéros de version.
 - **ST-BIM-03.2** [=] Ne proposer que les versions qui contiennent une représentation SVF (ou SBIM) chargeable.
 - **ST-BIM-03.3** [=] Charger les deux versions et parcourir leurs objets feuilles.
@@ -1213,7 +1215,7 @@ Destination : Atelier « Maquettes et scènes », section « Comparer deux versi
 - **ST-BIM-03.18** [non] Comparateur de géométrie ou de propriétés : non attesté, non promis sans essai.
 
 ### ST-BIM-04 — Réconcilier les identifiants BIM après changement de version
-Destination : Atelier « Maquettes et scènes », « Réconcilier les identifiants » (04-studio §5.2) ; variante géographique dans l'atelier Géographie, outils « Recalculer » (§5.1)
+Destination : Atelier « Maquettes et scènes », « Réconcilier les identifiants » (ecrans-studio §5.2) ; variante géographique dans l'atelier Géographie, outils « Recalculer » (§5.1)
 - **ST-BIM-04.1** [=] Point d'entrée : un fichier BIM ou un contexte spatial.
 - **ST-BIM-04.2** [=] Exige la maquette chargée et des nœuds portant `externalId` et `bimFileId`.
 - **ST-BIM-04.3** [=] Reconstruire la correspondance `externalId` → `dbId` dans le modèle actuel.
@@ -1231,7 +1233,7 @@ Destination : Atelier « Maquettes et scènes », « Réconcilier les identifian
 - **ST-BIM-04.15** [recette] Références de pièces mises à jour par la variante géographique.
 
 ### ST-BIM-05 — Sélectionner, isoler et cadrer depuis une structure métier
-Destination : Viewer et sélection 3D (04-studio §4) ; barre d'actions de la fiche (§3)
+Destination : Viewer et sélection 3D (ecrans-studio §4) ; barre d'actions de la fiche (§3)
 - **ST-BIM-05.1** [=] Disponible depuis une pièce, un étage, un bâtiment, une zone, un site, un équipement ou un groupe compatible.
 - **ST-BIM-05.2** [=] « Sélectionner » : sélectionne dans la 3D les `BIMObject` descendants.
 - **ST-BIM-05.3** [=] « Isoler » : isole ces objets.
@@ -1249,7 +1251,7 @@ Destination : Viewer et sélection 3D (04-studio §4) ; barre d'actions de la fi
 - **ST-BIM-05.15** [recette] Sélection sur plusieurs maquettes et sur une maquette présente dans deux scènes.
 
 ### ST-BIM-06 — Constituer une sélection 3D par rectangle
-Destination : Viewer et sélection 3D (04-studio §4)
+Destination : Viewer et sélection 3D (ecrans-studio §4)
 - **ST-BIM-06.1** [=] Action « Sélection rectangle » qui active l'outil de boîte de viewer-rs.
 - **ST-BIM-06.2** [+] Raccourci `B` (les anciens raccourcis Alt/Ctrl étaient commentés).
 - **ST-BIM-06.3** [=] Sélectionner les objets feuilles contenus dans le volume calculé depuis la caméra et le rectangle dessiné.
@@ -1263,7 +1265,7 @@ Destination : Viewer et sélection 3D (04-studio §4)
 - **ST-BIM-06.11** [recette] Objets masqués ou hors isolation exclus.
 
 ### ST-BIM-07 — Rechercher des objets par propriétés BIM et attributs Spinal
-Destination : Viewer et sélection 3D, « Recherche avancée » (04-studio §4, palette `Ctrl K` ou rail)
+Destination : Viewer et sélection 3D, « Recherche avancée » (ecrans-studio §4, palette `Ctrl K` ou rail)
 - **ST-BIM-07.1** [=] Périmètre : tous les objets, ou une sélection de référence.
 - **ST-BIM-07.2** [=] Sélection de référence : accumuler des objets, l'inspecter, retirer des objets unitairement (`EnsembleSelection`).
 - **ST-BIM-07.3** [=] Liste de critères nom / valeur : ajouter, retirer, réinitialiser.
@@ -1283,7 +1285,7 @@ Destination : Viewer et sélection 3D, « Recherche avancée » (04-studio §4, 
 - **ST-BIM-07.17** [recette] Recherche avancée avec expression régulière sur le nom et la valeur.
 
 ### ST-BIM-08 — Accéder aux actions métier depuis un objet sélectionné en 3D
-Destination : Viewer, menu de la sélection 3D (04-studio §4) ; fiche de l'objet 3D sans nœud (§3)
+Destination : Viewer, menu de la sélection 3D (ecrans-studio §4) ; fiche de l'objet 3D sans nœud (§3)
 - **ST-BIM-08.1** [=] Déclencheur : clic ou toucher dans le viewer sélectionnant un seul objet d'une seule maquette.
 - **ST-BIM-08.2** [=] Déclencheur aussi : événement d'objet dynamique pris en charge par le service.
 - **ST-BIM-08.3** [=] Résoudre le `BIMObject` associé à la sélection.
@@ -1302,7 +1304,7 @@ Destination : Viewer, menu de la sélection 3D (04-studio §4) ; fiche de l'obje
 - **ST-BIM-08.16** [recette] Une action unitaire n'est jamais appliquée à toute une multisélection.
 
 ### ST-BIM-09 — Interagir avec la vue et les propriétés natives du modèle
-Destination : Viewer (04-studio §4, viewer-rs inchangé) ; fiche, onglet Résumé, bloc « Propriétés de la maquette » (§3.1)
+Destination : Viewer (ecrans-studio §4, viewer-rs inchangé) ; fiche, onglet Résumé, bloc « Propriétés de la maquette » (§3.1)
 - **ST-BIM-09.1** [+] viewer-rs remplace `Autodesk.Viewing.Private.GuiViewer3D` ; ses outils restent les siens.
 - **ST-BIM-09.2** [=] Afficher les maquettes chargées.
 - **ST-BIM-09.3** [=] Arborescence de la maquette (équivalent `getObjectTree`).
@@ -1322,7 +1324,7 @@ Destination : Viewer (04-studio §4, viewer-rs inchangé) ; fiche, onglet Résum
 - **ST-BIM-09.17** [non] Promettre toute capacité générale du SDK Autodesk comme fonction Studio garantie.
 
 ### ST-BIM-10 — Charger la représentation choisie d'un fichier BIM
-Destination : Atelier « Maquettes et scènes », section Maquettes (04-studio §5.2)
+Destination : Atelier « Maquettes et scènes », section Maquettes (ecrans-studio §5.2)
 - **ST-BIM-10.1** [=] Lister les représentations de la version courante : nom, chemin, miniature.
 - **ST-BIM-10.2** [+] Liste incluant les représentations SVF et SBIM.
 - **ST-BIM-10.3** [=] Lire le chemin de la représentation par défaut (`defaultItem`).
@@ -1337,7 +1339,7 @@ Destination : Atelier « Maquettes et scènes », section Maquettes (04-studio �
 - **ST-BIM-10.12** [recette] Changement de représentation par défaut relu après rechargement.
 
 ### ST-GRP-01 — Définir des classifications transverses typées
-Destination : Atelier « Données », « Créer un classement » (04-studio §5.3) ; navigateur, domaine Classements (§2)
+Destination : Atelier « Données », « Créer un classement » (ecrans-studio §5.3) ; navigateur, domaine Classements (§2)
 - **ST-GRP-01.1** [=] Créer un contexte de groupes : nom et type d'éléments.
 - **ST-GRP-01.2** [=] Types proposés : contexte géographique, site, bâtiment, étage, zone, pièce, équipement, endpoint, device, réseau, groupe d'endpoints, note, agenda, point de contrôle, analyse, documentaire.
 - **ST-GRP-01.3** [=] Créer des catégories dans le contexte.
@@ -1353,7 +1355,7 @@ Destination : Atelier « Données », « Créer un classement » (04-studio §5.
 - **ST-GRP-01.13** [recette] Classement d'autres types que les équipements (pièces, endpoints, notes…).
 
 ### ST-GRP-02 — Affecter ou retirer des éléments d'un groupe
-Destination : Fiche, onglet Relations, bloc Groupes (04-studio §3.8) ; menu de la sélection 3D (§4) ; atelier Données (§5.3)
+Destination : Fiche, onglet Relations, bloc Groupes (ecrans-studio §3.8) ; menu de la sélection 3D (§4) ; atelier Données (§5.3)
 - **ST-GRP-02.1** [=] Sélecteur contexte → catégorie → groupe, filtré sur les groupes compatibles avec le type.
 - **ST-GRP-02.2** [=] Création à la volée d'un contexte, d'une catégorie ou d'un groupe pendant l'affectation.
 - **ST-GRP-02.3** [=] Rattacher les objets choisis au groupe.
@@ -1370,7 +1372,7 @@ Destination : Fiche, onglet Relations, bloc Groupes (04-studio §3.8) ; menu de 
 - **ST-GRP-02.14** [recette] Création de catégorie et de groupe pendant une affectation.
 
 ### ST-GRP-03 — Visualiser les groupes et retrouver une pièce depuis un objet
-Destination : Navigateur, actions sur un groupe (04-studio §2) ; fiche, onglet Relations, « Trouver sa pièce » (§3.8) ; menu de la sélection 3D (§4)
+Destination : Navigateur, actions sur un groupe (ecrans-studio §2) ; fiche, onglet Relations, « Trouver sa pièce » (§3.8) ; menu de la sélection 3D (§4)
 - **ST-GRP-03.1** [=] « Colorer les objets » d'un contexte, d'une catégorie ou d'un groupe de pièces ou d'équipements, avec la couleur du groupe.
 - **ST-GRP-03.2** [=] « Restaurer les couleurs » : retour aux couleurs antérieures.
 - **ST-GRP-03.3** [+] Couleurs libérées automatiquement à la fermeture de l'atelier ou du jumeau.
@@ -1383,7 +1385,7 @@ Destination : Navigateur, actions sur un groupe (04-studio §2) ; fiche, onglet 
 - **ST-GRP-03.10** [recette] Parcours 3D → objet du graphe → pièce → classement.
 
 ### ST-ATT-01 — Lire et enrichir les attributs d'un objet
-Destination : Fiche de l'objet, onglet Attributs (04-studio §3.2)
+Destination : Fiche de l'objet, onglet Attributs (ecrans-studio §3.2)
 - **ST-ATT-01.1** [=] Ouvrir depuis une entité du graphe ou un objet 3D, même sans `BIMObject`.
 - **ST-ATT-01.2** [=] Catégories d'attributs repliables, lignes libellé / valeur / unité.
 - **ST-ATT-01.3** [=] Catégories héritées des groupes parents affichées à part, en lecture, avec leur provenance.
@@ -1404,7 +1406,7 @@ Destination : Fiche de l'objet, onglet Attributs (04-studio §3.2)
 - **ST-ATT-01.18** [recette] Premier attribut sur un objet 3D sans nœud : nœud créé, attribut présent après rechargement.
 
 ### ST-ATT-02 — Éditer les attributs en tableau et en masse
-Destination : Atelier « Données », tableau d'attributs, plein cadre par défaut (04-studio §5.3)
+Destination : Atelier « Données », tableau d'attributs, plein cadre par défaut (ecrans-studio §5.3)
 - **ST-ATT-02.1** [=] Départ : un nœud (bouton « Depuis la sélection ») et un type d'objets (pièces, équipements…).
 - **ST-ATT-02.2** [=] Colonnes : nom, puis `catégorie / attribut` selon le profil de colonnes courant (ST-ATT-04).
 - **ST-ATT-02.3** [+] Tableau virtualisé, sans pagination (remplace le tableau paginé).
@@ -1431,7 +1433,7 @@ Destination : Atelier « Données », tableau d'attributs, plein cadre par défa
 - **ST-ATT-02.24** [recette] Lignes concernées retrouvées dans la 3D (sélection, isolation, cadrage).
 
 ### ST-ATT-03 — Exporter et réimporter les données attributaires Excel
-Destination : Atelier « Données », section Excel (04-studio §5.3)
+Destination : Atelier « Données », section Excel (ecrans-studio §5.3)
 - **ST-ATT-03.1** [=] « Exporter la sélection » : fichier `spinalcom.xlsx` limité aux lignes sélectionnées.
 - **ST-ATT-03.2** [=] Colonnes historiques à l'identique : `SpinalGraph ID`, `Dynamic ID`, `Revit ID`, `Name`, puis une colonne par `catégorie / libellé`.
 - **ST-ATT-03.3** [=] Lignes triées par nom.
@@ -1453,7 +1455,7 @@ Destination : Atelier « Données », section Excel (04-studio §5.3)
 - **ST-ATT-03.19** [recette] Fichier produit par l'ancien Studio importé correctement.
 
 ### ST-ATT-04 — Enregistrer les profils de colonnes et les échanger
-Destination : Atelier « Données », profils de colonnes (04-studio §5.3)
+Destination : Atelier « Données », profils de colonnes (ecrans-studio §5.3)
 - **ST-ATT-04.1** [=] Organisation catégorie → groupe de configurations → profil nommé.
 - **ST-ATT-04.2** [=] Créer et renommer catégories, groupes et profils.
 - **ST-ATT-04.3** [=] Éditer la liste des catégories et attributs du profil (colonnes à afficher).
@@ -1473,7 +1475,7 @@ Destination : Atelier « Données », profils de colonnes (04-studio §5.3)
 - **ST-ATT-04.17** [non] Dialogue d'export séparé (ancien placeholder vide) : l'export est dans l'écran des profils.
 
 ### ST-ATT-05 — Initialiser un attribut de capacité à partir de la surface des pièces
-Destination : Atelier « Géographie », outils « Recalculer », carte « Initialiser la capacité des pièces (surface ÷ 5) » (04-studio §5.1)
+Destination : Atelier « Géographie », outils « Recalculer », carte « Initialiser la capacité des pièces (surface ÷ 5) » (ecrans-studio §5.1)
 - **ST-ATT-05.1** [=] Créer sur les pièces l'attribut `Standard Attributes / capacity`.
 - **ST-ATT-05.2** [=] Type `number`, unité `people`.
 - **ST-ATT-05.3** [=] Valeur `Math.round(area / 5)` depuis `Spatial / area`.
@@ -1497,7 +1499,7 @@ Destination : Atelier « Géographie », outils « Recalculer », carte « Initi
 - **ST-ATT-05.21** [recette] Deuxième exécution : aucune création, aucun doublon.
 
 ### ST-GRP-04 — Générer automatiquement les catégories et groupes
-Destination : Atelier « Données », « Classer automatiquement » (04-studio §5.3)
+Destination : Atelier « Données », « Classer automatiquement » (ecrans-studio §5.3)
 - **ST-GRP-04.1** [=] Entrée : objets sélectionnés dans le tableau et leur type.
 - **ST-GRP-04.2** [=] Destination : nouveau contexte de groupes ou contexte existant.
 - **ST-GRP-04.3** [=] Règle de catégorie et règle de groupe, chacune parmi trois modes.
@@ -1519,7 +1521,7 @@ Destination : Atelier « Données », « Classer automatiquement » (04-studio �
 - **ST-GRP-04.19** [recette] Seconde génération sur un contexte existant : pas de doublons.
 
 ### ST-DOC-01 — Attacher et consulter des fichiers sur les objets
-Destination : Fiche de l'objet, onglet Documents (04-studio §3.3)
+Destination : Fiche de l'objet, onglet Documents (ecrans-studio §3.3)
 - **ST-DOC-01.1** [=] Disponible sur une entité ou une sélection 3D.
 - **ST-DOC-01.2** [=] Ajouter depuis le poste : dépôt de plusieurs fichiers.
 - **ST-DOC-01.3** [=] Ajouter depuis le Drive : sélecteur de fichiers, document relié sans être recréé.
@@ -1536,7 +1538,7 @@ Destination : Fiche de l'objet, onglet Documents (04-studio §3.3)
 - **ST-DOC-01.14** [recette] Documents hérités d'un groupe affichés avec la provenance.
 
 ### ST-DOC-02 — Télécharger et désassocier des documents
-Destination : Fiche de l'objet, onglet Documents (04-studio §3.3)
+Destination : Fiche de l'objet, onglet Documents (ecrans-studio §3.3)
 - **ST-DOC-02.1** [=] Télécharger un fichier unique directement, avec son nom.
 - **ST-DOC-02.2** [=] Plusieurs fichiers ou un dossier : archive ZIP de l'arborescence.
 - **ST-DOC-02.3** [+] Constitution du ZIP en tâche du plateau.
@@ -1552,7 +1554,7 @@ Destination : Fiche de l'objet, onglet Documents (04-studio §3.3)
 - **ST-DOC-02.13** [?] « Exporter vers le Drive » (`exportToDrive`) : enregistrement commenté, non actif ; décider si l'intention est reprise.
 
 ### ST-DOC-03 — Gérer des liens URL documentaires
-Destination : Fiche de l'objet, onglet Documents, bloc Liens (04-studio §3.3)
+Destination : Fiche de l'objet, onglet Documents, bloc Liens (ecrans-studio §3.3)
 - **ST-DOC-03.1** [=] Créer un lien : libellé et URL, distincts.
 - **ST-DOC-03.2** [=] Lister les liens de l'objet.
 - **ST-DOC-03.3** [=] Modifier le libellé ou l'URL d'un lien.
@@ -1566,7 +1568,7 @@ Destination : Fiche de l'objet, onglet Documents, bloc Liens (04-studio §3.3)
 - **ST-DOC-03.11** [recette] Provenance directe ou groupe affichée.
 
 ### ST-DOC-04 — Échanger des notes contextualisées
-Destination : Fiche de l'objet, onglet Notes (04-studio §3.4)
+Destination : Fiche de l'objet, onglet Notes (ecrans-studio §3.4)
 - **ST-DOC-04.1** [=] Fil de messages : auteur, date, texte, pièces jointes, images en vignettes.
 - **ST-DOC-04.2** [=] Ajouter un message texte.
 - **ST-DOC-04.3** [=] Joindre des fichiers et des images.
@@ -1588,7 +1590,7 @@ Destination : Fiche de l'objet, onglet Notes (04-studio §3.4)
 - **ST-DOC-04.19** [recette] Envoi de fichiers sans texte ; refus d'un texte vide.
 
 ### ST-DOC-05 — Annoter avec une capture et un point de vue 3D restaurable
-Destination : Fiche de l'objet, onglet Notes, bouton « Capturer la vue » (04-studio §3.4)
+Destination : Fiche de l'objet, onglet Notes, bouton « Capturer la vue » (ecrans-studio §3.4)
 - **ST-DOC-05.1** [=] Capturer une image PNG du viewer seule.
 - **ST-DOC-05.2** [=] Capturer l'image avec un point de vue restaurable.
 - **ST-DOC-05.3** [=] Point de vue : `viewState` (caméra, viewport, rendu, overrides) et `objectState` (objets sélectionnés et isolés par maquette), sérialisés.
@@ -1606,7 +1608,7 @@ Destination : Fiche de l'objet, onglet Notes, bouton « Capturer la vue » (04-s
 - **ST-DOC-05.15** [recette] Image simple et image avec point de vue distinguées.
 
 ### ST-DOC-06 — Retrouver visuellement les objets associés aux notes
-Destination : Fiche, onglet Notes (04-studio §3.4) ; navigateur, groupe de notes (§2)
+Destination : Fiche, onglet Notes (ecrans-studio §3.4) ; navigateur, groupe de notes (§2)
 - **ST-DOC-06.1** [=] Ouvrir le détail d'un message.
 - **ST-DOC-06.2** [=] « Voir l'objet » : retrouver le parent géographique de la note.
 - **ST-DOC-06.3** [=] Cadrer ou isoler ce parent.
@@ -1619,7 +1621,7 @@ Destination : Fiche, onglet Notes (04-studio §3.4) ; navigateur, groupe de note
 - **ST-DOC-06.10** [recette] Colorer puis restaurer : couleurs d'origine.
 
 ### ST-SIM-01 — Importer une série Excel comme profil réutilisable
-Destination : Atelier « Points de contrôle », section Simulation (04-studio §5.5)
+Destination : Atelier « Points de contrôle », section Simulation (ecrans-studio §5.5)
 - **ST-SIM-01.1** [=] Créer un contexte d'import de type `uploadFileContext`.
 - **ST-SIM-01.2** [=] Saisir le nom du profil.
 - **ST-SIM-01.3** [=] Choisir un classeur Excel, toutes les feuilles lues.
@@ -1636,7 +1638,7 @@ Destination : Atelier « Points de contrôle », section Simulation (04-studio �
 - **ST-SIM-01.14** [non] Interpolation et exécution de simulation : hors de ce dialogue.
 
 ### ST-SIM-02 — Affecter un profil importé à un point de contrôle
-Destination : Atelier « Points de contrôle », section Simulation (04-studio §5.5)
+Destination : Atelier « Points de contrôle », section Simulation (ecrans-studio §5.5)
 - **ST-SIM-02.1** [=] Partir d'un élément d'un contexte de groupes.
 - **ST-SIM-02.2** [=] Choisir le point de contrôle lié à alimenter.
 - **ST-SIM-02.3** [=] Choisir le contexte d'import puis le profil.

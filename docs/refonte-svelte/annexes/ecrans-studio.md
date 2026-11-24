@@ -2,6 +2,8 @@
 
 # 04 — Studio
 
+> **Statut : v1 écran par écran, provisoire.** Elle sera refondue avec les maquettes. Références : parcours [03-parcours.md](../03-parcours.md), recette [08-tests.md](../08-tests.md).
+
 Route : `/studio/jumeau/<id>` (`id` = identifiant serveur du fichier Jumeau). Paramètres d'URL : `noeud`, `contexte`, `atelier`, `onglet` (onglet de la fiche).
 
 ## 1. Disposition
@@ -268,7 +270,7 @@ Atelier en quatre onglets.
 - **Période** : 1 h, 3 h, 24 h glissantes, Hier, 3 jours, 7 jours, Personnalisée (début et fin). « Hier » et « 24 h » sont bien distincts.
 - Réglages : lignes, points, lignes + points ; légende (afficher, position) ; curseur de plage ; réinitialiser le zoom. Valeur au survol, en chiffres tabulaires.
 - Point sans historique : « Pas de données sur la période ». Point texte : non tracé, avec la raison.
-- L'ouverture d'une courbe **ne crée pas** de série temporelle absente : écart volontaire avec `getOrCreateTimeSeries`. Décision ouverte O-3, voir [06-tracabilite.md](06-tracabilite.md).
+- L'ouverture d'une courbe **ne crée pas** de série temporelle absente : écart volontaire avec `getOrCreateTimeSeries`. Décision ouverte O-3, voir [06-tracabilite.md](../06-tracabilite.md).
 
 ### 5.9 Dashboards [ST-DASH-01 à 05]
 

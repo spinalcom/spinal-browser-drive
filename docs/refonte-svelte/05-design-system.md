@@ -197,7 +197,7 @@ Tous dans `src/lib/ui/`. Svelte 5, `$props()` typées, slots par `Snippet`, aucu
 | `SelecteurNoeud` | Explorateur de contextes à la demande + recherche, pour choisir une cible (liens, ancres d'analyse). |
 | `EnsembleSelection` | Ensemble d'objets 3D ou de nœuds (02-ux §4). |
 | `ViewerHost` | Conteneur de viewer-rs (01-architecture §5). |
-| `FicheObjet` | Fiche (04-studio §3), onglets fournis par les domaines. |
+| `FicheObjet` | Fiche (annexes/ecrans-studio §3), onglets fournis par les domaines. |
 | `CarteOrgan` | État d'un organ : en ligne, sans réponse, demande envoyée, état rapporté, commandes. |
 
 ## 4. Règles d'usage
