@@ -221,3 +221,22 @@ Tous dans `src/lib/ui/`. Svelte 5, `$props()` typées, slots par `Snippet`, aucu
 - Pas de valeur codée en dur (couleur, espacement, rayon) dans un écran : seulement des jetons. Un test de lint simple (recherche de `#[0-9a-f]{3,6}` et de `px` hors jetons dans `routes/`) le vérifie.
 - Aucun contrôle natif visible (voir « Aucun contrôle natif du navigateur ») : un test recherche dans `app/src` les `<select`, `type="checkbox"`, `type="radio"`, `type="range"`, `type="date`, `type="time`, `datetime-local`, `type="color"`, les attributs `title=` et les appels `alert(`/`confirm(`/`prompt(`, et échoue s'il en trouve hors des exceptions déclarées.
 - Pas de nouveau composant générique dans un écran : s'il manque, on l'ajoute au design system avec sa section de démonstration.
+
+## 5. Politique de réutilisation : jamais de duplication
+
+Choix de l'utilisateur (24/11). Un besoin d'interface a **une seule** implémentation dans toute l'application. Dupliquer, c'est corriger un défaut à un endroit et le laisser ailleurs, et voir l'interface diverger, ce que l'ancien Studio a montré avec ses six panneaux de fiche.
+
+**Avant d'écrire un composant**, dans cet ordre :
+1. Chercher dans l'inventaire §3 et la page `/studio/_ds`. S'il existe, on l'utilise tel quel.
+2. S'il existe mais ne couvre pas le cas : on **l'étend** (prop, variante, `Snippet`), avec une section de démonstration pour le nouvel état. On ne le copie jamais pour le modifier.
+3. Si le besoin est une combinaison de composants existants revenant à plusieurs endroits : on crée un **composant composé** (dans `lib/ui` s'il ignore Spinal, sinon §3.6), et tous les écrans concernés l'utilisent.
+4. Seulement ensuite : un nouveau composant, ajouté à l'inventaire §3 et à `/studio/_ds` dans le même commit.
+
+**Règles :**
+- **Pas de copier-coller** de balisage, de styles ou de logique entre deux fichiers. À la deuxième occurrence, on factorise ; on n'attend pas la troisième.
+- **Pas de restylage local** d'un composant du design system (classe qui redéfinit un bouton, un champ, une ligne de tableau dans un écran). Une variante manquante s'ajoute au composant.
+- **Un motif = un composant**, partout : aperçu des changements → `DiffList` ; confirmation de portée → `ConfirmerPortee` ; choix de groupe → `SelecteurGroupe` ; choix de nœud → `SelecteurNoeud` ; état d'organ → `CarteOrgan` ; fiche → `FicheObjet` ; tâche → plateau des tâches. Aucun atelier ne réécrit sa propre version.
+- **La même règle vaut pour la logique** : un accès au graphe passe par `lib/spinal`, une règle métier vit une seule fois dans `lib/domaines`, une action une seule fois dans le registre (01-architecture §6). Deux écrans qui ont besoin de la même donnée appellent la même fonction.
+- **Divergence volontaire** : si deux usages doivent vraiment différer, la différence est un paramètre du composant commun, documenté dans sa section, jamais une copie.
+
+**Contrôle :** un test de recherche de duplication (`jscpd`, en dépendance de développement uniquement) parcourt `app/src` à chaque lot et échoue au-delà de 30 lignes identiques ; les exceptions sont listées nommément dans sa configuration avec leur raison. La revue de chaque lot vérifie aussi qu'aucun composant de §3 n'a été réimplémenté sous un autre nom.

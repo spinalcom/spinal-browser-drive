@@ -58,6 +58,7 @@ app/
 
 Règles :
 - `lib/ui` ne connaît pas Spinal. Un composant qui a besoin d'un nœud reçoit des données simples.
+- **Jamais de duplication** : un composant, un motif d'interface, une règle métier ou un accès au graphe n'existent qu'une fois ; on étend l'existant au lieu de le copier ([05-design-system.md §5](05-design-system.md#5-politique-de-réutilisation--jamais-de-duplication)).
 - `lib/domaines` ne connaît pas Svelte. C'est du TypeScript pur, testable par Vitest et réutilisable ailleurs (portail, organs).
 - Un fichier extrait d'un plugin historique commence par un commentaire qui cite son origine : paquet, chemin dans la sourcemap, version.
 
