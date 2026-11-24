@@ -36,6 +36,7 @@ Ce qui est refusé :
 - **Un seul signal.** L'orange signale l'actif, la sélection, le focus clavier ou l'unique action principale d'une zone. Jamais en décor, jamais deux actions principales orange côte à côte.
 - **Le rouge pour détruire.** Le rouge est réservé aux suppressions et aux erreurs. Un « retrait » de lien est neutre, une « suppression » est rouge.
 - **Lecture tabulaire.** Toute valeur chiffrée est en Geist Mono à chiffres tabulaires, alignée à droite. Les libellés ne le sont jamais.
+- **Aucun contrôle natif du navigateur.** Choix de l'utilisateur (24/11) : tout contrôle visible est dessiné par le design system, identique sur tous les navigateurs et systèmes. Jamais de `<select>`, de case à cocher ou de bouton radio natifs, de barre de défilement native, de sélecteur de date, d'heure ou de couleur natif, de `<input type=range>`, d'infobulle `title`, ni de `alert`/`confirm`/`prompt`. Seules exceptions : la saisie de texte elle-même (`<input>`/`<textarea>` sans apparence native, entièrement habillés) et l'`<input type=file>` **caché** qui ouvre la boîte de dialogue de fichiers du système, sans équivalent possible. Les éléments natifs restent permis sous le capot quand ils sont invisibles et servent l'accessibilité (bits-ui), jamais à l'écran.
 - **Densité réglable.** Deux densités : « Confort » (lignes de 36 px, par défaut) et « Compact » (28 px, préférence). Le Drive et les tableaux en profitent.
 
 ## 2. Jetons
@@ -137,12 +138,12 @@ Tous dans `src/lib/ui/`. Svelte 5, `$props()` typées, slots par `Snippet`, aucu
 | `TextInput` | `type: text \| search \| password` (bouton révéler), `prefix?`/`suffix?` (unité), `clearable?`. |
 | `NumberInput` | Nombre avec unité, min, max, pas, chiffres tabulaires. Une saisie invalide reste affichée et signalée. |
 | `Textarea` | Hauteur auto, limite affichée. |
-| `Select` | Liste fermée (bits-ui), recherche si plus de 8 options. |
+| `Select` | Liste fermée dessinée (bits-ui), jamais de `<select>` natif. Recherche si plus de 8 options. |
 | `Combobox` | Recherche + choix, `creatable?` : affiche « Créer « xyz » » en dernière option. |
-| `Checkbox`, `Switch`, `RadioGroup`, `Segmented` | Bascules et choix exclusifs. `Segmented` pour 2 à 5 options courtes (vues, périodes). |
+| `Checkbox`, `Switch`, `RadioGroup`, `Segmented` | Bascules et choix exclusifs, entièrement dessinés (case, coche, état indéterminé, focus, désactivé) : jamais de case ni de radio natives. `Segmented` pour 2 à 5 options courtes (vues, périodes). |
 | `Slider` | Piste et valeur en lecture tabulaire, champ numérique couplé. |
-| `DateTimeInput` | `datetime-local` natif habillé, avec fuseau affiché si différent. |
-| `ColorInput` | Nuancier de la palette de données + champ hexadécimal + `input[type=color]` natif. |
+| `DateTimeInput` | Champ date/heure dessiné + calendrier en `Popover` (mois, sélection, plage facultative), saisie clavier au format français, fuseau affiché s'il diffère. Pas de `datetime-local` natif. |
+| `ColorInput` | Nuancier de la palette de données + champ hexadécimal + sélecteur libre dessiné (zone teinte/saturation, curseur de teinte) en `Popover`. Pas d'`input[type=color]` natif. |
 | `FileDrop` | Zone de dépôt + bouton parcourir, `accept`, `multiple`, état survol. Utilisée aussi en plein écran (Drive). |
 | `RegexInput` | Champ d'expression régulière avec options (`i`, `g`…), validation en direct, test sur des exemples. |
 | `CronInput` | Expression cron, validation, 5 prochaines exécutions, aide de syntaxe. |
@@ -169,6 +170,7 @@ Tous dans `src/lib/ui/`. Svelte 5, `$props()` typées, slots par `Snippet`, aucu
 
 | Composant | Contrat |
 |---|---|
+| `ScrollArea` | Défilement personnalisé en JS pour **toute** zone qui défile (panneaux, listes, menus, tableaux, page) : barre fine à la teinte des jetons, qui s'élargit au survol et en glisser, se masque à l'arrêt, piste cliquable, défilement à la molette, au clavier et tactile inchangés. La barre native est masquée (`scrollbar-width: none`), le défilement reste celui du navigateur (pas de défilement simulé), donc fluide et compatible avec `VirtualList`. |
 | `VirtualList` | Liste virtualisée à hauteur de ligne fixe (implémentation maison d'environ 80 lignes : défilement, `scrollToIndex`, rendu de 2 écrans). Base de `Tree` et `DataTable`. |
 | `Tree` | Arbre virtualisé, chargement à la demande (`loadChildren`), sélection simple ou multiple, navigation clavier APG, `renderRow` (icône, nom, pastille, badges, compteur), glisser-déposer facultatif (`canDrop`), groupes d'en-tête (domaines), recherche avec surlignage. |
 | `DataTable` | Tableau virtualisé : colonnes triables, redimensionnables, masquables ; en-tête collant ; sélection de lignes ; cellule éditable en ligne (`editable`, avec marque de modification en attente) ; colonne d'actions ; état vide. Pas de pagination. |
@@ -217,4 +219,5 @@ Tous dans `src/lib/ui/`. Svelte 5, `$props()` typées, slots par `Snippet`, aucu
 - Une zone a au plus **un** bouton `primary`.
 - Les actions destructrices passent **toujours** par `ConfirmerPortee`, jamais par `confirm()`.
 - Pas de valeur codée en dur (couleur, espacement, rayon) dans un écran : seulement des jetons. Un test de lint simple (recherche de `#[0-9a-f]{3,6}` et de `px` hors jetons dans `routes/`) le vérifie.
+- Aucun contrôle natif visible (voir « Aucun contrôle natif du navigateur ») : un test recherche dans `app/src` les `<select`, `type="checkbox"`, `type="radio"`, `type="range"`, `type="date`, `type="time`, `datetime-local`, `type="color"`, les attributs `title=` et les appels `alert(`/`confirm(`/`prompt(`, et échoue s'il en trouve hors des exceptions déclarées.
 - Pas de nouveau composant générique dans un écran : s'il manque, on l'ajoute au design system avec sa section de démonstration.
