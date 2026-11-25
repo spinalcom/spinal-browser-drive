@@ -62,3 +62,6 @@ export interface Colonne<T> {
 }
 
 export type Valeur = string | number | boolean | Date | null | undefined;
+
+/** Commande de la palette (Ctrl K). */
+export interface Commande { id: string; label: string; section: string; icone?: IconeComposant; raccourci?: string; detail?: string; motsCles?: string; executer: () => void }

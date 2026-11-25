@@ -11,11 +11,13 @@
   /** Tableau virtualisé : tri, redimensionnement, masquage, en-tête collant, sélection de lignes, état vide. Pas de pagination. */
   let {
     lignes, colonnes = $bindable(), cle, selection = $bindable<string[]>([]), selectionnable = false, actions, vide, label,
-    tri = $bindable<{ id: string; sens: 'asc' | 'desc' } | null>(null), onactivate,
+    tri = $bindable<{ id: string; sens: 'asc' | 'desc' } | null>(null), onactivate, onselection,
   }: {
     lignes: T[]; colonnes: Colonne<T>[]; cle: (t: T) => string; selection?: string[]; selectionnable?: boolean;
     actions?: Snippet<[T]>; vide?: Snippet; label: string; tri?: { id: string; sens: 'asc' | 'desc' } | null; onactivate?: (t: T) => void;
+    /** Appelé à chaque changement de sélection (alternative à bind:selection). */ onselection?: (ids: string[]) => void;
   } = $props();
+  function choisir(s: string[]) { selection = s; onselection?.(s); }
 
   const visibles = $derived(colonnes.filter((c) => !c.masquee));
   const triees = $derived.by(() => {
@@ -41,11 +43,11 @@
   function cliquer(t: T, e: MouseEvent) {
     if (!selectionnable) return;
     const id = cle(t);
-    if (e.ctrlKey || e.metaKey) selection = selection.includes(id) ? selection.filter((x) => x !== id) : [...selection, id];
+    if (e.ctrlKey || e.metaKey) choisir(selection.includes(id) ? selection.filter((x) => x !== id) : [...selection, id]);
     else if (e.shiftKey && selection.length) {
       const ids = triees.map(cle); const a = ids.indexOf(selection[selection.length - 1]); const b = ids.indexOf(id);
-      selection = Array.from(new Set([...selection, ...ids.slice(Math.min(a, b), Math.max(a, b) + 1)]));
-    } else selection = [id];
+      choisir(Array.from(new Set([...selection, ...ids.slice(Math.min(a, b), Math.max(a, b) + 1)])));
+    } else choisir([id]);
   }
 </script>
 
@@ -53,7 +55,7 @@
   <div class="tr th" role="row" style:grid-template-columns={gabarit}>
     {#if selectionnable}
       <div class="cell" role="columnheader"><Checkbox label="Tout sélectionner" masquerLabel checked={tout} indeterminate={partiel}
-        onchange={() => (selection = tout ? [] : lignes.map(cle))} /></div>
+        onchange={() => choisir(tout ? [] : lignes.map(cle))} /></div>
     {/if}
     {#each visibles as c (c.id)}
       <div class="cell" class:droite={c.align === 'droite'} role="columnheader" aria-sort={tri?.id === c.id ? (tri.sens === 'asc' ? 'ascending' : 'descending') : undefined}>
@@ -81,7 +83,7 @@
               <!-- svelte-ignore a11y_click_events_have_key_events, a11y_interactive_supports_focus -->
               <div class="cell" role="gridcell" onclick={(e) => e.stopPropagation()}>
                 <Checkbox label="Sélectionner la ligne" masquerLabel checked={selection.includes(id)}
-                  onchange={() => (selection = selection.includes(id) ? selection.filter((x) => x !== id) : [...selection, id])} /></div>
+                  onchange={() => choisir(selection.includes(id) ? selection.filter((x) => x !== id) : [...selection, id])} /></div>
             {/if}
             {#each visibles as c (c.id)}
               <div class="cell" class:droite={c.align === 'droite'} class:mono={c.mono} role="gridcell">

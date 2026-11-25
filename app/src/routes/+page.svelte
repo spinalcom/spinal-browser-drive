@@ -2,5 +2,5 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
-  $effect(() => { goto(`${base}/_ds`, { replaceState: true }); });
+  $effect(() => { goto(`${base}/drive`, { replaceState: true }); });
 </script>

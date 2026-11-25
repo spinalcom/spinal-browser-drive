@@ -1,13 +1,12 @@
 <!-- Copyright 2026 SpinalCom - www.spinalcom.com -->
 <script lang="ts">
   import { Command, Dialog } from 'bits-ui';
-  import type { IconeComposant } from './types';
+  import type { Commande } from './types';
   import Icon from './Icon.svelte';
   import Kbd from './Kbd.svelte';
   import Search from '@lucide/svelte/icons/search';
   import CornerDownLeft from '@lucide/svelte/icons/corner-down-left';
 
-  export interface Commande { id: string; label: string; section: string; icone?: IconeComposant; raccourci?: string; detail?: string; motsCles?: string; executer: () => void }
   /** Ctrl K : recherche floue sur actions, objets, dossiers et ateliers. Sections, raccourcis, récents en tête. */
   let { open = $bindable(false), commandes, recents = [] }: { open?: boolean; commandes: Commande[]; recents?: string[] } = $props();
   let saisie = $state('');
